@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {PlanTabScreen} from '../screens/PlanTabScreen';
@@ -6,11 +6,11 @@ import {ClientsTabScreen} from '../screens/ClientsTabScreen';
 import {TemplatesTabScreen} from '../screens/TemplatesTabScreen';
 import {ProfileTabScreen} from '../screens/ProfileTabScreen';
 import {SvgPlan} from '../assets/tabIcons/SvgPlan';
-import {SvgPlus} from '../assets/tabIcons/SvgPlus';
 import {SvgClients} from '../assets/tabIcons/SvgClients';
 import {SvgTemplates} from '../assets/tabIcons/SvgTemplates';
 import {SvgProfile} from '../assets/tabIcons/SvgProfile';
 import {TabItemContainer} from './TabItemContainer';
+import {TabPlusButton} from './TabPlusButton';
 
 export const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
@@ -67,14 +67,8 @@ export const TabNavigator = () => {
           },
         }}
         options={{
-          tabBarIcon: ({focused}) => {
-            return (
-              <View style={styles.plusButtonContainer}>
-                <TouchableOpacity style={styles.plusButton}>
-                  <SvgPlus />
-                </TouchableOpacity>
-              </View>
-            );
+          tabBarIcon: ({}) => {
+            return <TabPlusButton />;
           },
         }}
       />
@@ -108,20 +102,4 @@ export const TabNavigator = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  plusButton: {
-    position: "absolute",
-    bottom: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 70,
-    height: 70,
-    backgroundColor: '#FFFF65',
-    borderWidth: 6,
-    borderRadius: 50
-  },
-  plusButtonContainer: {
-    flex: 1,
-    alignItems: 'center'
-  },
-});
+const styles = StyleSheet.create({});

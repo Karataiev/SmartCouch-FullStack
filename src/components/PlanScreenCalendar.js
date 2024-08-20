@@ -1,26 +1,17 @@
 import {
-  LayoutAnimation,
-  Platform,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  UIManager,
   View,
+  SafeAreaView,
+  LayoutAnimation,
 } from 'react-native';
-import React, {useEffect, useState, useMemo, useCallback} from 'react';
-import {SvgArrowDown} from '../assets/calendarIcons/SvgArrowDown';
+import {CalendarProvider, WeekCalendar} from 'react-native-calendars';
+import {agendaItems} from '../mocks/agendaItems';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import {SvgBell} from '../assets/calendarIcons/SvgBell';
+import {useEffect, useState} from 'react';
 import {SvgArrowUp} from '../assets/calendarIcons/SvgArrowUp';
-import {defaultLocaleConfig} from '../helper/localeConfig';
-
-if (
-  Platform.OS === 'android' &&
-  UIManager.setLayoutAnimationEnabledExperimental
-) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
-
-defaultLocaleConfig('ua');
+import {SvgArrowDown} from '../assets/calendarIcons/SvgArrowDown';
 
 const monthArray = [
   'Січень',
@@ -36,46 +27,38 @@ const monthArray = [
   'Листопад',
   'Грудень',
 ];
-
 const daysArray = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
 
 export const PlanScreenCalendar = () => {
+  const ITEMS = agendaItems;
+
   const [isOpen, setIsOpen] = useState(false);
-  const [fullDate, setFullDate] = useState('');
-  const [currentContainerStyles, setCurrentContainerStyles] = useState(
-    styles.calendarHeaderContainer,
-  );
 
   let data = new Date();
+  const currentDayValue = data.getDate();
 
   useEffect(() => {
     const getRightInfo = num => {
       return num.toString().length === 1 ? '0' + num.toString() : num;
     };
-    setFullDate(
-      `${data.getFullYear()}-${getRightInfo(
-        Number(data.getMonth()) + 1,
-      )}-${getRightInfo(data.getDate())}`,
-    );
+    const currentDate = `${data.getFullYear()}-${getRightInfo(
+      Number(data.getMonth()) + 1,
+    )}-${getRightInfo(currentDayValue)}`;
 
-    LayoutAnimation.configureNext({
-      duration: 1500,
-      create: {type: 'linear', property: 'opacity'},
-      update: {type: 'spring', springDamping: 1},
-      delete: {type: 'linear', property: 'opacity'},
-    });
-
-    isOpen
-      ? setCurrentContainerStyles(styles.calendarActiveHeaderContainer)
-      : setCurrentContainerStyles(styles.calendarHeaderContainer);
-  }, [isOpen]);
+    // LayoutAnimation.configureNext({
+    //   duration: 1500,
+    //   create: {type: 'linear', property: 'opacity'},
+    //   update: {type: 'spring', springDamping: 1},
+    //   delete: {type: 'linear', property: 'opacity'},
+    // });
+  }, []);
 
   const handleCalendarButton = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <View style={currentContainerStyles}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.calendarHeader}>
         <TouchableOpacity
           style={styles.calendarButton}
@@ -85,46 +68,51 @@ export const PlanScreenCalendar = () => {
           }, ${data.getFullYear()}`}</Text>
           {isOpen ? <SvgArrowUp /> : <SvgArrowDown />}
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.bellButton}>
           <SvgBell />
         </TouchableOpacity>
       </View>
 
-      <View style={styles.weekContainer}>
-        {daysArray.map(el => (
-          <TouchableOpacity style={styles.dayContainer} key={el}>
-            <Text style={styles.dayStyle}>{el}</Text>
-            <Text style={styles.dayNumberStyle}>{data.getDate()}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
+      <CalendarProvider date={ITEMS[1]?.title}>
+        <WeekCalendar
+          firstDay={1}
+          theme={styles.weekCalendarTheme}
+          dayComponent={({date, state}) => {
+            return (
+              <TouchableOpacity
+                style={[
+                  styles.dayContainer,
+                  state === 'selected' && styles.currentCustomDayContainer,
+                ]}>
+                <Text
+                  style={[
+                    styles.customDay,
+                    currentDayValue === date.day && styles.activeText,
+                  ]}>
+                  {date.day}
+                </Text>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      </CalendarProvider>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  calendarHeaderContainer: {
+  container: {
     flex: 1,
-    maxHeight: 143,
-    paddingHorizontal: 20,
+    maxHeight: 144,
     backgroundColor: '#292929',
     borderBottomLeftRadius: 20,
-    borderBottomEndRadius: 20,
-  },
-  calendarActiveHeaderContainer: {
-    flex: 1,
-    maxHeight: 353,
-    paddingHorizontal: 20,
-    backgroundColor: '#292929',
-    borderBottomLeftRadius: 20,
-    borderBottomEndRadius: 20,
-    color: 'white',
+    borderBottomRightRadius: 20,
+    overflow: 'hidden',
   },
   calendarHeader: {
-    height: 44,
     width: '100%',
-    marginTop: 8,
+    paddingTop: 8,
+    paddingHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -132,7 +120,7 @@ const styles = StyleSheet.create({
   calendarButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '32%',
+    width: '59%',
     justifyContent: 'space-between',
   },
   calendarMonth: {
@@ -149,38 +137,38 @@ const styles = StyleSheet.create({
     backgroundColor: '#424242',
     borderRadius: 50,
   },
-  weekContainer: {
-    width: '100%',
-    height: 66,
-    marginTop: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+
+  weekCalendarTheme: {
+    calendarBackground: 'transparent',
+    // textDayHeaderFontSize: 12,
+    // selectedDayBackgroundColor: 'white',
+    // selectedDayTextColor: 'black',
+    // todayBackgroundColor: 'white',
+    // todayTextColor: 'black',
+
+    // textDayStyle: {
+    //   color: 'white',
+    //   fontSize: 17,
+    //   fontWeight: 'bold',
+    // },
   },
   dayContainer: {
-    justifyContent: 'center',
     alignItems: 'center',
-    width: 40,
-    height: 66,
-  },
-  dayStyle: {
-    color: 'white',
-    fontSize: 12,
-    lineHeight: 16,
-  },
-  dayNumberStyle: {
-    marginTop: 8,
-    color: 'white',
-    fontSize: 17,
-    lineHeight: 22,
-    fontWeight: '700',
-  },
-  activeDay: {
     justifyContent: 'center',
-    alignItems: 'center',
-    width: 40,
-    height: 66,
-    backgroundColor: 'white',
+    height: 32,
+    width: 32,
+  },
+  currentCustomDayContainer: {
+    borderWidth: 2,
+    borderColor: '#FFFF65',
     borderRadius: 100,
+  },
+  customDay: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  activeText: {
+    color: '#FFFF65',
   },
 });

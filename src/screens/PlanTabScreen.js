@@ -7,9 +7,6 @@ export const PlanTabScreen = () => {
   return (
     <Container>
       <PlanScreenCalendar />
-      {/* <View>
-        <Text>PlanTabScreen</Text>
-      </View> */}
     </Container>
   );
 };

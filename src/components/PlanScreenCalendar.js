@@ -71,7 +71,7 @@ export const PlanScreenCalendar = () => {
 
   const openCloseFullCalendar = () => {
     LayoutAnimation.configureNext({
-      duration: 1000,
+      duration: 500,
       create: {type: 'linear', property: 'opacity'},
       update: {type: 'spring', springDamping: 1},
       delete: {type: 'linear', property: 'opacity'},

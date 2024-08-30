@@ -4,19 +4,38 @@ import {SvgInProgressStatus} from '../assets/calendarIcons/SvgInProgressStatus';
 import {SvgWaitingStatus} from '../assets/calendarIcons/SvgWaitingStatus';
 import {SvgDoneStatus} from '../assets/calendarIcons/SvgDoneStatus';
 import {AgendaTimeLine} from './AgendaTimeLine';
+import {useSelector} from 'react-redux';
 
 export const AgendaItem = ({item}) => {
-  const [status, setStatus] = useState('');
-  const [statusIcon, setStatusIcon] = useState(null);
+  const [itemHeight, setItemHeight] = useState();
+  const [status, setStatus] = useState();
+  const [statusIcon, setStatusIcon] = useState();
+  const [statusStyle, setStatusStyle] = useState();
+
+  const currentTime = useSelector(state => state.currentTime);
+  const currentTimeArr = currentTime.split(':');
+  const timeIdArr = item.timeId.split(':');
 
   useEffect(() => {
-    const hours = new Date().getHours();
-    const minutes = new Date().getMinutes();
+    if (currentTimeArr[0] > timeIdArr[0]) {
+      setStatus('Проведено');
+      setStatusIcon(<SvgDoneStatus />);
+      setStatusStyle({color: '#00CA8D'});
+    } else if (currentTimeArr[0] < timeIdArr[0]) {
+      setStatus('Очікується');
+      setStatusIcon(<SvgWaitingStatus />);
+      setStatusStyle({color: '#FFFFFF'});
+    } else {
+      setStatus('Триває');
+      setStatusIcon(<SvgInProgressStatus />);
+      setStatusStyle({color: '#F79605'});
+    }
+  }, [currentTime]);
 
-    if (status === 'Проведено') return <SvgDoneStatus />;
-    if (status === 'Триває') return <SvgInProgressStatus />;
-    if (status === 'Очікується') return <SvgWaitingStatus />;
-  }, []);
+  const onLayout = event => {
+    const {x, y, height, width} = event.nativeEvent.layout;
+    setItemHeight(height);
+  };
 
   const returnTypeOfTrainingStyle = type => {
     return type === 'PERSONAL'
@@ -24,14 +43,25 @@ export const AgendaItem = ({item}) => {
       : {backgroundColor: '#4195B9'};
   };
 
+  const renderTimeLine = timeId => {
+    const timeIdArr = timeId.split(':');
+    if (
+      +currentTimeArr[0] >= +timeIdArr[0] &&
+      +currentTimeArr[0] < +timeIdArr[0] + 1
+    ) {
+      const lineTopNumber = (+itemHeight / 60) * +currentTimeArr[1];
+      return <AgendaTimeLine lineTopNumber={lineTopNumber} />;
+    }
+  };
+
   return (
-    <View style={styles.itemContainer}>
+    <View style={styles.itemContainer} onLayout={e => onLayout(e)}>
       <View style={styles.itemContainerHeader}>
         <Text style={styles.timeId}>{item.timeId}</Text>
         <View style={styles.borderLine} />
       </View>
 
-      <AgendaTimeLine />
+      {renderTimeLine(item.timeId)}
 
       <View style={styles.itemBlock}>
         {item.trainings &&
@@ -52,14 +82,10 @@ export const AgendaItem = ({item}) => {
               </View>
               <View style={[styles.itemCommonStyles, styles.itemThirdBlock]}>
                 <Text style={styles.itemTimeText}>{el.timeOfTraining}</Text>
-                {/*  */}
                 <View style={styles.itemStatusBlock}>
-                  {/* {returnIcon(el.status)} */}
-                  <Text style={[styles.itemText, el.status === '']}>
-                    {el.status}
-                  </Text>
+                  {statusIcon}
+                  <Text style={[styles.itemText, statusStyle]}>{status}</Text>
                 </View>
-                {/*  */}
               </View>
             </View>
           ))}
@@ -70,6 +96,7 @@ export const AgendaItem = ({item}) => {
 
 const styles = StyleSheet.create({
   itemContainer: {
+    position: 'relative',
     width: '100%',
   },
   itemContainerHeader: {
@@ -92,6 +119,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingRight: 20,
     paddingLeft: 43,
+    gap: 8,
   },
   item: {
     width: '100%',

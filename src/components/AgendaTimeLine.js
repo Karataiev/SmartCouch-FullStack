@@ -1,24 +1,34 @@
 import {StyleSheet, Text, View} from 'react-native';
 import {SvgTimeDot} from '../assets/calendarIcons/SvgTimeDot';
 import {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {getCurrentTime} from '../redux/action';
 
-export const AgendaTimeLine = () => {
+export const AgendaTimeLine = ({lineTopNumber}) => {
   const [currentTime, setCurrentTime] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const time = setInterval(function () {
       const date = new Date();
       const returnTimeString = () => {
         return `${date.getHours() + 3}:${
-          date.getMinutes() < 2 ? `0${date.getMinutes()}` : date.getMinutes()
+          date.getMinutes().toString().length < 2
+            ? `0${date.getMinutes()}`
+            : date.getMinutes()
         }`;
       };
-      setCurrentTime(returnTimeString);
+      dispatch(getCurrentTime(returnTimeString()));
+      setCurrentTime(returnTimeString());
     }, 1000);
-  }, []);
+  }, [currentTime]);
 
   return (
-    <View style={styles.currentTimeLineContainer}>
+    <View
+      style={[
+        styles.currentTimeLineContainer,
+        lineTopNumber && {top: lineTopNumber},
+      ]}>
       <Text style={styles.currentTime}>{currentTime}</Text>
       <View style={styles.currentLine}>
         <SvgTimeDot />

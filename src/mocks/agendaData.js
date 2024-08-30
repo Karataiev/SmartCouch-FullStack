@@ -21,6 +21,20 @@ export const agendaData = [
         timeOfTraining: '15:00-16:00',
         status: 'Триває',
       },
+      {
+        typeOfTraining: 'GROUP',
+        nameOfTraining: 'Gym',
+        nameOfClient: 'Karataiev Ihor',
+        timeOfTraining: '15:00-16:00',
+        status: 'Триває',
+      },
+      {
+        typeOfTraining: 'GROUP',
+        nameOfTraining: 'Gym',
+        nameOfClient: 'Karataiev Ihor',
+        timeOfTraining: '15:00-16:00',
+        status: 'Триває',
+      },
     ],
   },
   {

@@ -17,6 +17,7 @@ import {SvgBell} from '../assets/calendarIcons/SvgBell';
 import {useEffect, useState} from 'react';
 import {SvgArrowUp} from '../assets/calendarIcons/SvgArrowUp';
 import {SvgArrowDown} from '../assets/calendarIcons/SvgArrowDown';
+import {defaultLocaleConfig, monthArray} from '../helper/localeConfig';
 
 if (
   Platform.OS === 'android' &&
@@ -25,21 +26,7 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const monthArray = [
-  'Січень',
-  'Лютий',
-  'Березень',
-  'Квітень',
-  'Травень',
-  'Червень',
-  'Липень',
-  'Серпень',
-  'Вересень',
-  'Жовтень',
-  'Листопад',
-  'Грудень',
-];
-const daysArray = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
+defaultLocaleConfig('en');
 
 export const PlanScreenCalendar = () => {
   const ITEMS = agendaItems;
@@ -48,7 +35,7 @@ export const PlanScreenCalendar = () => {
   const [isOpenFullCalendar, setIsOpenFullCalendar] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(monthArray[data.getMonth()]);
   const [currentYear, setCurrentYear] = useState(data.getFullYear());
-  const [calendarList, setCalendarList] = useState();
+
   // const currentDayValue = data.getDate();
   // setCurrentMonth(monthArray[data.getMonth()]);
   // setCurrentYear(data.getFullYear());
@@ -167,7 +154,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#424242',
     borderRadius: 50,
   },
-
   weekCalendarTheme: {
     calendarBackground: 'transparent',
     textDayHeaderFontSize: 12,
@@ -182,7 +168,6 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
     },
   },
-
   monthCalendarTheme: {
     calendarBackground: 'transparent',
     textDayHeaderFontSize: 15,

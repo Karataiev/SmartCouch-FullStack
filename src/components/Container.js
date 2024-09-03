@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    // paddingHorizontal: 20,
     backgroundColor: '#1C1C1C',
   },
 });

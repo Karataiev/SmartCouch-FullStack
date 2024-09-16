@@ -1,10 +1,9 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
 import {ClientsTabScreen} from '../screens/ClientsTabScreen';
 import {PlanTabScreen} from '../screens/PlanTabScreen';
-import {ClientsProfileScreen} from '../screens/ClientsProfileScreen';
 import {createStackNavigator} from '@react-navigation/stack';
 import {TabNavigator} from './TabNavigator';
+import {ProfileTabScreen} from '../screens/ProfileTabScreen';
+import {CreateClientScreen} from '../screens/CreateClientScreen';
 
 export const StackNavigator = () => {
   const Stack = createStackNavigator();
@@ -13,9 +12,8 @@ export const StackNavigator = () => {
       <Stack.Screen name="TabBar" component={TabNavigator} />
       <Stack.Screen name="Home" component={ClientsTabScreen} />
       <Stack.Screen name="Plan" component={PlanTabScreen} />
-      <Stack.Screen name="Profile" component={ClientsProfileScreen} />
+      <Stack.Screen name="Profile" component={ProfileTabScreen} />
+      <Stack.Screen name="CreateClientScreen" component={CreateClientScreen} />
     </Stack.Navigator>
   );
 };
-
-const styles = StyleSheet.create({});

@@ -2,12 +2,19 @@ import {
   ADD_CLIENT,
   GET_CURRENT_TIME,
   GET_STATUS_BAR_BACKGROUND,
+  ADD_CONNECTION_METHOD,
+  REMOVE_CONNECTION_METHOD,
+  CREATE_NEW_CLIENTS,
+  TOGGLE_CREATE_CLIENT_BTN,
 } from './action';
 
 const defaultState = {
   statusBarBackground: '#292929',
   currentTime: `${new Date().getHours()}:${new Date().getMinutes()}`,
   clientsData: [],
+  connectionMethods: [],
+  clients: [],
+  isCreateClientBtn: false,
 };
 
 export const reducer = (state = defaultState, action) => {
@@ -20,6 +27,26 @@ export const reducer = (state = defaultState, action) => {
       return {
         ...state,
         statusBarBackground: action.payload,
+      };
+    case ADD_CONNECTION_METHOD:
+      return {
+        ...state,
+        connectionMethods: [...state.connectionMethods, action.payload],
+      };
+    case REMOVE_CONNECTION_METHOD:
+      return {
+        ...state,
+        connectionMethods: [...action.payload],
+      };
+    case CREATE_NEW_CLIENTS:
+      return {
+        ...state,
+        clients: [...state.clients, action.payload],
+      };
+    case TOGGLE_CREATE_CLIENT_BTN:
+      return {
+        ...state,
+        isCreateClientBtn: action.payload,
       };
 
     default:

@@ -3,7 +3,11 @@ import React from 'react';
 import {HeaderForScreens} from './HeaderForScreens';
 import {SvgPlus} from '../assets/tabIcons/SvgPlus';
 
-export const ClientsEmptyComponent = () => {
+export const ClientsEmptyComponent = ({navigation}) => {
+  const createNewClientBtn = () => {
+    navigation.navigate('CreateClientScreen');
+  };
+
   return (
     <View style={styles.container}>
       <HeaderForScreens>Клієнти</HeaderForScreens>
@@ -11,14 +15,16 @@ export const ClientsEmptyComponent = () => {
         <View style={styles.clientsLogoContainer}>
           <Image
             style={styles.clientsLogo}
-            source={require('../assets/png/emptyClientsPNG.png')}
+            source={require('../assets/pngIcons/emptyClientsPNG.png')}
           />
         </View>
         <Text style={styles.clientsEmptyMainText}>Список клієнтів пустий</Text>
         <Text style={styles.clientsEmptySecondaryText}>
           Створіть нового клієнта прямо зараз
         </Text>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => createNewClientBtn()}>
           <SvgPlus />
           <Text style={styles.buttonText}>Створити клієнта</Text>
         </TouchableOpacity>

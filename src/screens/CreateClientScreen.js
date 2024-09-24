@@ -16,6 +16,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {createNewClients} from '../redux/action';
 import {ChooseConnectionMethod} from '../components/ChooseConnectionMethod';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
+import {TextInputMask} from 'react-native-masked-text';
 
 export const CreateClientScreen = ({navigation}) => {
   const [name, setName] = useState('');
@@ -26,9 +27,9 @@ export const CreateClientScreen = ({navigation}) => {
   const [levelOfPhysical, setLevelOfPhysical] = useState('');
   const [notes, setNotes] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isActiveSubmitBtn, setIsActiveSubmitBtn] = useState(false);
 
   const connectionMethods = useSelector(state => state.connectionMethods);
-  const clientsData = useSelector(state => state.clients);
   const dispatch = useDispatch();
 
   const targetPlaceholder = 'Цілі та основні побажання';
@@ -38,30 +39,54 @@ export const CreateClientScreen = ({navigation}) => {
   const placeholderStyle = '#A1A1A1';
 
   useEffect(() => {
-    console.log('clientsData', clientsData);
-  }, [clientsData]);
+    if (name.length > 0 || surname.length > 0 || number.length > 0) {
+      setIsActiveSubmitBtn(true);
+    } else {
+      setIsActiveSubmitBtn(false);
+    }
+  }, [name, surname, number]);
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
 
   const handleSubmit = () => {
-    dispatch(
-      createNewClients({
-        client: {
-          name: name,
-          surname: surname,
-          number: number,
-          link: [...connectionMethods],
-        },
-        clientsCharacteristics: {
-          targetAndWishes: targetAndWishes,
-          stateOfHealth: stateOfHealth,
-          levelOfPhysical: levelOfPhysical,
-          notes: notes,
-        },
-      }),
-    );
+    if (isActiveSubmitBtn) {
+      dispatch(
+        createNewClients({
+          client: {
+            name: name,
+            surname: surname,
+            number: number,
+            link: [...connectionMethods],
+          },
+          clientsCharacteristics: {
+            targetAndWishes: targetAndWishes,
+            stateOfHealth: stateOfHealth,
+            levelOfPhysical: levelOfPhysical,
+            notes: notes,
+          },
+        }),
+      );
+
+      navigation.navigate('ClientsProfileScreen');
+    }
+  };
+
+  const handleFocusNumber = () => {
+    if (!number) {
+      setNumber('+38 0');
+    } else {
+      setNumber(number);
+    }
+  };
+
+  const handleOutNumber = () => {
+    if (number.length > 5) {
+      setNumber(number);
+    } else {
+      setNumber('');
+    }
   };
 
   return (
@@ -86,13 +111,20 @@ export const CreateClientScreen = ({navigation}) => {
             placeholder="Прізвище"
             placeholderTextColor="white"
           />
-          <TextInput
+          <TextInputMask
+            type={'custom'}
+            options={{
+              mask: '+38 0** *** ** **',
+            }}
             value={number}
             onChangeText={setNumber}
+            onFocus={() => handleFocusNumber()}
+            onBlur={() => handleOutNumber()}
             style={styles.input}
             placeholder="Телефон"
             placeholderTextColor="white"
             keyboardType="numeric"
+            maxLength={17}
           />
           {connectionMethods &&
             connectionMethods.map(el => (
@@ -151,9 +183,19 @@ export const CreateClientScreen = ({navigation}) => {
 
         <HideWithKeyboard>
           <TouchableOpacity
-            style={styles.submitBtn}
+            disabled={!isActiveSubmitBtn}
+            style={[
+              styles.submitBtn,
+              !isActiveSubmitBtn && {backgroundColor: '#363636'},
+            ]}
             onPress={() => handleSubmit()}>
-            <Text style={styles.submitBtnTitle}>Створити клієнта</Text>
+            <Text
+              style={[
+                styles.submitBtnTitle,
+                !isActiveSubmitBtn && {color: '#A1A1A1'},
+              ]}>
+              Створити клієнта
+            </Text>
           </TouchableOpacity>
         </HideWithKeyboard>
 
@@ -169,7 +211,7 @@ export const CreateClientScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#111111',
+    backgroundColor: '#232323',
     paddingHorizontal: 20,
   },
   formsContainer: {
@@ -214,7 +256,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: 'black',
   },
-
   connectionInputBlock: {
     display: 'flex',
     boxSizing: 'border-box',

@@ -5,6 +5,7 @@ export const ADD_CONNECTION_METHOD = 'ADD_CONNECTION_METHOD';
 export const REMOVE_CONNECTION_METHOD = 'REMOVE_CONNECTION_METHOD';
 export const CREATE_NEW_CLIENTS = 'CREATE_NEW_CLIENTS';
 export const TOGGLE_CREATE_CLIENT_BTN = 'TOGGLE_CREATE_CLIENT_BTN';
+export const REMOVE_LAST_CLIENT = 'REMOVE_LAST_CLIENT';
 
 export const getCurrentTime = payload => {
   return {type: GET_CURRENT_TIME, payload: payload};
@@ -32,4 +33,8 @@ export const createNewClients = payload => {
 
 export const toggleCreateClientBtn = payload => {
   return {type: TOGGLE_CREATE_CLIENT_BTN, payload: payload};
+};
+
+export const removeLastClient = payload => {
+  return {type: REMOVE_LAST_CLIENT, payload: payload};
 };

@@ -6,6 +6,7 @@ import {
   REMOVE_CONNECTION_METHOD,
   CREATE_NEW_CLIENTS,
   TOGGLE_CREATE_CLIENT_BTN,
+  REMOVE_LAST_CLIENT,
 } from './action';
 
 const defaultState = {
@@ -47,6 +48,11 @@ export const reducer = (state = defaultState, action) => {
       return {
         ...state,
         isCreateClientBtn: action.payload,
+      };
+    case REMOVE_LAST_CLIENT:
+      return {
+        ...state,
+        clients: [...action.payload],
       };
 
     default:

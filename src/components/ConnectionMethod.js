@@ -2,7 +2,7 @@ import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {addConnectionMethod} from '../redux/action';
 
-export const ConnectionMethod = ({addingStyle, icon, title, hideModal}) => {
+export const ConnectionMethod = ({icon, title, hideModal}) => {
   const dispatch = useDispatch();
   const connectionMethods = useSelector(state => state.connectionMethods);
 
@@ -22,7 +22,7 @@ export const ConnectionMethod = ({addingStyle, icon, title, hideModal}) => {
 
   return (
     <TouchableOpacity
-      style={[styles.typeOfConnection, addingStyle && styles.topDistance]}
+      style={styles.typeOfConnection}
       onPress={() => createConnectionMethod()}>
       {icon}
       <Text style={styles.title}>{title}</Text>
@@ -34,18 +34,19 @@ const styles = StyleSheet.create({
   typeOfConnection: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    marginTop: 16,
-    gap: 8,
+    width: '100%',
+    gap: 12,
+    backgroundColor: '#3D3D3D',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
   },
   title: {
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 18,
     color: 'white',
-  },
-  topDistance: {
-    marginTop: 30,
   },
 });

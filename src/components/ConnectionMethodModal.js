@@ -4,7 +4,6 @@ import {SvgInstagram} from '../assets/svgIcons/SvgInstagram';
 import {SvgTelegram} from '../assets/svgIcons/SvgTelegram';
 import {SvgViber} from '../assets/svgIcons/SvgViber';
 import {SvgWhatsapp} from '../assets/svgIcons/SvgWhatsapp';
-import {SvgModalLine} from '../assets/svgIcons/SvgModalLine';
 import {ConnectionMethod} from './ConnectionMethod';
 
 export const ConnectionMethodModal = ({visible, hideModal}) => {
@@ -22,28 +21,29 @@ export const ConnectionMethodModal = ({visible, hideModal}) => {
         activeOpacity={1}
       />
       <View style={styles.connectionModal}>
-        <SvgModalLine />
-        <ConnectionMethod
-          addingStyle={true}
-          icon={<SvgInstagram />}
-          title="Instagram"
-          hideModal={() => hideModal(false)}
-        />
-        <ConnectionMethod
-          icon={<SvgTelegram />}
-          title="Telegram"
-          hideModal={() => hideModal(false)}
-        />
-        <ConnectionMethod
-          icon={<SvgViber />}
-          title="Viber"
-          hideModal={() => hideModal(false)}
-        />
-        <ConnectionMethod
-          icon={<SvgWhatsapp />}
-          title="WhatsApp"
-          hideModal={() => hideModal(false)}
-        />
+        <Text style={styles.connectionModalTitle}>Оберіть спосіб звʼязку</Text>
+        <View style={styles.connectionMethodContainer}>
+          <ConnectionMethod
+            icon={<SvgInstagram />}
+            title="Instagram"
+            hideModal={() => hideModal(false)}
+          />
+          <ConnectionMethod
+            icon={<SvgTelegram />}
+            title="Telegram"
+            hideModal={() => hideModal(false)}
+          />
+          <ConnectionMethod
+            icon={<SvgViber />}
+            title="Viber"
+            hideModal={() => hideModal(false)}
+          />
+          <ConnectionMethod
+            icon={<SvgWhatsapp />}
+            title="WhatsApp"
+            hideModal={() => hideModal(false)}
+          />
+        </View>
       </View>
     </Modal>
   );
@@ -52,14 +52,27 @@ export const ConnectionMethodModal = ({visible, hideModal}) => {
 const styles = StyleSheet.create({
   connectionModal: {
     display: 'flex',
-    flex: 0.3,
+    // flex: 0.4,
     width: '100%',
     marginTop: 'auto',
-    paddingTop: 20,
+    paddingTop: 38,
+    paddingBottom: 40,
+    paddingHorizontal: 20,
     alignItems: 'center',
     backgroundColor: '#292929',
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
+  },
+  connectionModalTitle: {
+    fontSize: 20,
+    lineHeight: 24,
+    fontWeight: '700',
+    color: 'white',
+  },
+  connectionMethodContainer: {
+    width: '100%',
+    paddingTop: 39,
+    gap: 8,
   },
   outsideOfModal: {
     flex: 0.7,

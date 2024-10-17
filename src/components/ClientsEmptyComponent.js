@@ -1,4 +1,11 @@
-import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  StatusBar,
+} from 'react-native';
 import React from 'react';
 import {HeaderForScreens} from './HeaderForScreens';
 import {SvgPlus} from '../assets/tabIcons/SvgPlus';
@@ -10,6 +17,7 @@ export const ClientsEmptyComponent = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor={'#232323'} />
       <HeaderForScreens>Клієнти</HeaderForScreens>
       <View style={styles.mainContent}>
         <View style={styles.clientsLogoContainer}>

@@ -1,4 +1,11 @@
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {SvgClientProgram} from '../assets/svgIcons/SvgClientProgram';
 import {SvgClientsParameters} from '../assets/svgIcons/SvgClientsParameters';
@@ -11,6 +18,7 @@ export const ClientsProfileScreen = ({navigation}) => {
   return (
     clientsArr.length !== 0 && (
       <View style={styles.container}>
+        <StatusBar backgroundColor={'#2E2E2E'} />
         <View style={styles.mainInfoContainer}>
           <HeaderWithBackButton
             navigation={navigation}

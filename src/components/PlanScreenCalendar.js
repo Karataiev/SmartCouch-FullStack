@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   LayoutAnimation,
   UIManager,
+  StatusBar,
 } from 'react-native';
 import {
   CalendarProvider,
@@ -77,6 +78,7 @@ export const PlanScreenCalendar = () => {
         styles.container,
         isOpenFullCalendar && styles.fullCalendarContainer,
       ]}>
+      <StatusBar backgroundColor={'#292929'} />
       <View style={styles.calendarHeader}>
         <TouchableOpacity
           style={styles.calendarButton}

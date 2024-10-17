@@ -1,7 +1,5 @@
 import {
-  ADD_CLIENT,
   GET_CURRENT_TIME,
-  GET_STATUS_BAR_BACKGROUND,
   ADD_CONNECTION_METHOD,
   REMOVE_CONNECTION_METHOD,
   CREATE_NEW_CLIENTS,
@@ -10,11 +8,94 @@ import {
 } from './action';
 
 const defaultState = {
-  statusBarBackground: '#292929',
   currentTime: `${new Date().getHours()}:${new Date().getMinutes()}`,
-  clientsData: [],
   connectionMethods: [],
-  clients: [],
+  clients: [
+    {
+      client: {
+        name: 'Ігор',
+        surname: 'Каратаєв',
+        number: '+ 38 099 123 55 06',
+        link: [],
+      },
+      clientsCharacteristics: {
+        targetAndWishes: 'targetAndWishes',
+        stateOfHealth: 'stateOfHealth',
+        levelOfPhysical: 'levelOfPhysical',
+        notes: 'notes',
+      },
+    },
+    {
+      client: {
+        name: 'Аліса',
+        surname: 'Рева',
+        number: '+ 38 099 123 55 06',
+        link: [],
+      },
+      clientsCharacteristics: {
+        targetAndWishes: 'targetAndWishes',
+        stateOfHealth: 'stateOfHealth',
+        levelOfPhysical: 'levelOfPhysical',
+        notes: 'notes',
+      },
+    },
+    {
+      client: {
+        name: 'Ваня',
+        surname: 'Гунько',
+        number: '+ 38 099 123 55 06',
+        link: [],
+      },
+      clientsCharacteristics: {
+        targetAndWishes: 'targetAndWishes',
+        stateOfHealth: 'stateOfHealth',
+        levelOfPhysical: 'levelOfPhysical',
+        notes: 'notes',
+      },
+    },
+    {
+      client: {
+        name: 'Рома',
+        surname: 'Мед',
+        number: '+ 38 099 123 55 06',
+        link: [],
+      },
+      clientsCharacteristics: {
+        targetAndWishes: 'targetAndWishes',
+        stateOfHealth: 'stateOfHealth',
+        levelOfPhysical: 'levelOfPhysical',
+        notes: 'notes',
+      },
+    },
+    {
+      client: {
+        name: 'Ваня',
+        surname: 'Гунько',
+        number: '+ 38 099 123 55 06',
+        link: [],
+      },
+      clientsCharacteristics: {
+        targetAndWishes: 'targetAndWishes',
+        stateOfHealth: 'stateOfHealth',
+        levelOfPhysical: 'levelOfPhysical',
+        notes: 'notes',
+      },
+    },
+    {
+      client: {
+        name: 'Аліса',
+        surname: 'Рева',
+        number: '+ 38 099 123 55 06',
+        link: [],
+      },
+      clientsCharacteristics: {
+        targetAndWishes: 'targetAndWishes',
+        stateOfHealth: 'stateOfHealth',
+        levelOfPhysical: 'levelOfPhysical',
+        notes: 'notes',
+      },
+    },
+  ],
   isCreateClientBtn: false,
 };
 
@@ -22,13 +103,6 @@ export const reducer = (state = defaultState, action) => {
   switch (action.type) {
     case GET_CURRENT_TIME:
       return {...state, currentTime: action.payload};
-    case ADD_CLIENT:
-      return {...state, clientsData: [...state.clientsData, action.payload]};
-    case GET_STATUS_BAR_BACKGROUND:
-      return {
-        ...state,
-        statusBarBackground: action.payload,
-      };
     case ADD_CONNECTION_METHOD:
       return {
         ...state,

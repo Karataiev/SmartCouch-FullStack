@@ -1,24 +1,14 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  StatusBar,
-} from 'react-native';
+import {StyleSheet, Text, View, Image, StatusBar} from 'react-native';
 import React from 'react';
 import {HeaderForScreens} from './HeaderForScreens';
-import {SvgPlus} from '../assets/tabIcons/SvgPlus';
 
 export const ClientsEmptyComponent = ({navigation}) => {
-  const createNewClientBtn = () => {
-    navigation.navigate('CreateClientScreen');
-  };
-
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={'#232323'} />
-      <HeaderForScreens>Клієнти</HeaderForScreens>
+      <HeaderForScreens navigation={navigation} addBtn={true}>
+        Клієнти
+      </HeaderForScreens>
       <View style={styles.mainContent}>
         <View style={styles.clientsLogoContainer}>
           <Image
@@ -30,12 +20,6 @@ export const ClientsEmptyComponent = ({navigation}) => {
         <Text style={styles.clientsEmptySecondaryText}>
           Створіть нового клієнта прямо зараз
         </Text>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => createNewClientBtn()}>
-          <SvgPlus />
-          <Text style={styles.buttonText}>Створити клієнта</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
@@ -75,23 +59,5 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 20,
     color: '#A1A1A1',
-  },
-  button: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 28,
-    paddingVertical: 18,
-    width: '100%',
-    backgroundColor: '#FFFF65',
-    borderRadius: 100,
-    gap: 6,
-  },
-  buttonText: {
-    fontSize: 17,
-    lineHeight: 20,
-    fontWeight: 'bold',
-    color: 'black',
   },
 });

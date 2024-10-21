@@ -1,20 +1,12 @@
-import {
-  FlatList,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {SvgAddBtn} from '../assets/svgIcons/SvgAddBtn';
+import {StatusBar, StyleSheet, Text, TextInput, View} from 'react-native';
 import {SvgSearch} from '../assets/svgIcons/SvgSearch';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {useSelector} from 'react-redux';
 import {ClientList} from './ClientList';
+import {HeaderForScreens} from './HeaderForScreens';
 
-export const ClientsListComponent = () => {
-  const [value, setValue] = useState('');
+export const ClientsListComponent = ({navigation}) => {
+  const [searchValue, setSearchValue] = useState('');
   const clients = useSelector(state => state.clients);
 
   const sortByAlphabet = clients.sort((a, b) => {
@@ -28,12 +20,12 @@ export const ClientsListComponent = () => {
   });
 
   const searchClient = sortByAlphabet.filter(el => {
-    if (!value) {
+    if (!searchValue) {
       return el;
     } else {
       return (
-        el.client.surname.toLowerCase().includes(value) ||
-        el.client.surname.toUpperCase().includes(value)
+        el.client.surname.toLowerCase().includes(searchValue.toLowerCase()) ||
+        el.client.name.toLowerCase().includes(searchValue.toLowerCase())
       );
     }
   });
@@ -42,25 +34,22 @@ export const ClientsListComponent = () => {
     <View style={styles.container}>
       <StatusBar backgroundColor={'#232323'} />
 
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Клієнти</Text>
-        <TouchableOpacity style={styles.headerAddBtn}>
-          <SvgAddBtn />
-        </TouchableOpacity>
-      </View>
+      <HeaderForScreens navigation={navigation} addBtn={true}>
+        Клієнти
+      </HeaderForScreens>
 
       <View style={styles.searchContainer}>
         <SvgSearch />
         <TextInput
           style={styles.searchInput}
-          value={value}
-          onChangeText={setValue}
+          value={searchValue}
+          onChangeText={setSearchValue}
           placeholder="Пошук за ПІБ"
           placeholderTextColor={'#A1A1A1'}
         />
       </View>
 
-      <ClientList items={searchClient} />
+      <ClientList items={searchClient} navigation={navigation} />
     </View>
   );
 };
@@ -84,11 +73,6 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     fontWeight: '700',
     color: 'white',
-  },
-  headerAddBtn: {
-    padding: 12,
-    backgroundColor: 'white',
-    borderRadius: 200,
   },
   searchContainer: {
     display: 'flex',

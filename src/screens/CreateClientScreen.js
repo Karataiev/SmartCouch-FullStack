@@ -13,7 +13,7 @@ import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {SvgConnectionMethod} from '../assets/svgIcons/SvgConnectionMethod';
 import {ConnectionMethodModal} from '../components/ConnectionMethodModal';
 import {useDispatch, useSelector} from 'react-redux';
-import {createNewClients} from '../redux/action';
+import {createNewClients, removeConnectionMethod} from '../redux/action';
 import {ChooseConnectionMethod} from '../components/ChooseConnectionMethod';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
 import {TextInputMask} from 'react-native-masked-text';
@@ -39,11 +39,12 @@ export const CreateClientScreen = ({navigation}) => {
   const placeholderStyle = '#A1A1A1';
 
   useEffect(() => {
-    if (name.length > 0 || surname.length > 0 || number.length > 0) {
+    if (name.length > 0 && surname.length > 0 && number.length > 0) {
       setIsActiveSubmitBtn(true);
     } else {
       setIsActiveSubmitBtn(false);
     }
+    dispatch(removeConnectionMethod([]));
   }, [name, surname, number]);
 
   const toggleModal = () => {
@@ -69,7 +70,9 @@ export const CreateClientScreen = ({navigation}) => {
         }),
       );
 
-      navigation.navigate('ClientsProfileScreen');
+      navigation.navigate('ClientsProfileScreen', {
+        itemData: {client: {name: name, number: number, surname: surname}},
+      });
     }
   };
 

@@ -1,25 +1,19 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SvgBackBtn} from '../assets/svgIcons/SvgBackBtn';
 import {SvgConfigBtn} from '../assets/svgIcons/SvgConfigBtn';
-import {useDispatch, useSelector} from 'react-redux';
-import {removeLastClient} from '../redux/action';
 
 export const HeaderWithBackButton = ({
   children,
   navigation,
   configBtn,
-  editClientInfo,
+  goHome,
 }) => {
-  const dispatch = useDispatch();
-  const clientsArr = useSelector(state => state.clients);
-
   const handleBackBtn = () => {
-    if (editClientInfo === true) {
-      const newClientsArr = clientsArr.slice(0, -1);
-      dispatch(removeLastClient(newClientsArr));
+    if (goHome === true) {
+      navigation.navigate('Clients');
+    } else {
+      navigation.goBack();
     }
-
-    navigation.goBack();
   };
 
   return (

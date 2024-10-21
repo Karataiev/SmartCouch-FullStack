@@ -4,14 +4,14 @@ import {ClientsListComponent} from '../components/ClientsListComponent';
 import {useSelector} from 'react-redux';
 
 export const ClientsTabScreen = ({navigation}) => {
-  const clientsState = useSelector(state => state.clientsData);
+  const clientsState = useSelector(state => state.clients);
 
   return (
     <View style={styles.container}>
-      {clientsState ? (
+      {clientsState.length === 0 ? (
         <ClientsEmptyComponent navigation={navigation} />
       ) : (
-        <ClientsListComponent />
+        <ClientsListComponent navigation={navigation} />
       )}
     </View>
   );

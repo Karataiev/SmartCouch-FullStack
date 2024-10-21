@@ -2,10 +2,9 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SvgArrowRight} from '../assets/svgIcons/SvgArrowRight';
 import {SvgPhone} from '../assets/svgIcons/SvgPhone';
 import {ScrollView} from 'react-native-gesture-handler';
-import {UA_ALPHABET} from '../helper/uaAlphabet';
 import {useEffect, useState} from 'react';
 
-export const ClientList = ({items}) => {
+export const ClientList = ({items, navigation}) => {
   const [letters, setLetters] = useState([]);
 
   useEffect(() => {
@@ -15,7 +14,13 @@ export const ClientList = ({items}) => {
     });
     const uniqueArr = [...new Set(getEveryItemFirstLetters)];
     setLetters(uniqueArr);
-  }, []);
+  }, [items]);
+
+  const handlePressHandleItem = item => {
+    navigation.navigate('ClientsProfileScreen', {
+      itemData: item,
+    });
+  };
 
   return (
     <ScrollView style={styles.listContainer}>
@@ -28,7 +33,10 @@ export const ClientList = ({items}) => {
 
             if (le.toUpperCase() === firstLetter[0].toUpperCase()) {
               return (
-                <TouchableOpacity style={styles.openItemBtn} key={idx}>
+                <TouchableOpacity
+                  style={styles.openItemBtn}
+                  key={idx}
+                  onPress={() => handlePressHandleItem(item)}>
                   <View style={styles.clientInfo}>
                     <Text style={styles.name}>
                       {`${item.client.name} ${item.client.surname}`}

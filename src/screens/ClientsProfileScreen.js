@@ -10,10 +10,12 @@ import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {SvgClientProgram} from '../assets/svgIcons/SvgClientProgram';
 import {SvgClientsParameters} from '../assets/svgIcons/SvgClientsParameters';
 import {useSelector} from 'react-redux';
+import {useEffect} from 'react';
 
-export const ClientsProfileScreen = ({navigation}) => {
+export const ClientsProfileScreen = ({route, navigation}) => {
   const clientsArr = useSelector(state => state.clients);
-  const currentClient = clientsArr[clientsArr.length - 1];
+  const connectionMethods = useSelector(state => state.connectionMethods);
+  const {itemData} = route.params;
 
   return (
     clientsArr.length !== 0 && (
@@ -23,14 +25,24 @@ export const ClientsProfileScreen = ({navigation}) => {
           <HeaderWithBackButton
             navigation={navigation}
             configBtn={true}
-            editClientInfo={true}
+            goHome={true}
           />
 
           <View style={styles.mainInfoBlock}>
-            <Text style={styles.clientName}>{currentClient.client.name}</Text>
-            <Text style={styles.clientNumber}>
-              {currentClient.client.number}
+            <Text style={styles.clientName}>
+              {itemData.client.name} {itemData.client.surname}
             </Text>
+            <Text style={styles.clientNumber}>{itemData.client.number}</Text>
+
+            {connectionMethods && (
+              <View style={styles.connectionTypesContainer}>
+                {connectionMethods.map(el => (
+                  <TouchableOpacity style={styles.connectionType}>
+                    {el.icon}
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
 
             <TouchableOpacity style={styles.createNotesBtn}>
               <Text style={styles.createNotesTitle}>
@@ -95,6 +107,17 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     lineHeight: 21,
     color: '#FFFF65',
+  },
+  connectionTypesContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginTop: 20,
+    gap: 8,
+  },
+  connectionType: {
+    padding: 14,
+    backgroundColor: '#3D3D3D',
+    borderRadius: 200,
   },
   createNotesBtn: {
     marginTop: 28,

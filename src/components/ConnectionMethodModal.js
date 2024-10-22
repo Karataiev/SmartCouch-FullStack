@@ -52,7 +52,6 @@ export const ConnectionMethodModal = ({visible, hideModal}) => {
 const styles = StyleSheet.create({
   connectionModal: {
     display: 'flex',
-    // flex: 0.4,
     width: '100%',
     marginTop: 'auto',
     paddingTop: 38,
@@ -75,6 +74,6 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   outsideOfModal: {
-    flex: 0.7,
+    flex: 1,
   },
 });

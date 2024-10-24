@@ -1,22 +1,27 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {StyleSheet, View} from 'react-native';
+import {ClientsEmptyComponent} from '../components/ClientsEmptyComponent';
+import {ClientsListComponent} from '../components/ClientsListComponent';
+import {useSelector} from 'react-redux';
 
-export const ClientsTabScreen = () => {
-  const navigation = useNavigation();
+export const ClientsTabScreen = ({navigation}) => {
+  const clientsState = useSelector(state => state.clients);
 
-  const handlePress = () => {
-    navigation.navigate('Plan');
-  };
   return (
-    <View>
-      <Text>ClientsTabScreen</Text>
-
-      <TouchableOpacity onPress={() => handlePress()}>
-        <Text>Move to Plan screen</Text>
-      </TouchableOpacity>
+    <View style={styles.container}>
+      {clientsState.length === 0 ? (
+        <ClientsEmptyComponent navigation={navigation} />
+      ) : (
+        <ClientsListComponent navigation={navigation} />
+      )}
     </View>
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#232323',
+  },
+});

@@ -1,21 +1,23 @@
 import {LocaleConfig} from 'react-native-calendars';
 
+export const monthArray = [
+  'Січень',
+  'Лютий',
+  'Березень',
+  'Квітень',
+  'Травень',
+  'Червень',
+  'Липень',
+  'Серпень',
+  'Вересень',
+  'Жовтень',
+  'Листопад',
+  'Грудень',
+];
+
 export const defaultLocaleConfig = locale => {
   LocaleConfig.locales[locale] = {
-    monthNames: [
-      'Січень',
-      'Лютий',
-      'Березень',
-      'Квітень',
-      'Травень',
-      'Червень',
-      'Липень',
-      'Серпень',
-      'Вересень',
-      'Жовтень',
-      'Листопад',
-      'Грудень',
-    ],
+    monthNames: monthArray,
     monthNamesShort: [
       'Січ',
       'Лют',
@@ -31,13 +33,13 @@ export const defaultLocaleConfig = locale => {
       'Груд',
     ],
     dayNames: [
-      'Dimanche',
-      'Lundi',
-      'Mardi',
-      'Mercredi',
-      'Jeudi',
-      'Vendredi',
-      'Samedi',
+      'Понеділок',
+      'Вівторок',
+      'Середа',
+      'Четвер',
+      'Пятниця',
+      'Субота',
+      'Неділя',
     ],
     dayNamesShort: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'],
     today: 'Сьогодні',

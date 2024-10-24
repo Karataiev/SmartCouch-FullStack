@@ -16,19 +16,19 @@ export const AgendaItem = ({item}) => {
   const currentTimeArr = currentTime.split(':');
   const timeIdArr = item.timeId.split(':');
 
+  const getStyle = (title, icon, color) => {
+    setStatus(title);
+    setStatusIcon(icon);
+    setStatusStyle({color: color});
+  };
+
   useEffect(() => {
     if (currentTimeArr[0] > timeIdArr[0]) {
-      setStatus('Проведено');
-      setStatusIcon(<SvgDoneStatus />);
-      setStatusStyle({color: '#00CA8D'});
+      getStyle('Проведено', <SvgDoneStatus />, '#00CA8D');
     } else if (currentTimeArr[0] < timeIdArr[0]) {
-      setStatus('Очікується');
-      setStatusIcon(<SvgWaitingStatus />);
-      setStatusStyle({color: '#FFFFFF'});
+      getStyle('Очікується', <SvgWaitingStatus />, '#FFFFFF');
     } else {
-      setStatus('Триває');
-      setStatusIcon(<SvgInProgressStatus />);
-      setStatusStyle({color: '#F79605'});
+      getStyle('Триває', <SvgInProgressStatus />, '#F79605');
     }
   }, [currentTime]);
 

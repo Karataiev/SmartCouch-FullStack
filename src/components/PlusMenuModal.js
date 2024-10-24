@@ -1,0 +1,113 @@
+import {Modal, StyleSheet, TouchableOpacity, View, Text} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {isPlusMenuBtn} from '../redux/action';
+import {SvgClose} from '../assets/svgIcons/SvgClose';
+import {SvgCreateProgram} from '../assets/svgIcons/SvgCreateProgram';
+import {SvgTrainingRecord} from '../assets/svgIcons/SvgTrainingRecord';
+import {SvgCreateService} from '../assets/svgIcons/SvgCreateService';
+import {PlusMenuItem} from './PlusMenuItem';
+import {SvgClients} from '../assets/tabIcons/SvgClients';
+
+export const PlusMenuModal = ({navigation}) => {
+  const isBtnClick = useSelector(state => state.isPlusMenuBtn);
+  const dispatch = useDispatch();
+
+  const hideModal = way => {
+    dispatch(isPlusMenuBtn(!isBtnClick));
+    if (way) {
+      navigation.navigate(way);
+    }
+  };
+
+  return (
+    <Modal
+      transparent={true}
+      visible={isBtnClick}
+      onRequestClose={() => {
+        hideModal();
+      }}
+      animationType="slide">
+      <TouchableOpacity
+        style={styles.outsideOfModal}
+        onPress={() => hideModal()}
+        activeOpacity={1}
+      />
+
+      <View style={styles.containerMenuModal}>
+        <Text style={styles.menuModalHeader}>Створити</Text>
+        <View style={styles.menuItemsContainer}>
+          <PlusMenuItem
+            title={'Запис тренування'}
+            icon={<SvgTrainingRecord />}
+            onPress={() => hideModal()}
+          />
+          <PlusMenuItem
+            title={'Клієнта'}
+            icon={<SvgClients color={'white'} />}
+            onPress={() => hideModal('CreateClientScreen')}
+          />
+          <PlusMenuItem
+            title={'Програму'}
+            icon={<SvgCreateProgram />}
+            onPress={() => hideModal()}
+          />
+          <PlusMenuItem
+            title={'Послугу'}
+            icon={<SvgCreateService />}
+            onPress={() => hideModal()}
+          />
+        </View>
+
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={() => hideModal()}>
+          <SvgClose />
+        </TouchableOpacity>
+      </View>
+    </Modal>
+  );
+};
+
+const styles = StyleSheet.create({
+  outsideOfModal: {
+    flex: 1,
+  },
+  containerMenuModal: {
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 'auto',
+    paddingTop: 38,
+    paddingBottom: 10,
+    paddingHorizontal: 20,
+
+    backgroundColor: 'black',
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+  },
+  menuModalHeader: {
+    color: 'white',
+    fontSize: 22,
+    lineHeight: 26,
+    fontWeight: '700',
+  },
+  menuItemsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 12,
+    width: '100%',
+    gap: 15,
+  },
+  closeButton: {
+    backgroundColor: 'white',
+    bottom: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 56,
+    height: 56,
+    borderRadius: 50,
+    marginTop: 'auto',
+  },
+});

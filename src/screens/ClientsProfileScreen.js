@@ -7,10 +7,10 @@ import {
   View,
 } from 'react-native';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
-import {SvgClientProgram} from '../assets/svgIcons/SvgClientProgram';
+import {SvgCreateService} from '../assets/svgIcons/SvgCreateService';
 import {SvgClientsParameters} from '../assets/svgIcons/SvgClientsParameters';
+import {SvgCreateProgram} from '../assets/svgIcons/SvgCreateProgram';
 import {useSelector} from 'react-redux';
-import {useEffect} from 'react';
 
 export const ClientsProfileScreen = ({route, navigation}) => {
   const clientsArr = useSelector(state => state.clients);
@@ -53,7 +53,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
 
           <View style={styles.additionalInfoBlock}>
             <TouchableOpacity style={styles.additionalInfoBtn}>
-              <SvgClientProgram />
+              <SvgCreateService />
               <Text style={styles.additionalInfoTitle}>Інформація</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.additionalInfoBtn}>
@@ -61,7 +61,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
               <Text style={styles.additionalInfoTitle}>Заміри</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.additionalInfoBtn}>
-              <SvgClientProgram />
+              <SvgCreateProgram />
               <Text style={styles.additionalInfoTitle}>Програма</Text>
             </TouchableOpacity>
           </View>

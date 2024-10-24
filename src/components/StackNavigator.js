@@ -1,6 +1,5 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import {TabNavigator} from './TabNavigator';
-
 import {CreateClientScreen} from '../screens/CreateClientScreen';
 import {ClientsProfileScreen} from '../screens/ClientsProfileScreen';
 

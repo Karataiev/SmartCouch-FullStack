@@ -1,14 +1,22 @@
-import {Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Modal, StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {isPlusMenuBtn} from '../redux/action';
 import {SvgClose} from '../assets/svgIcons/SvgClose';
+import {SvgCreateProgram} from '../assets/svgIcons/SvgCreateProgram';
+import {SvgTrainingRecord} from '../assets/svgIcons/SvgTrainingRecord';
+import {SvgCreateService} from '../assets/svgIcons/SvgCreateService';
+import {PlusMenuItem} from './PlusMenuItem';
+import {SvgClients} from '../assets/tabIcons/SvgClients';
 
-export const PlusMenuModal = () => {
+export const PlusMenuModal = ({navigation}) => {
   const isBtnClick = useSelector(state => state.isPlusMenuBtn);
   const dispatch = useDispatch();
 
-  const hideModal = () => {
+  const hideModal = way => {
     dispatch(isPlusMenuBtn(!isBtnClick));
+    if (way) {
+      navigation.navigate(way);
+    }
   };
 
   return (
@@ -26,6 +34,30 @@ export const PlusMenuModal = () => {
       />
 
       <View style={styles.containerMenuModal}>
+        <Text style={styles.menuModalHeader}>Створити</Text>
+        <View style={styles.menuItemsContainer}>
+          <PlusMenuItem
+            title={'Запис тренування'}
+            icon={<SvgTrainingRecord />}
+            onPress={() => hideModal()}
+          />
+          <PlusMenuItem
+            title={'Клієнта'}
+            icon={<SvgClients color={'white'} />}
+            onPress={() => hideModal('CreateClientScreen')}
+          />
+          <PlusMenuItem
+            title={'Програму'}
+            icon={<SvgCreateProgram />}
+            onPress={() => hideModal()}
+          />
+          <PlusMenuItem
+            title={'Послугу'}
+            icon={<SvgCreateService />}
+            onPress={() => hideModal()}
+          />
+        </View>
+
         <TouchableOpacity
           style={styles.closeButton}
           onPress={() => hideModal()}>
@@ -43,7 +75,6 @@ const styles = StyleSheet.create({
   containerMenuModal: {
     flex: 1,
     display: 'flex',
-    justifyContent: 'flex-end',
     alignItems: 'center',
     width: '100%',
     marginTop: 'auto',
@@ -55,6 +86,20 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
   },
+  menuModalHeader: {
+    color: 'white',
+    fontSize: 22,
+    lineHeight: 26,
+    fontWeight: '700',
+  },
+  menuItemsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 12,
+    width: '100%',
+    gap: 15,
+  },
   closeButton: {
     backgroundColor: 'white',
     bottom: 10,
@@ -63,5 +108,6 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 50,
+    marginTop: 'auto',
   },
 });

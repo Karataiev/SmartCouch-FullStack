@@ -8,15 +8,16 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {SvgConnectionMethod} from '../assets/svgIcons/SvgConnectionMethod';
 import {ConnectionMethodModal} from '../components/ConnectionMethodModal';
 import {useDispatch, useSelector} from 'react-redux';
 import {createNewClients, removeConnectionMethod} from '../redux/action';
 import {ChooseConnectionMethod} from '../components/ChooseConnectionMethod';
-import HideWithKeyboard from 'react-native-hide-with-keyboard';
-import {TextInputMask} from 'react-native-masked-text';
+import {CustomPhoneInput} from '../components/CustomPhoneInput';
+import {CustomInput} from '../components/CustomInput';
+import {SafeInfoButton} from '../components/SafeInfoButton';
 
 export const CreateClientScreen = ({navigation}) => {
   const [name, setName] = useState('');
@@ -36,7 +37,6 @@ export const CreateClientScreen = ({navigation}) => {
   const healthPlaceholder = 'Стан здоровʼя';
   const levelPlaceholder = 'Рівень фізичної підготовки';
   const notesPlaceholder = 'Замітки';
-  const placeholderStyle = '#A1A1A1';
 
   useEffect(() => {
     if (name.length > 0 && surname.length > 0 && number.length > 0) {
@@ -76,22 +76,6 @@ export const CreateClientScreen = ({navigation}) => {
     }
   };
 
-  const handleFocusNumber = () => {
-    if (!number) {
-      setNumber('+38 0');
-    } else {
-      setNumber(number);
-    }
-  };
-
-  const handleOutNumber = () => {
-    if (number.length > 5) {
-      setNumber(number);
-    } else {
-      setNumber('');
-    }
-  };
-
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <ScrollView style={styles.container}>
@@ -114,20 +98,10 @@ export const CreateClientScreen = ({navigation}) => {
             placeholder="Прізвище"
             placeholderTextColor="white"
           />
-          <TextInputMask
-            type={'custom'}
-            options={{
-              mask: '+38 0** *** ** **',
-            }}
-            value={number}
-            onChangeText={setNumber}
-            onFocus={() => handleFocusNumber()}
-            onBlur={() => handleOutNumber()}
-            style={styles.input}
-            placeholder="Телефон"
-            placeholderTextColor="white"
-            keyboardType="numeric"
-            maxLength={17}
+          <CustomPhoneInput
+            placeholderTextColor={'white'}
+            number={number}
+            setNumber={setNumber}
           />
           {connectionMethods &&
             connectionMethods.map(el => (
@@ -141,66 +115,34 @@ export const CreateClientScreen = ({navigation}) => {
           </TouchableOpacity>
 
           <View style={styles.containerClientInfo}>
-            <View>
-              <Text style={styles.inputHeader}>{targetPlaceholder}</Text>
-              <TextInput
-                value={targetAndWishes}
-                onChangeText={setTargetAndWishes}
-                style={styles.input}
-                placeholder={targetPlaceholder}
-                placeholderTextColor={placeholderStyle}
-              />
-            </View>
-            <View>
-              <Text style={styles.inputHeader}>{healthPlaceholder}</Text>
-              <TextInput
-                value={stateOfHealth}
-                onChangeText={setStateOfHealth}
-                style={styles.input}
-                placeholder={healthPlaceholder}
-                placeholderTextColor={placeholderStyle}
-              />
-            </View>
-            <View>
-              <Text style={styles.inputHeader}>{levelPlaceholder}</Text>
-              <TextInput
-                value={levelOfPhysical}
-                onChangeText={setLevelOfPhysical}
-                style={styles.input}
-                placeholder={levelPlaceholder}
-                placeholderTextColor={placeholderStyle}
-              />
-            </View>
-            <View>
-              <Text style={styles.inputHeader}>{notesPlaceholder}</Text>
-              <TextInput
-                value={notes}
-                onChangeText={setNotes}
-                style={styles.input}
-                placeholder={notesPlaceholder}
-                placeholderTextColor={placeholderStyle}
-              />
-            </View>
+            <CustomInput
+              placeholder={targetPlaceholder}
+              value={targetAndWishes}
+              setValue={setTargetAndWishes}
+            />
+            <CustomInput
+              placeholder={healthPlaceholder}
+              value={stateOfHealth}
+              setValue={setStateOfHealth}
+            />
+            <CustomInput
+              placeholder={levelPlaceholder}
+              value={levelOfPhysical}
+              setValue={setLevelOfPhysical}
+            />
+            <CustomInput
+              placeholder={notesPlaceholder}
+              value={notes}
+              setValue={setNotes}
+            />
           </View>
         </View>
 
-        <HideWithKeyboard>
-          <TouchableOpacity
-            disabled={!isActiveSubmitBtn}
-            style={[
-              styles.submitBtn,
-              !isActiveSubmitBtn && {backgroundColor: '#363636'},
-            ]}
-            onPress={() => handleSubmit()}>
-            <Text
-              style={[
-                styles.submitBtnTitle,
-                !isActiveSubmitBtn && {color: '#A1A1A1'},
-              ]}>
-              Створити клієнта
-            </Text>
-          </TouchableOpacity>
-        </HideWithKeyboard>
+        <SafeInfoButton
+          handleSubmit={handleSubmit}
+          disabled={!isActiveSubmitBtn}>
+          Створити клієнта
+        </SafeInfoButton>
 
         <ConnectionMethodModal
           visible={isModalVisible}
@@ -216,6 +158,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#232323',
     paddingHorizontal: 20,
+    paddingTop: 8,
   },
   formsContainer: {
     paddingTop: 32,
@@ -243,21 +186,6 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     fontWeight: '700',
     color: 'white',
-  },
-  submitBtn: {
-    marginTop: 'auto',
-    marginBottom: 21,
-    width: '100%',
-    paddingVertical: 16,
-    backgroundColor: '#FFFF65',
-    borderRadius: 100,
-  },
-  submitBtnTitle: {
-    textAlign: 'center',
-    fontSize: 17,
-    lineHeight: 20,
-    fontWeight: '700',
-    color: 'black',
   },
   connectionInputBlock: {
     display: 'flex',

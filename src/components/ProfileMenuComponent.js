@@ -27,7 +27,7 @@ const profileMenuItemsData = [
   },
 ];
 
-export const ProfileMenuComponent = () => {
+export const ProfileMenuComponent = ({navigation}) => {
   return (
     <View style={styles.container}>
       {profileMenuItemsData.map(item => (
@@ -36,6 +36,7 @@ export const ProfileMenuComponent = () => {
           icon={item.icon}
           subscription={item.subscription || false}
           key={item.title}
+          navigation={navigation}
         />
       ))}
     </View>

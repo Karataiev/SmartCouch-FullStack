@@ -1,27 +1,66 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {SvgArrowRight} from '../assets/svgIcons/SvgArrowRight';
 import {SvgArrowRightYellow} from '../assets/svgIcons/SvgArrowRightYellow';
 
-export const ProfileMenuItem = ({title, icon, subscription}) => {
+export const ProfileMenuItem = ({title, icon, subscription, navigation}) => {
+  const handleClick = btn => {
+    switch (btn) {
+      case 'Мої дані':
+        navigation.navigate('MyData');
+        break;
+      case 'Аналітика':
+        navigation.navigate('Analytics');
+        break;
+      case 'Підписка':
+        navigation.navigate('Subscribe');
+        break;
+      case 'Підтримка':
+        navigation.navigate('Help');
+        break;
+      case 'Про нас':
+        navigation.navigate('AboutUs');
+        break;
+
+      default:
+        break;
+    }
+  };
+
   return (
-    <TouchableOpacity
-      style={[
-        styles.profileMenuItem,
-        title === 'Підписка' && styles.profileMenuItemSubscribe,
-      ]}>
-      <View
-        style={
-          title === 'Підписка'
-            ? styles.profileMenuTitleSubscriptionBlock
-            : styles.profileMenuTitleBlock
-        }>
-        {icon}
-        <Text style={styles.profileMenuItemTitle}>{title}</Text>
-        {subscription && (
-          <Text style={styles.subscription}>{subscription}</Text>
-        )}
-      </View>
-      {title !== 'Підписка' ? <SvgArrowRight /> : <SvgArrowRightYellow />}
+    <TouchableOpacity onPress={() => handleClick(title)}>
+      {title === 'Підписка' ? (
+        <ImageBackground
+          source={require('../assets/pngIcons/subscribeBtnIcon.png')}
+          resizeMode="cover"
+          imageStyle={{borderRadius: 10}}
+          style={[styles.profileMenuItem, {backgroundColor: '#2E2E2E'}]}>
+          <View style={styles.profileMenuTitleSubscriptionBlock}>
+            {icon}
+            <Text style={styles.profileMenuItemTitle}>{title}</Text>
+            {subscription && (
+              <Text style={styles.subscription}>{subscription}</Text>
+            )}
+          </View>
+          <SvgArrowRightYellow />
+        </ImageBackground>
+      ) : (
+        <View style={styles.profileMenuItem}>
+          <View style={styles.profileMenuTitleBlock}>
+            {icon}
+            <Text style={styles.profileMenuItemTitle}>{title}</Text>
+            {subscription && (
+              <Text style={styles.subscription}>{subscription}</Text>
+            )}
+          </View>
+          <SvgArrowRight />
+        </View>
+      )}
     </TouchableOpacity>
   );
 };
@@ -35,18 +74,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 16,
     borderRadius: 10,
-    width: '100%',
-    backgroundColor: '#2E2E2E',
-  },
-  profileMenuItemSubscribe: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 18,
-    paddingVertical: 16,
-    borderRadius: 10,
-    width: '100%',
     backgroundColor: '#2E2E2E',
   },
   profileMenuTitleBlock: {

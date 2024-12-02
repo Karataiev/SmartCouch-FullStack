@@ -2,11 +2,11 @@ import {StyleSheet, View} from 'react-native';
 import {ProfileHeaderComponent} from '../components/ProfileHeaderComponent';
 import {ProfileMenuComponent} from '../components/ProfileMenuComponent';
 
-export const ProfileTabScreen = () => {
+export const ProfileTabScreen = ({navigation}) => {
   return (
     <View style={styles.profileContainer}>
       <ProfileHeaderComponent />
-      <ProfileMenuComponent />
+      <ProfileMenuComponent navigation={navigation} />
     </View>
   );
 };

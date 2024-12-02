@@ -6,12 +6,22 @@ import {
   TOGGLE_CREATE_CLIENT_BTN,
   REMOVE_LAST_CLIENT,
   HANDLE_PLUS_MENU_BTN,
+  SAFE_USER_DATA,
 } from './action';
 
 const defaultState = {
   currentTime: `${new Date().getHours()}:${new Date().getMinutes()}`,
   connectionMethods: [],
   clients: [],
+  userData: {
+    name: '',
+    surname: '',
+    number: '',
+    email: '',
+    birthday: '',
+    experience: '',
+    city: '',
+  },
   isCreateClientBtn: false,
   isPlusMenuBtn: false,
 };
@@ -49,6 +59,11 @@ export const reducer = (state = defaultState, action) => {
       return {
         ...state,
         isPlusMenuBtn: action.payload,
+      };
+    case SAFE_USER_DATA:
+      return {
+        ...state,
+        userData: action.payload,
       };
 
     default:

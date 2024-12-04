@@ -7,6 +7,7 @@ export const HeaderWithBackButton = ({
   navigation,
   configBtn,
   goHome,
+  onPress,
 }) => {
   const handleBackBtn = () => {
     if (goHome === true) {
@@ -25,7 +26,7 @@ export const HeaderWithBackButton = ({
       {children && <Text style={styles.title}>{children}</Text>}
 
       {configBtn === true && (
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={onPress}>
           <SvgConfigBtn />
         </TouchableOpacity>
       )}

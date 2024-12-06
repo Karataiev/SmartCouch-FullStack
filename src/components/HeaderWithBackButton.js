@@ -1,13 +1,16 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SvgBackBtn} from '../assets/svgIcons/SvgBackBtn';
 import {SvgConfigBtn} from '../assets/svgIcons/SvgConfigBtn';
+import {SvgEditBtn} from '../assets/svgIcons/SvgEditBtn';
 
 export const HeaderWithBackButton = ({
   children,
   navigation,
   configBtn,
   goHome,
-  onPress,
+  onPressConfig,
+  onPressEdit,
+  editBtn,
 }) => {
   const handleBackBtn = () => {
     if (goHome === true) {
@@ -26,8 +29,14 @@ export const HeaderWithBackButton = ({
       {children && <Text style={styles.title}>{children}</Text>}
 
       {configBtn === true && (
-        <TouchableOpacity style={styles.button} onPress={onPress}>
+        <TouchableOpacity style={styles.button} onPress={onPressConfig}>
           <SvgConfigBtn />
+        </TouchableOpacity>
+      )}
+
+      {editBtn === true && (
+        <TouchableOpacity style={styles.button} onPress={onPressEdit}>
+          <SvgEditBtn />
         </TouchableOpacity>
       )}
     </View>
@@ -47,6 +56,7 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: '#FFFFFF1A',
     borderRadius: 200,
+    overflow: 'hidden',
     zIndex: 1,
   },
   title: {

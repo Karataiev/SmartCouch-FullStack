@@ -2,17 +2,40 @@ import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
 import {SvgRemoveItem} from '../assets/svgIcons/SvgRemoveItem';
 import {removeConnectionMethod} from '../redux/action';
 import {useDispatch, useSelector} from 'react-redux';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
-export const ChooseConnectionMethod = ({el}) => {
+export const ChooseConnectionMethod = ({el, setLinks}) => {
   const [connectionMethodsLink, setConnectionMethodsLink] = useState('');
   const connectionMethods = useSelector(state => state.connectionMethods);
+  const [setInstagramLink, setViberLink, setTelegramLink, setWhatsAppLink] =
+    setLinks;
   const dispatch = useDispatch();
 
   const handleRemoveBtn = el => {
     const newConnectionArr = connectionMethods.filter(elem => elem.type !== el);
     dispatch(removeConnectionMethod(newConnectionArr));
   };
+
+  useEffect(() => {
+    switch (el.type) {
+      case 'Instagram':
+        setInstagramLink({type: el.type, link: connectionMethodsLink});
+        break;
+      case 'Telegram':
+        setTelegramLink({type: el.type, link: connectionMethodsLink});
+        break;
+      case 'Viber':
+        setViberLink({type: el.type, link: connectionMethodsLink});
+        break;
+      case 'WhatsApp':
+        setWhatsAppLink({type: el.type, link: connectionMethodsLink});
+        break;
+
+      default:
+        break;
+    }
+  }, [connectionMethodsLink]);
+
   return (
     <View style={styles.connectionInputBlock}>
       <View style={styles.connectionIcon}>{el.icon}</View>

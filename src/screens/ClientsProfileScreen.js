@@ -9,10 +9,10 @@ import {
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {SvgCreateService} from '../assets/svgIcons/SvgCreateService';
 import {SvgClientsParameters} from '../assets/svgIcons/SvgClientsParameters';
-import {SvgCreateProgram} from '../assets/svgIcons/SvgCreateProgram';
 import {useSelector} from 'react-redux';
 import {useState} from 'react';
 import {ConfigModal} from '../components/ConfigModal';
+import {SvgProfile} from '../assets/tabIcons/SvgProfile';
 
 export const ClientsProfileScreen = ({route, navigation}) => {
   const clientsArr = useSelector(state => state.clients);
@@ -25,6 +25,12 @@ export const ClientsProfileScreen = ({route, navigation}) => {
     setIsToggleModal(!isToggleModal);
   };
 
+  const handleNavigate = screen => {
+    navigation.navigate(screen, {
+      itemData: itemData,
+    });
+  };
+
   return (
     clientsArr.length !== 0 && (
       <View style={styles.container}>
@@ -35,7 +41,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
               navigation={navigation}
               configBtn={true}
               goHome={true}
-              onPress={handleConfigBtn}
+              onPressConfig={handleConfigBtn}
             />
 
             <View style={styles.mainInfoBlock}>
@@ -62,17 +68,19 @@ export const ClientsProfileScreen = ({route, navigation}) => {
             </View>
 
             <View style={styles.additionalInfoBlock}>
+              <TouchableOpacity
+                style={styles.additionalInfoBtn}
+                onPress={() => handleNavigate('FullClientData')}>
+                <SvgProfile color={'white'} />
+                <Text style={styles.additionalInfoTitle}>Про клієнта</Text>
+              </TouchableOpacity>
               <TouchableOpacity style={styles.additionalInfoBtn}>
                 <SvgCreateService />
-                <Text style={styles.additionalInfoTitle}>Інформація</Text>
+                <Text style={styles.additionalInfoTitle}>Програма</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.additionalInfoBtn}>
                 <SvgClientsParameters />
                 <Text style={styles.additionalInfoTitle}>Заміри</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.additionalInfoBtn}>
-                <SvgCreateProgram />
-                <Text style={styles.additionalInfoTitle}>Програма</Text>
               </TouchableOpacity>
             </View>
           </View>

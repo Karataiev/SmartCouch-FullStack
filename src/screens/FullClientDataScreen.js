@@ -2,6 +2,7 @@ import {StatusBar, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {ClientDataComponent} from '../components/ClientDataComponent';
+import {ClientEditDataComponent} from '../components/ClientEditDataComponent';
 
 export const FullClientDataScreen = ({navigation, route}) => {
   const {itemData} = route.params;
@@ -21,7 +22,11 @@ export const FullClientDataScreen = ({navigation, route}) => {
         {isToggleEdit ? 'Редагування' : 'Дані клієнта'}
       </HeaderWithBackButton>
 
-      {isToggleEdit ? null : <ClientDataComponent itemData={itemData} />}
+      {isToggleEdit ? (
+        <ClientEditDataComponent itemData={itemData} />
+      ) : (
+        <ClientDataComponent itemData={itemData} />
+      )}
     </View>
   );
 };

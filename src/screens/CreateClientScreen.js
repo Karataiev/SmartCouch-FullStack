@@ -44,6 +44,23 @@ export const CreateClientScreen = ({navigation}) => {
   const levelPlaceholder = 'Рівень фізичної підготовки';
   const notesPlaceholder = 'Замітки';
 
+  const createClientDataObject = () => {
+    return {
+      client: {
+        name: name,
+        surname: surname,
+        number: number,
+        link: [instagramLink, telegramLink, viberLink, whatsAppLink],
+      },
+      clientsCharacteristics: {
+        targetAndWishes: targetAndWishes,
+        stateOfHealth: stateOfHealth,
+        levelOfPhysical: levelOfPhysical,
+        notes: notes,
+      },
+    };
+  };
+
   useEffect(() => {
     if (name.length > 0 && surname.length > 0 && number.length > 0) {
       setIsActiveSubmitBtn(true);
@@ -59,32 +76,10 @@ export const CreateClientScreen = ({navigation}) => {
 
   const handleSubmit = () => {
     if (isActiveSubmitBtn) {
-      dispatch(
-        createNewClients({
-          client: {
-            name: name,
-            surname: surname,
-            number: number,
-            link: [instagramLink, telegramLink, viberLink, whatsAppLink],
-          },
-          clientsCharacteristics: {
-            targetAndWishes: targetAndWishes,
-            stateOfHealth: stateOfHealth,
-            levelOfPhysical: levelOfPhysical,
-            notes: notes,
-          },
-        }),
-      );
+      dispatch(createNewClients(createClientDataObject()));
 
       navigation.navigate('ClientsProfileScreen', {
-        itemData: {
-          client: {
-            name: name,
-            number: number,
-            surname: surname,
-            link: [instagramLink, telegramLink, viberLink, whatsAppLink],
-          },
-        },
+        itemData: createClientDataObject(),
       });
     }
   };

@@ -1,3 +1,4 @@
+import {useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 export const ClientDataComponent = ({itemData}) => {
@@ -5,20 +6,24 @@ export const ClientDataComponent = ({itemData}) => {
   const connectionMethods = itemData.client.link;
   const clientsCharacteristics = itemData.clientsCharacteristics;
 
+  useEffect(() => {
+    console.log(itemData);
+  }, []);
+
   const clientSecondaryInfo = [
     {
       title: 'Цілі та основні побажання',
-      data: clientsCharacteristics?.targetAndWishes,
+      data: clientsCharacteristics?.targetAndWishes || '-',
     },
     {
       title: 'Стан здоровʼя (травми / протипоказання)',
-      data: clientsCharacteristics?.stateOfHealth,
+      data: clientsCharacteristics?.stateOfHealth || '-',
     },
     {
       title: 'Рівень фізичної підготовки',
-      data: clientsCharacteristics?.levelOfPhysical,
+      data: clientsCharacteristics?.levelOfPhysical || '-',
     },
-    {title: 'Замітки', data: clientsCharacteristics?.notes},
+    {title: 'Замітки', data: clientsCharacteristics?.notes || '-'},
   ];
 
   return (

@@ -30,6 +30,12 @@ export const CreateClientScreen = ({navigation}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isActiveSubmitBtn, setIsActiveSubmitBtn] = useState(false);
 
+  const defaultLinkState = {type: '', link: ''};
+  const [instagramLink, setInstagramLink] = useState(defaultLinkState);
+  const [telegramLink, setTelegramLink] = useState(defaultLinkState);
+  const [viberLink, setViberLink] = useState(defaultLinkState);
+  const [whatsAppLink, setWhatsAppLink] = useState(defaultLinkState);
+
   const connectionMethods = useSelector(state => state.connectionMethods);
   const dispatch = useDispatch();
 
@@ -59,7 +65,7 @@ export const CreateClientScreen = ({navigation}) => {
             name: name,
             surname: surname,
             number: number,
-            link: [...connectionMethods],
+            link: [instagramLink, telegramLink, viberLink, whatsAppLink],
           },
           clientsCharacteristics: {
             targetAndWishes: targetAndWishes,
@@ -71,7 +77,14 @@ export const CreateClientScreen = ({navigation}) => {
       );
 
       navigation.navigate('ClientsProfileScreen', {
-        itemData: {client: {name: name, number: number, surname: surname}},
+        itemData: {
+          client: {
+            name: name,
+            number: number,
+            surname: surname,
+            link: [instagramLink, telegramLink, viberLink, whatsAppLink],
+          },
+        },
       });
     }
   };
@@ -105,7 +118,16 @@ export const CreateClientScreen = ({navigation}) => {
           />
           {connectionMethods &&
             connectionMethods.map(el => (
-              <ChooseConnectionMethod el={el} key={el.type} />
+              <ChooseConnectionMethod
+                el={el}
+                key={el.type}
+                setLinks={[
+                  setInstagramLink,
+                  setViberLink,
+                  setTelegramLink,
+                  setWhatsAppLink,
+                ]}
+              />
             ))}
           <TouchableOpacity
             style={styles.addMethodBtn}

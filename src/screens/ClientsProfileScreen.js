@@ -9,71 +9,95 @@ import {
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {SvgCreateService} from '../assets/svgIcons/SvgCreateService';
 import {SvgClientsParameters} from '../assets/svgIcons/SvgClientsParameters';
-import {SvgCreateProgram} from '../assets/svgIcons/SvgCreateProgram';
 import {useSelector} from 'react-redux';
+import {useState} from 'react';
+import {ConfigModal} from '../components/ConfigModal';
+import {SvgProfile} from '../assets/tabIcons/SvgProfile';
 
 export const ClientsProfileScreen = ({route, navigation}) => {
   const clientsArr = useSelector(state => state.clients);
   const connectionMethods = useSelector(state => state.connectionMethods);
   const {itemData} = route.params;
 
+  const [isToggleModal, setIsToggleModal] = useState(false);
+
+  const handleConfigBtn = () => {
+    setIsToggleModal(!isToggleModal);
+  };
+
+  const handleNavigate = screen => {
+    navigation.navigate(screen, {
+      itemData: itemData,
+    });
+  };
+
   return (
     clientsArr.length !== 0 && (
       <View style={styles.container}>
-        <StatusBar backgroundColor={'#2E2E2E'} />
-        <View style={styles.mainInfoContainer}>
-          <HeaderWithBackButton
-            navigation={navigation}
-            configBtn={true}
-            goHome={true}
-          />
+        <View style={isToggleModal && styles.shadowContainer}>
+          <StatusBar backgroundColor={'#2E2E2E'} />
+          <View style={styles.mainInfoContainer}>
+            <HeaderWithBackButton
+              navigation={navigation}
+              configBtn={true}
+              goHome={true}
+              onPressConfig={handleConfigBtn}
+            />
 
-          <View style={styles.mainInfoBlock}>
-            <Text style={styles.clientName}>
-              {itemData.client.name} {itemData.client.surname}
-            </Text>
-            <Text style={styles.clientNumber}>{itemData.client.number}</Text>
-
-            {connectionMethods && (
-              <View style={styles.connectionTypesContainer}>
-                {connectionMethods.map(el => (
-                  <TouchableOpacity style={styles.connectionType}>
-                    {el.icon}
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-
-            <TouchableOpacity style={styles.createNotesBtn}>
-              <Text style={styles.createNotesTitle}>
-                Записати на тренування
+            <View style={styles.mainInfoBlock}>
+              <Text style={styles.clientName}>
+                {itemData.client.name} {itemData.client.surname}
               </Text>
-            </TouchableOpacity>
+              <Text style={styles.clientNumber}>{itemData.client.number}</Text>
+
+              {connectionMethods && (
+                <View style={styles.connectionTypesContainer}>
+                  {connectionMethods.map((el, idx) => (
+                    <TouchableOpacity style={styles.connectionType} key={idx}>
+                      {el.icon}
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+
+              <TouchableOpacity style={styles.createNotesBtn}>
+                <Text style={styles.createNotesTitle}>
+                  Записати на тренування
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.additionalInfoBlock}>
+              <TouchableOpacity
+                style={styles.additionalInfoBtn}
+                onPress={() => handleNavigate('FullClientData')}>
+                <SvgProfile color={'white'} />
+                <Text style={styles.additionalInfoTitle}>Про клієнта</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.additionalInfoBtn}>
+                <SvgCreateService />
+                <Text style={styles.additionalInfoTitle}>Програма</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.additionalInfoBtn}>
+                <SvgClientsParameters />
+                <Text style={styles.additionalInfoTitle}>Заміри</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
-          <View style={styles.additionalInfoBlock}>
-            <TouchableOpacity style={styles.additionalInfoBtn}>
-              <SvgCreateService />
-              <Text style={styles.additionalInfoTitle}>Інформація</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.additionalInfoBtn}>
-              <SvgClientsParameters />
-              <Text style={styles.additionalInfoTitle}>Заміри</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.additionalInfoBtn}>
-              <SvgCreateProgram />
-              <Text style={styles.additionalInfoTitle}>Програма</Text>
-            </TouchableOpacity>
-          </View>
+          {false ? (
+            <FlatList></FlatList>
+          ) : (
+            <Text style={styles.listOfNotesTitle}>
+              У клієнта ще не було записів
+            </Text>
+          )}
         </View>
 
-        {false ? (
-          <FlatList></FlatList>
-        ) : (
-          <Text style={styles.listOfNotesTitle}>
-            У клієнта ще не було записів
-          </Text>
-        )}
+        <ConfigModal
+          visible={isToggleModal}
+          hideModal={() => setIsToggleModal(false)}
+        />
       </View>
     )
   );
@@ -83,6 +107,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#232323',
+    position: 'relative',
+  },
+  shadowContainer: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    flex: 1,
+    backgroundColor: 'black',
+    opacity: 0.6,
+    width: '100%',
+    height: '100%',
   },
   mainInfoContainer: {
     paddingHorizontal: 20,

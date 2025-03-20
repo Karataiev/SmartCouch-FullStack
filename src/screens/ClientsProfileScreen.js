@@ -16,7 +16,6 @@ import {SvgProfile} from '../assets/tabIcons/SvgProfile';
 
 export const ClientsProfileScreen = ({route, navigation}) => {
   const clientsArr = useSelector(state => state.clients);
-  const connectionMethods = useSelector(state => state.connectionMethods);
   const {itemData} = route.params;
 
   const [isToggleModal, setIsToggleModal] = useState(false);
@@ -50,13 +49,18 @@ export const ClientsProfileScreen = ({route, navigation}) => {
               </Text>
               <Text style={styles.clientNumber}>{itemData.client.number}</Text>
 
-              {connectionMethods && (
+              {itemData.client.link && (
                 <View style={styles.connectionTypesContainer}>
-                  {connectionMethods.map((el, idx) => (
-                    <TouchableOpacity style={styles.connectionType} key={idx}>
-                      {el.icon}
-                    </TouchableOpacity>
-                  ))}
+                  {itemData.client.link.map(
+                    (el, idx) =>
+                      el.link.length !== 0 && (
+                        <TouchableOpacity
+                          style={styles.connectionType}
+                          key={idx}>
+                          {el.icon}
+                        </TouchableOpacity>
+                      ),
+                  )}
                 </View>
               )}
 

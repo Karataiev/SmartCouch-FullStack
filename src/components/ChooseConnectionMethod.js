@@ -1,34 +1,45 @@
 import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
 import {SvgRemoveItem} from '../assets/svgIcons/SvgRemoveItem';
-import {removeConnectionMethod} from '../redux/action';
-import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
+import {SvgInstagram} from '../assets/svgIcons/SvgInstagram';
+import {SvgTelegram} from '../assets/svgIcons/SvgTelegram';
+import {SvgViber} from '../assets/svgIcons/SvgViber';
+import {SvgWhatsapp} from '../assets/svgIcons/SvgWhatsapp';
 
-export const ChooseConnectionMethod = ({el, setLinks}) => {
+export const ChooseConnectionMethod = ({el, setLinks, handleRemoveBtn}) => {
   const [connectionMethodsLink, setConnectionMethodsLink] = useState('');
-  const connectionMethods = useSelector(state => state.connectionMethods);
   const [setInstagramLink, setViberLink, setTelegramLink, setWhatsAppLink] =
     setLinks;
-  const dispatch = useDispatch();
-
-  const handleRemoveBtn = el => {
-    const newConnectionArr = connectionMethods.filter(elem => elem.type !== el);
-    dispatch(removeConnectionMethod(newConnectionArr));
-  };
 
   useEffect(() => {
     switch (el.type) {
       case 'Instagram':
-        setInstagramLink({type: el.type, link: connectionMethodsLink});
+        setInstagramLink({
+          type: el.type,
+          link: connectionMethodsLink,
+          icon: <SvgInstagram />,
+        });
         break;
       case 'Telegram':
-        setTelegramLink({type: el.type, link: connectionMethodsLink});
+        setTelegramLink({
+          type: el.type,
+          link: connectionMethodsLink,
+          icon: <SvgTelegram />,
+        });
         break;
       case 'Viber':
-        setViberLink({type: el.type, link: connectionMethodsLink});
+        setViberLink({
+          type: el.type,
+          link: connectionMethodsLink,
+          icon: <SvgViber />,
+        });
         break;
       case 'WhatsApp':
-        setWhatsAppLink({type: el.type, link: connectionMethodsLink});
+        setWhatsAppLink({
+          type: el.type,
+          link: connectionMethodsLink,
+          icon: <SvgWhatsapp />,
+        });
         break;
 
       default:

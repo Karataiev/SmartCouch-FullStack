@@ -1,29 +1,10 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {addConnectionMethod} from '../redux/action';
 
-export const ConnectionMethod = ({icon, title, hideModal}) => {
-  const dispatch = useDispatch();
-  const connectionMethods = useSelector(state => state.connectionMethods);
-
-  const createConnectionMethod = () => {
-    const containElement = connectionMethods.find(el => el.type === title);
-
-    if (connectionMethods.length === 0 || !containElement) {
-      dispatch(
-        addConnectionMethod({
-          type: title,
-          icon: icon,
-        }),
-      );
-    }
-    hideModal();
-  };
-
+export const ConnectionMethod = ({icon, title, handleConnectionMethod}) => {
   return (
     <TouchableOpacity
       style={styles.typeOfConnection}
-      onPress={() => createConnectionMethod()}>
+      onPress={() => handleConnectionMethod(title, icon)}>
       {icon}
       <Text style={styles.title}>{title}</Text>
     </TouchableOpacity>

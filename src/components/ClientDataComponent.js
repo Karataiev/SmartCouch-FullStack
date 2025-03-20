@@ -1,14 +1,9 @@
-import {useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 export const ClientDataComponent = ({itemData}) => {
   const client = itemData.client;
   const connectionMethods = itemData.client.link;
   const clientsCharacteristics = itemData.clientsCharacteristics;
-
-  useEffect(() => {
-    console.log(itemData);
-  }, []);
 
   const clientSecondaryInfo = [
     {

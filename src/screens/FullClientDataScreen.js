@@ -23,7 +23,7 @@ export const FullClientDataScreen = ({navigation, route}) => {
       </HeaderWithBackButton>
 
       {isToggleEdit ? (
-        <ClientEditDataComponent itemData={itemData} />
+        <ClientEditDataComponent itemData={itemData} navigation={navigation} />
       ) : (
         <ClientDataComponent itemData={itemData} />
       )}

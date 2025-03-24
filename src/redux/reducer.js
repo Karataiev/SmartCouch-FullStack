@@ -5,6 +5,7 @@ import {
   REMOVE_LAST_CLIENT,
   HANDLE_PLUS_MENU_BTN,
   SAFE_USER_DATA,
+  UPDATE_CLIENTS_ARRAY,
 } from './action';
 
 const defaultState = {
@@ -31,6 +32,11 @@ export const reducer = (state = defaultState, action) => {
       return {
         ...state,
         clients: [...state.clients, action.payload],
+      };
+    case UPDATE_CLIENTS_ARRAY:
+      return {
+        ...state,
+        clients: [...action.payload],
       };
     case TOGGLE_CREATE_CLIENT_BTN:
       return {

@@ -12,10 +12,14 @@ import {CreateConnectionMethod} from './CreateConnectionMethod';
 import {ConnectionMethodModal} from './ConnectionMethodModal';
 import {SafeInfoButton} from './SafeInfoButton';
 import {ClientEditConnectionMethod} from './ClientEditConnectionMethod';
+import {useDispatch, useSelector} from 'react-redux';
+import {updateClientsArray} from '../redux/action';
 
-export const ClientEditDataComponent = ({itemData}) => {
+export const ClientEditDataComponent = ({itemData, navigation}) => {
   const client = itemData.client;
   const clientsCharacteristics = itemData.clientsCharacteristics;
+  const clientArray = useSelector(state => state.clients);
+  const dispatch = useDispatch();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isActiveSubmitBtn, setIsActiveSubmitBtn] = useState(false);
@@ -23,6 +27,8 @@ export const ClientEditDataComponent = ({itemData}) => {
   const [surname, setSurname] = useState(client.surname);
   const [number, setNumber] = useState(client.number);
   const [connectionMethods, setConnectionMethods] = useState([]);
+  const [prevConnectionMethods, setPrevConnectionMethods] = useState([]);
+
   const [targetAndWishes, setTargetAndWishes] = useState(
     clientsCharacteristics.targetAndWishes,
   );
@@ -34,22 +40,10 @@ export const ClientEditDataComponent = ({itemData}) => {
   );
   const [notes, setNotes] = useState(clientsCharacteristics.notes);
 
-  const checkConnectionMethodArraysChanges = connectionMethods => {
-    if (connectionMethods.length !== client.link.length) {
-      return true;
-    } else {
-      for (let i = 0; i < connectionMethods.length; i++) {
-        if (connectionMethods[i].link !== client.link[i].link) {
-          return true;
-        }
-      }
-      return false;
-    }
-  };
-
   useLayoutEffect(() => {
     const newConnectionArr = client.link.filter(el => el.link.length !== 0);
     setConnectionMethods([...newConnectionArr]);
+    setPrevConnectionMethods([...newConnectionArr]);
   }, []);
 
   useEffect(() => {
@@ -66,7 +60,7 @@ export const ClientEditDataComponent = ({itemData}) => {
       clientsCharacteristics.notes !== notes
     ) {
       setIsActiveSubmitBtn(true);
-    } else if (checkConnectionMethodArraysChanges(connectionMethods)) {
+    } else if (connectionMethods.length !== prevConnectionMethods.length) {
       setIsActiveSubmitBtn(true);
     } else {
       setIsActiveSubmitBtn(false);
@@ -100,14 +94,49 @@ export const ClientEditDataComponent = ({itemData}) => {
         {
           type: title,
           icon: icon,
+          link: '',
         },
       ]);
     }
     setIsModalVisible(false);
   };
 
+  const getConnectionMethodLink = (type, icon, value) => {
+    const index = connectionMethods.findIndex(el => el.type === type);
+    connectionMethods.splice(index, 1, {
+      type: type,
+      icon: icon,
+      link: value,
+    });
+
+    setConnectionMethods(connectionMethods);
+  };
+
   const handleSubmit = () => {
-    console.log('---------------', connectionMethods);
+    const clientDataObject = {
+      id: itemData.id,
+      client: {
+        name: name,
+        surname: surname,
+        number: number,
+        link: connectionMethods,
+      },
+      clientsCharacteristics: {
+        targetAndWishes: targetAndWishes,
+        stateOfHealth: stateOfHealth,
+        levelOfPhysical: levelOfPhysical,
+        notes: notes,
+      },
+    };
+
+    const clientIndex = clientArray.findIndex(el => el.id === itemData.id);
+    clientArray.splice(clientIndex, 1, clientDataObject);
+
+    dispatch(updateClientsArray(clientArray));
+
+    navigation.navigate('ClientsProfileScreen', {
+      itemData: clientDataObject,
+    });
   };
 
   return (
@@ -133,6 +162,8 @@ export const ClientEditDataComponent = ({itemData}) => {
                 el={el}
                 key={el.type}
                 handleRemoveBtn={handleRemoveBtn}
+                setIsActiveSubmitBtn={setIsActiveSubmitBtn}
+                getConnectionMethodLink={getConnectionMethodLink}
               />
             ) : null,
           )}

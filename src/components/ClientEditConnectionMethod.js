@@ -1,9 +1,23 @@
 import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
 import {SvgRemoveItem} from '../assets/svgIcons/SvgRemoveItem';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
-export const ClientEditConnectionMethod = ({el, handleRemoveBtn}) => {
+export const ClientEditConnectionMethod = ({
+  el,
+  handleRemoveBtn,
+  setIsActiveSubmitBtn,
+  getConnectionMethodLink,
+}) => {
   const [value, setValue] = useState(el.link);
+
+  useEffect(() => {
+    if (el.link !== value) {
+      setIsActiveSubmitBtn(true);
+      getConnectionMethodLink(el.type, el.icon, value);
+    } else {
+      setIsActiveSubmitBtn(false);
+    }
+  }, [value]);
 
   return (
     <View style={styles.connectionInputBlock} key={el.type}>

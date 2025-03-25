@@ -9,12 +9,14 @@ import {
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {SvgCreateService} from '../assets/svgIcons/SvgCreateService';
 import {SvgClientsParameters} from '../assets/svgIcons/SvgClientsParameters';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useState} from 'react';
 import {ConfigModal} from '../components/ConfigModal';
 import {SvgProfile} from '../assets/tabIcons/SvgProfile';
+import {updateClientsArray} from '../redux/action';
 
 export const ClientsProfileScreen = ({route, navigation}) => {
+  const dispatch = useDispatch();
   const clientsArr = useSelector(state => state.clients);
   const {itemData} = route.params;
 
@@ -24,10 +26,22 @@ export const ClientsProfileScreen = ({route, navigation}) => {
     setIsToggleModal(!isToggleModal);
   };
 
-  const handleNavigate = screen => {
-    navigation.navigate(screen, {
-      itemData: itemData,
-    });
+  const handleRemoveClient = () => {
+    const newClientsArr = clientsArr.filter(
+      client => client.id !== itemData.id,
+    );
+    dispatch(updateClientsArray(newClientsArr));
+  };
+
+  const handleNavigate = (screen, way = '') => {
+    if (screen === 'FullClientData') {
+      navigation.navigate(screen, {
+        itemData: itemData,
+        from: way,
+      });
+    } else {
+      navigation.navigate(screen);
+    }
   };
 
   return (
@@ -101,6 +115,8 @@ export const ClientsProfileScreen = ({route, navigation}) => {
         <ConfigModal
           visible={isToggleModal}
           hideModal={() => setIsToggleModal(false)}
+          handleNavigate={handleNavigate}
+          handleRemoveClient={handleRemoveClient}
         />
       </View>
     )

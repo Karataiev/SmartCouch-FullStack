@@ -6,6 +6,8 @@ import {
   HANDLE_PLUS_MENU_BTN,
   SAFE_USER_DATA,
   UPDATE_CLIENTS_ARRAY,
+  CREATE_NEW_PROGRAM,
+  UPDATE_PROGRAMS_ARRAY,
 } from './action';
 
 const defaultState = {
@@ -22,6 +24,7 @@ const defaultState = {
   },
   isCreateClientBtn: false,
   isPlusMenuBtn: false,
+  programs: [],
 };
 
 export const reducer = (state = defaultState, action) => {
@@ -57,6 +60,16 @@ export const reducer = (state = defaultState, action) => {
       return {
         ...state,
         userData: action.payload,
+      };
+    case CREATE_NEW_PROGRAM:
+      return {
+        ...state,
+        programs: [...state.programs, action.payload],
+      };
+    case UPDATE_PROGRAMS_ARRAY:
+      return {
+        ...state,
+        programs: [...action.payload],
       };
 
     default:

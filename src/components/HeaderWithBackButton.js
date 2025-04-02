@@ -2,15 +2,18 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SvgBackBtn} from '../assets/svgIcons/SvgBackBtn';
 import {SvgConfigBtn} from '../assets/svgIcons/SvgConfigBtn';
 import {SvgEditBtn} from '../assets/svgIcons/SvgEditBtn';
+import {SvgAddBtn} from '../assets/svgIcons/SvgAddBtn';
 
 export const HeaderWithBackButton = ({
   children,
   navigation,
   configBtn,
+  editBtn,
+  addBtn,
   goHome,
   onPressConfig,
   onPressEdit,
-  editBtn,
+  onPressAdd,
 }) => {
   const handleBackBtn = () => {
     if (goHome === true) {
@@ -28,15 +31,23 @@ export const HeaderWithBackButton = ({
 
       {children && <Text style={styles.title}>{children}</Text>}
 
-      {configBtn === true && (
+      {configBtn && (
         <TouchableOpacity style={styles.button} onPress={onPressConfig}>
           <SvgConfigBtn />
         </TouchableOpacity>
       )}
 
-      {editBtn === true && (
+      {editBtn && (
         <TouchableOpacity style={styles.button} onPress={onPressEdit}>
           <SvgEditBtn />
+        </TouchableOpacity>
+      )}
+
+      {addBtn && (
+        <TouchableOpacity
+          style={[styles.button, styles.addBtn]}
+          onPress={onPressAdd}>
+          <SvgAddBtn />
         </TouchableOpacity>
       )}
     </View>
@@ -48,7 +59,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingTop: 4,
     alignItems: 'center',
     position: 'relative',
   },
@@ -58,6 +68,9 @@ const styles = StyleSheet.create({
     borderRadius: 200,
     overflow: 'hidden',
     zIndex: 1,
+  },
+  addBtn: {
+    backgroundColor: 'white',
   },
   title: {
     position: 'absolute',

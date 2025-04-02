@@ -1,6 +1,7 @@
 import {useEffect, useLayoutEffect, useState} from 'react';
 import {
   Keyboard,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   TouchableWithoutFeedback,
@@ -141,68 +142,69 @@ export const ClientEditDataComponent = ({itemData, navigation}) => {
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <ScrollView style={styles.container}>
-        <View style={styles.formsContainer}>
-          <CustomInput placeholder={"Ім'я"} value={name} setValue={setName} />
-          <CustomInput
-            placeholder={'Прізвище'}
-            value={surname}
-            setValue={setSurname}
-          />
-          <CustomPhoneInput
-            inputHeader={true}
-            placeholderTextColor={'white'}
-            number={number}
-            setNumber={setNumber}
-          />
+      <SafeAreaView style={styles.container}>
+        <ScrollView>
+          <View style={styles.formsContainer}>
+            <CustomInput placeholder={"Ім'я"} value={name} setValue={setName} />
+            <CustomInput
+              placeholder={'Прізвище'}
+              value={surname}
+              setValue={setSurname}
+            />
+            <CustomPhoneInput
+              inputHeader={true}
+              placeholderTextColor={'white'}
+              number={number}
+              setNumber={setNumber}
+            />
 
-          {connectionMethods.map(el =>
-            el.type.length !== 0 ? (
-              <ClientEditConnectionMethod
-                el={el}
-                key={el.type}
-                handleRemoveBtn={handleRemoveBtn}
-                setIsActiveSubmitBtn={setIsActiveSubmitBtn}
-                getConnectionMethodLink={getConnectionMethodLink}
+            {connectionMethods.map(el =>
+              el.type.length !== 0 ? (
+                <ClientEditConnectionMethod
+                  el={el}
+                  key={el.type}
+                  handleRemoveBtn={handleRemoveBtn}
+                  setIsActiveSubmitBtn={setIsActiveSubmitBtn}
+                  getConnectionMethodLink={getConnectionMethodLink}
+                />
+              ) : null,
+            )}
+            <CreateConnectionMethod toggleModal={toggleModal} />
+            <View style={styles.customInputBlock}>
+              <CustomInput
+                placeholder={'Цілі та основні побажання'}
+                value={targetAndWishes}
+                setValue={setTargetAndWishes}
               />
-            ) : null,
-          )}
-          <CreateConnectionMethod toggleModal={toggleModal} />
-          <View style={styles.customInputBlock}>
-            <CustomInput
-              placeholder={'Цілі та основні побажання'}
-              value={targetAndWishes}
-              setValue={setTargetAndWishes}
-            />
-            <CustomInput
-              placeholder={'Стан здоровʼя (травми / протипоказання)'}
-              value={stateOfHealth}
-              setValue={setStateOfHealth}
-            />
-            <CustomInput
-              placeholder={'Рівень фізичної підготовки'}
-              value={levelOfPhysical}
-              setValue={setLevelOfPhysical}
-            />
-            <CustomInput
-              placeholder={'Замітки'}
-              value={notes}
-              setValue={setNotes}
-            />
+              <CustomInput
+                placeholder={'Стан здоровʼя (травми / протипоказання)'}
+                value={stateOfHealth}
+                setValue={setStateOfHealth}
+              />
+              <CustomInput
+                placeholder={'Рівень фізичної підготовки'}
+                value={levelOfPhysical}
+                setValue={setLevelOfPhysical}
+              />
+              <CustomInput
+                placeholder={'Замітки'}
+                value={notes}
+                setValue={setNotes}
+              />
+            </View>
           </View>
-        </View>
+        </ScrollView>
         <SafeInfoButton
           handleSubmit={handleSubmit}
           disabled={!isActiveSubmitBtn}>
           Зберегти
         </SafeInfoButton>
-
         <ConnectionMethodModal
           visible={isModalVisible}
           hideModal={() => setIsModalVisible(false)}
           handleConnectionMethod={handleConnectionMethod}
         />
-      </ScrollView>
+      </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 };

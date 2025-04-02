@@ -92,7 +92,9 @@ export const ClientsProfileScreen = ({route, navigation}) => {
                 <SvgProfile color={'white'} />
                 <Text style={styles.additionalInfoTitle}>Про клієнта</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.additionalInfoBtn}>
+              <TouchableOpacity
+                style={styles.additionalInfoBtn}
+                onPress={() => handleNavigate('ClientPrograms')}>
                 <SvgCreateService />
                 <Text style={styles.additionalInfoTitle}>Програма</Text>
               </TouchableOpacity>
@@ -140,6 +142,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   mainInfoContainer: {
+    paddingTop: 8,
     paddingHorizontal: 20,
     paddingBottom: 20,
     backgroundColor: '#2E2E2E',

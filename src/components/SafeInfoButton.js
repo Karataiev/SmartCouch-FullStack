@@ -1,5 +1,4 @@
 import {StyleSheet, Text} from 'react-native';
-import React from 'react';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
@@ -20,7 +19,7 @@ export const SafeInfoButton = ({disabled, children, handleSubmit}) => {
 
 const styles = StyleSheet.create({
   submitBtn: {
-    marginTop: 'auto',
+    marginTop: 21,
     marginBottom: 21,
     width: '100%',
     paddingVertical: 16,

@@ -5,6 +5,8 @@ export const REMOVE_LAST_CLIENT = 'REMOVE_LAST_CLIENT';
 export const HANDLE_PLUS_MENU_BTN = 'HANDLE_PLUS_MENU_BTN';
 export const SAFE_USER_DATA = 'SAFE_USER_DATA';
 export const UPDATE_CLIENTS_ARRAY = 'UPDATE_CLIENTS_ARRAY';
+export const CREATE_NEW_PROGRAM = 'CREATE_NEW_PROGRAM';
+export const UPDATE_PROGRAMS_ARRAY = 'UPDATE_PROGRAMS_ARRAY';
 
 export const getCurrentTime = payload => {
   return {type: GET_CURRENT_TIME, payload: payload};
@@ -32,4 +34,12 @@ export const safeUserData = payload => {
 
 export const updateClientsArray = payload => {
   return {type: UPDATE_CLIENTS_ARRAY, payload: payload};
+};
+
+export const createNewProgram = payload => {
+  return {type: CREATE_NEW_PROGRAM, payload: payload};
+};
+
+export const updateProgramsArray = payload => {
+  return {type: UPDATE_PROGRAMS_ARRAY, payload: payload};
 };

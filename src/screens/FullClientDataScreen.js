@@ -1,16 +1,24 @@
-import {StatusBar, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import {StatusBar, StyleSheet, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {ClientDataComponent} from '../components/ClientDataComponent';
 import {ClientEditDataComponent} from '../components/ClientEditDataComponent';
 
 export const FullClientDataScreen = ({navigation, route}) => {
-  const {itemData} = route.params;
+  const {itemData, from} = route.params;
   const [isToggleEdit, setIsToggleEdit] = useState(false);
 
   const handleEdit = () => {
     setIsToggleEdit(true);
   };
+
+  useEffect(() => {
+    if (from === 'modal') {
+      setIsToggleEdit(true);
+    } else {
+      setIsToggleEdit(false);
+    }
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -23,7 +31,7 @@ export const FullClientDataScreen = ({navigation, route}) => {
       </HeaderWithBackButton>
 
       {isToggleEdit ? (
-        <ClientEditDataComponent itemData={itemData} />
+        <ClientEditDataComponent itemData={itemData} navigation={navigation} />
       ) : (
         <ClientDataComponent itemData={itemData} />
       )}
@@ -36,5 +44,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#232323',
     paddingHorizontal: 20,
+    paddingTop: 8,
   },
 });

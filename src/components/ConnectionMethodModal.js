@@ -1,12 +1,15 @@
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
 import {SvgInstagram} from '../assets/svgIcons/SvgInstagram';
 import {SvgTelegram} from '../assets/svgIcons/SvgTelegram';
 import {SvgViber} from '../assets/svgIcons/SvgViber';
 import {SvgWhatsapp} from '../assets/svgIcons/SvgWhatsapp';
 import {ConnectionMethod} from './ConnectionMethod';
 
-export const ConnectionMethodModal = ({visible, hideModal}) => {
+export const ConnectionMethodModal = ({
+  visible,
+  hideModal,
+  handleConnectionMethod,
+}) => {
   return (
     <Modal
       transparent={true}
@@ -26,22 +29,22 @@ export const ConnectionMethodModal = ({visible, hideModal}) => {
           <ConnectionMethod
             icon={<SvgInstagram />}
             title="Instagram"
-            hideModal={() => hideModal(false)}
+            handleConnectionMethod={handleConnectionMethod}
           />
           <ConnectionMethod
             icon={<SvgTelegram />}
             title="Telegram"
-            hideModal={() => hideModal(false)}
+            handleConnectionMethod={handleConnectionMethod}
           />
           <ConnectionMethod
             icon={<SvgViber />}
             title="Viber"
-            hideModal={() => hideModal(false)}
+            handleConnectionMethod={handleConnectionMethod}
           />
           <ConnectionMethod
             icon={<SvgWhatsapp />}
             title="WhatsApp"
-            hideModal={() => hideModal(false)}
+            handleConnectionMethod={handleConnectionMethod}
           />
         </View>
       </View>

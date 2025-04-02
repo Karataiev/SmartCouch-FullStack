@@ -1,25 +1,25 @@
 import {
   Keyboard,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
-import {SvgConnectionMethod} from '../assets/svgIcons/SvgConnectionMethod';
 import {ConnectionMethodModal} from '../components/ConnectionMethodModal';
-import {useDispatch, useSelector} from 'react-redux';
-import {createNewClients, removeConnectionMethod} from '../redux/action';
+import {useDispatch} from 'react-redux';
+import {createNewClients} from '../redux/action';
 import {ChooseConnectionMethod} from '../components/ChooseConnectionMethod';
 import {CustomPhoneInput} from '../components/CustomPhoneInput';
 import {CustomInput} from '../components/CustomInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
+import {CreateConnectionMethod} from '../components/CreateConnectionMethod';
 
 export const CreateClientScreen = ({navigation}) => {
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [number, setNumber] = useState('');
@@ -30,35 +30,36 @@ export const CreateClientScreen = ({navigation}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isActiveSubmitBtn, setIsActiveSubmitBtn] = useState(false);
 
-  const defaultLinkState = {type: '', link: ''};
+  const defaultLinkState = {type: '', link: '', icon: ''};
   const [instagramLink, setInstagramLink] = useState(defaultLinkState);
   const [telegramLink, setTelegramLink] = useState(defaultLinkState);
   const [viberLink, setViberLink] = useState(defaultLinkState);
   const [whatsAppLink, setWhatsAppLink] = useState(defaultLinkState);
-
-  const connectionMethods = useSelector(state => state.connectionMethods);
-  const dispatch = useDispatch();
+  const linksArr = [instagramLink, telegramLink, viberLink, whatsAppLink];
+  const [connectionMethods, setConnectionMethods] = useState([]);
 
   const targetPlaceholder = 'Цілі та основні побажання';
   const healthPlaceholder = 'Стан здоровʼя';
   const levelPlaceholder = 'Рівень фізичної підготовки';
   const notesPlaceholder = 'Замітки';
+  const uniqueID = `id-${Date.now().toString(36)}-${Math.random()
+    .toString(36)
+    .slice(2)}`;
 
-  const createClientDataObject = () => {
-    return {
-      client: {
-        name: name,
-        surname: surname,
-        number: number,
-        link: [instagramLink, telegramLink, viberLink, whatsAppLink],
-      },
-      clientsCharacteristics: {
-        targetAndWishes: targetAndWishes,
-        stateOfHealth: stateOfHealth,
-        levelOfPhysical: levelOfPhysical,
-        notes: notes,
-      },
-    };
+  const clientDataObject = {
+    id: uniqueID,
+    client: {
+      name: name,
+      surname: surname,
+      number: number,
+      link: linksArr,
+    },
+    clientsCharacteristics: {
+      targetAndWishes: targetAndWishes,
+      stateOfHealth: stateOfHealth,
+      levelOfPhysical: levelOfPhysical,
+      notes: notes,
+    },
   };
 
   useEffect(() => {
@@ -67,105 +68,120 @@ export const CreateClientScreen = ({navigation}) => {
     } else {
       setIsActiveSubmitBtn(false);
     }
-    dispatch(removeConnectionMethod([]));
   }, [name, surname, number]);
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
 
+  const handleConnectionMethod = (title, icon) => {
+    const containElement = connectionMethods.find(el => el.type === title);
+
+    if (connectionMethods.length === 0 || !containElement) {
+      setConnectionMethods([
+        ...connectionMethods,
+        {
+          type: title,
+          icon: icon,
+        },
+      ]);
+    }
+    setIsModalVisible(false);
+  };
+
+  const handleRemoveBtn = el => {
+    const newConnectionArr = connectionMethods.filter(elem => elem.type !== el);
+    setConnectionMethods(newConnectionArr);
+  };
+
   const handleSubmit = () => {
     if (isActiveSubmitBtn) {
-      dispatch(createNewClients(createClientDataObject()));
-
+      dispatch(createNewClients(clientDataObject));
       navigation.navigate('ClientsProfileScreen', {
-        itemData: createClientDataObject(),
+        itemData: clientDataObject,
       });
     }
   };
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <ScrollView style={styles.container}>
-        <HeaderWithBackButton navigation={navigation}>
-          Новий клієнт
-        </HeaderWithBackButton>
+      <SafeAreaView style={styles.container}>
+        <ScrollView>
+          <HeaderWithBackButton navigation={navigation}>
+            Новий клієнт
+          </HeaderWithBackButton>
 
-        <View style={styles.formsContainer}>
-          <TextInput
-            value={name}
-            onChangeText={setName}
-            style={styles.input}
-            placeholder="Імʼя"
-            placeholderTextColor="white"
-          />
-          <TextInput
-            value={surname}
-            onChangeText={setSurname}
-            style={styles.input}
-            placeholder="Прізвище"
-            placeholderTextColor="white"
-          />
-          <CustomPhoneInput
-            placeholderTextColor={'white'}
-            number={number}
-            setNumber={setNumber}
-          />
-          {connectionMethods &&
-            connectionMethods.map(el => (
-              <ChooseConnectionMethod
-                el={el}
-                key={el.type}
-                setLinks={[
-                  setInstagramLink,
-                  setViberLink,
-                  setTelegramLink,
-                  setWhatsAppLink,
-                ]}
+          <View style={styles.formsContainer}>
+            <TextInput
+              value={name}
+              onChangeText={setName}
+              style={styles.input}
+              placeholder="Імʼя"
+              placeholderTextColor="white"
+            />
+            <TextInput
+              value={surname}
+              onChangeText={setSurname}
+              style={styles.input}
+              placeholder="Прізвище"
+              placeholderTextColor="white"
+            />
+            <CustomPhoneInput
+              placeholderTextColor={'white'}
+              number={number}
+              setNumber={setNumber}
+            />
+            {connectionMethods &&
+              connectionMethods.map(el => (
+                <ChooseConnectionMethod
+                  el={el}
+                  key={el.type}
+                  setLinks={[
+                    setInstagramLink,
+                    setViberLink,
+                    setTelegramLink,
+                    setWhatsAppLink,
+                  ]}
+                  handleRemoveBtn={handleRemoveBtn}
+                />
+              ))}
+            <CreateConnectionMethod toggleModal={toggleModal} />
+
+            <View style={styles.containerClientInfo}>
+              <CustomInput
+                placeholder={targetPlaceholder}
+                value={targetAndWishes}
+                setValue={setTargetAndWishes}
               />
-            ))}
-          <TouchableOpacity
-            style={styles.addMethodBtn}
-            onPress={() => toggleModal()}>
-            <SvgConnectionMethod />
-            <Text style={styles.btnTitle}>Додати спосіб звʼязку</Text>
-          </TouchableOpacity>
-
-          <View style={styles.containerClientInfo}>
-            <CustomInput
-              placeholder={targetPlaceholder}
-              value={targetAndWishes}
-              setValue={setTargetAndWishes}
-            />
-            <CustomInput
-              placeholder={healthPlaceholder}
-              value={stateOfHealth}
-              setValue={setStateOfHealth}
-            />
-            <CustomInput
-              placeholder={levelPlaceholder}
-              value={levelOfPhysical}
-              setValue={setLevelOfPhysical}
-            />
-            <CustomInput
-              placeholder={notesPlaceholder}
-              value={notes}
-              setValue={setNotes}
-            />
+              <CustomInput
+                placeholder={healthPlaceholder}
+                value={stateOfHealth}
+                setValue={setStateOfHealth}
+              />
+              <CustomInput
+                placeholder={levelPlaceholder}
+                value={levelOfPhysical}
+                setValue={setLevelOfPhysical}
+              />
+              <CustomInput
+                placeholder={notesPlaceholder}
+                value={notes}
+                setValue={setNotes}
+              />
+            </View>
           </View>
-        </View>
-
+        </ScrollView>
         <SafeInfoButton
           handleSubmit={handleSubmit}
           disabled={!isActiveSubmitBtn}>
           Створити клієнта
         </SafeInfoButton>
-
         <ConnectionMethodModal
           visible={isModalVisible}
           hideModal={() => setIsModalVisible(false)}
+          handleConnectionMethod={handleConnectionMethod}
         />
-      </ScrollView>
+      </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 };
@@ -191,49 +207,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     lineHeight: 22,
   },
-  addMethodBtn: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: '100%',
-    marginTop: 10,
-    gap: 4,
-  },
-  btnTitle: {
-    fontSize: 14,
-    lineHeight: 18,
-    fontWeight: '700',
-    color: 'white',
-  },
-  connectionInputBlock: {
-    display: 'flex',
-    boxSizing: 'border-box',
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    borderBottomColor: '#303030',
-    borderBottomWidth: 1,
-    marginBottom: 30,
-  },
-  connectionInput: {
-    display: 'flex',
-    height: 50,
-    width: '90%',
-    paddingLeft: 12,
-    color: 'white',
-    fontSize: 17,
-    lineHeight: 22,
-  },
-  connectionIcon: {
-    width: 24,
-  },
-
   containerClientInfo: {
     marginTop: 40,
-  },
-  inputHeader: {
-    fontSize: 12,
-    lineHeight: 16,
-    fontWeight: '400',
-    color: 'white',
   },
 });

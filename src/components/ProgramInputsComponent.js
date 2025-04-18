@@ -1,6 +1,7 @@
 import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import {HeaderWithBackButton} from './HeaderWithBackButton';
 import {CustomInput} from './CustomInput';
+import {useEffect, useState} from 'react';
 
 export const ProgramInputsComponent = ({
   navigation,
@@ -9,14 +10,20 @@ export const ProgramInputsComponent = ({
   program,
   setProgram,
   headerTitle,
-  previousScreen,
   onPressConfig,
 }) => {
+  const [isActiveConfig, setIsActiveConfig] = useState(false);
+
+  useEffect(() => {
+    if (program.length !== 0 && title.length !== 0) {
+      setIsActiveConfig(true);
+    }
+  }, []);
   return (
     <ScrollView>
       <HeaderWithBackButton
         navigation={navigation}
-        configBtn={previousScreen !== 'Мої програми' && true}
+        configBtn={isActiveConfig}
         onPressConfig={() => onPressConfig()}>
         {headerTitle}
       </HeaderWithBackButton>

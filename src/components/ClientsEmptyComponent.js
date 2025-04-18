@@ -1,16 +1,15 @@
 import {StyleSheet, Text, View, Image, StatusBar} from 'react-native';
-import React from 'react';
 import {HeaderForScreens} from './HeaderForScreens';
 import {HeaderWithBackButton} from './HeaderWithBackButton';
 
 export const ClientsEmptyComponent = ({navigation, isForPinning}) => {
   const createNewClientBtn = () => {
     if (isForPinning) {
-      navigation.navigate('CreateClientScreen', {
+      navigation.navigate('CreateClient', {
         data: {isForPinning: isForPinning},
       });
     } else {
-      navigation.navigate('CreateClientScreen', {
+      navigation.navigate('CreateClient', {
         data: {},
       });
     }

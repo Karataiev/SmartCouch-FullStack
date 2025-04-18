@@ -6,7 +6,7 @@ import {useSelector} from 'react-redux';
 export const ClientsTabScreen = ({navigation}) => {
   const clientsState = useSelector(state => state.clients);
   const createNewClientBtn = () => {
-    navigation.navigate('CreateClientScreen', {
+    navigation.navigate('CreateClient', {
       data: {},
     });
   };

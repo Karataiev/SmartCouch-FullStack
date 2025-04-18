@@ -109,7 +109,7 @@ export const CreateClientScreen = ({navigation, route}) => {
           itemData: clientDataObject,
         });
       } else {
-        navigation.navigate('ClientsProfileScreen', {
+        navigation.navigate('ClientsProfile', {
           itemData: clientDataObject,
         });
       }

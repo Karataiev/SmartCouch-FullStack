@@ -1,46 +1,18 @@
 import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
-import {CreateProgramModal} from '../components/CreateProgramModal';
-import {useState} from 'react';
 import {useSelector} from 'react-redux';
 import {ProgramItem} from '../components/ProgramItem';
 
-export const MyProgramsScreen = ({navigation, route}) => {
-  const {data} = route.params;
-  const [isToggleModal, setIsToggleModal] = useState(false);
+export const MyProgramsScreen = ({navigation}) => {
   const programs = useSelector(state => state.programs);
 
   const onPressAdd = () => {
-    if (data.header === 'Мої програми') {
-      handleNavigate();
-    } else {
-      setIsToggleModal(true);
-    }
+    navigation.navigate('CreateProgram');
   };
-
-  function handleNavigate() {
-    navigation.navigate('CreateProgram', {data: data});
-  }
 
   const handleClickItem = el => {
     navigation.navigate('CurrentProgram', {itemData: el});
   };
-
-  // const createTitle = () => {
-  //   if (screen === 'Template') {
-  //     return {
-  //       header: 'Мої програми',
-  //       notification: 'У вас ще немає програм тренувань',
-  //       suggestion: 'Створіть програму',
-  //     };
-  //   } else {
-  //     return {
-  //       header: 'Програма',
-  //       notification: 'У кліента ще не має програми',
-  //       suggestion: 'Створіть нову програму або оберіть існуючу',
-  //     };
-  //   }
-  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -48,8 +20,9 @@ export const MyProgramsScreen = ({navigation, route}) => {
         <HeaderWithBackButton
           navigation={navigation}
           addBtn={true}
-          onPressAdd={onPressAdd}>
-          {data.header}
+          onPressAdd={onPressAdd}
+          goPrograms={true}>
+          Мої програми
         </HeaderWithBackButton>
 
         {programs.length !== 0 ? (
@@ -71,19 +44,14 @@ export const MyProgramsScreen = ({navigation, route}) => {
               />
             </View>
             <Text style={styles.programsEmptyMainText}>
-              {data.notification}
+              У вас ще немає програм тренувань
             </Text>
             <Text style={styles.programsEmptySecondaryText}>
-              {data.suggestion}
+              Створіть програму
             </Text>
           </View>
         )}
       </View>
-      <CreateProgramModal
-        visible={isToggleModal}
-        hideModal={() => setIsToggleModal(false)}
-        handleNavigate={handleNavigate}
-      />
     </SafeAreaView>
   );
 };

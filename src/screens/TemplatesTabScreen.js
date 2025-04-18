@@ -1,16 +1,9 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
 import {TemplateItem} from '../components/TemplateItem';
 
 export const TemplatesTabScreen = ({navigation}) => {
   const handleClick = screen => {
-    navigation.navigate(screen, {
-      data: {
-        header: 'Мої програми',
-        notification: 'У вас ще немає програм тренувань',
-        suggestion: 'Створіть програму',
-      },
-    });
+    navigation.navigate(screen);
   };
 
   return (
@@ -20,10 +13,12 @@ export const TemplatesTabScreen = ({navigation}) => {
         <TemplateItem handlePress={() => handleClick('MyPrograms')}>
           Мої програми тренувань
         </TemplateItem>
-        <TemplateItem handlePress={handleClick}>
+        <TemplateItem handlePress={() => handleClick('ReadyMadePrograms')}>
           Готові програми тренувань
         </TemplateItem>
-        <TemplateItem handlePress={handleClick}>Вправи</TemplateItem>
+        <TemplateItem handlePress={() => handleClick('Exercises')}>
+          Вправи
+        </TemplateItem>
       </View>
     </View>
   );

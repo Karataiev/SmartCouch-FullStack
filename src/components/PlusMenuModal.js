@@ -12,11 +12,15 @@ export const PlusMenuModal = ({navigation}) => {
   const isBtnClick = useSelector(state => state.isPlusMenuBtn);
   const dispatch = useDispatch();
 
-  const hideModal = way => {
+  const handleCreate = way => {
     dispatch(isPlusMenuBtn(!isBtnClick));
-    if (way) {
-      navigation.navigate(way);
-    }
+    navigation.navigate(way, {
+      data: {},
+    });
+  };
+
+  const handleClose = () => {
+    dispatch(isPlusMenuBtn(!isBtnClick));
   };
 
   return (
@@ -24,12 +28,12 @@ export const PlusMenuModal = ({navigation}) => {
       transparent={true}
       visible={isBtnClick}
       onRequestClose={() => {
-        hideModal();
+        handleClose();
       }}
       animationType="slide">
       <TouchableOpacity
         style={styles.outsideOfModal}
-        onPress={() => hideModal()}
+        onPress={() => handleClose()}
         activeOpacity={1}
       />
 
@@ -39,28 +43,28 @@ export const PlusMenuModal = ({navigation}) => {
           <PlusMenuItem
             title={'Запис тренування'}
             icon={<SvgTrainingRecord />}
-            onPress={() => hideModal()}
+            onPress={() => handleCreate()}
           />
           <PlusMenuItem
             title={'Клієнта'}
             icon={<SvgClients color={'white'} />}
-            onPress={() => hideModal('CreateClientScreen')}
+            onPress={() => handleCreate('CreateClient')}
           />
           <PlusMenuItem
             title={'Програму'}
             icon={<SvgCreateProgram />}
-            onPress={() => hideModal()}
+            onPress={() => handleCreate('CreateProgram')}
           />
           <PlusMenuItem
             title={'Послугу'}
             icon={<SvgCreateService />}
-            onPress={() => hideModal()}
+            onPress={() => handleCreate()}
           />
         </View>
 
         <TouchableOpacity
           style={styles.closeButton}
-          onPress={() => hideModal()}>
+          onPress={() => handleClose()}>
           <SvgClose />
         </TouchableOpacity>
       </View>

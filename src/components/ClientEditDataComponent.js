@@ -135,7 +135,7 @@ export const ClientEditDataComponent = ({itemData, navigation}) => {
 
     dispatch(updateClientsArray(clientArray));
 
-    navigation.navigate('ClientsProfileScreen', {
+    navigation.navigate('ClientsProfile', {
       itemData: clientDataObject,
     });
   };

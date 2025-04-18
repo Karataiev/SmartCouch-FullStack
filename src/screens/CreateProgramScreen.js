@@ -5,8 +5,7 @@ import {useDispatch} from 'react-redux';
 import {createNewProgram} from '../redux/action';
 import {ProgramInputsComponent} from '../components/ProgramInputsComponent';
 
-export const CreateProgramScreen = ({navigation, route}) => {
-  const {data} = route.params;
+export const CreateProgramScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const [title, setTitle] = useState('');
   const [program, setProgram] = useState('');
@@ -30,7 +29,10 @@ export const CreateProgramScreen = ({navigation, route}) => {
     };
 
     dispatch(createNewProgram(programObject));
-    navigation.navigate('MyPrograms', {data: data});
+    setTitle('');
+    setProgram('');
+    setIsActiveSubmitBtn(false);
+    navigation.navigate('MyPrograms');
   };
 
   return (
@@ -42,7 +44,6 @@ export const CreateProgramScreen = ({navigation, route}) => {
         program={program}
         setProgram={setProgram}
         headerTitle={'Створення програми'}
-        previousScreen={data.header}
       />
       <SafeInfoButton handleSubmit={handleSubmit} disabled={!isActiveSubmitBtn}>
         Створити програму

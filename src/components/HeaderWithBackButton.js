@@ -13,14 +13,17 @@ export const HeaderWithBackButton = ({
   addBtn,
   fastenForBtn,
   goHome,
+  goPrograms,
   onPressConfig,
   onPressEdit,
   onPressAdd,
   onPressFasten,
 }) => {
   const handleBackBtn = () => {
-    if (goHome === true) {
+    if (goHome) {
       navigation.navigate('Clients');
+    } else if (goPrograms) {
+      navigation.navigate('Templates');
     } else {
       navigation.goBack();
     }

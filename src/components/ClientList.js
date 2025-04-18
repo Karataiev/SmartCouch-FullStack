@@ -24,7 +24,7 @@ export const ClientList = ({items, navigation, pinningClient, route}) => {
   }, [items]);
 
   const handlePressClientItem = item => {
-    navigation.navigate('ClientsProfileScreen', {
+    navigation.navigate('ClientsProfile', {
       itemData: item,
     });
   };

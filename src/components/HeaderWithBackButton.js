@@ -3,6 +3,7 @@ import {SvgBackBtn} from '../assets/svgIcons/SvgBackBtn';
 import {SvgConfigBtn} from '../assets/svgIcons/SvgConfigBtn';
 import {SvgEditBtn} from '../assets/svgIcons/SvgEditBtn';
 import {SvgAddBtn} from '../assets/svgIcons/SvgAddBtn';
+import {SvgFastenBtn} from '../assets/svgIcons/SvgFastenBtn';
 
 export const HeaderWithBackButton = ({
   children,
@@ -10,14 +11,19 @@ export const HeaderWithBackButton = ({
   configBtn,
   editBtn,
   addBtn,
+  fastenForBtn,
   goHome,
+  goPrograms,
   onPressConfig,
   onPressEdit,
   onPressAdd,
+  onPressFasten,
 }) => {
   const handleBackBtn = () => {
-    if (goHome === true) {
+    if (goHome) {
       navigation.navigate('Clients');
+    } else if (goPrograms) {
+      navigation.navigate('Templates');
     } else {
       navigation.goBack();
     }
@@ -30,26 +36,30 @@ export const HeaderWithBackButton = ({
       </TouchableOpacity>
 
       {children && <Text style={styles.title}>{children}</Text>}
-
-      {configBtn && (
-        <TouchableOpacity style={styles.button} onPress={onPressConfig}>
-          <SvgConfigBtn />
-        </TouchableOpacity>
-      )}
-
-      {editBtn && (
-        <TouchableOpacity style={styles.button} onPress={onPressEdit}>
-          <SvgEditBtn />
-        </TouchableOpacity>
-      )}
-
-      {addBtn && (
-        <TouchableOpacity
-          style={[styles.button, styles.addBtn]}
-          onPress={onPressAdd}>
-          <SvgAddBtn />
-        </TouchableOpacity>
-      )}
+      <View style={styles.btnsBlock}>
+        {fastenForBtn && (
+          <TouchableOpacity style={styles.button} onPress={onPressFasten}>
+            <SvgFastenBtn />
+          </TouchableOpacity>
+        )}
+        {configBtn && (
+          <TouchableOpacity style={styles.button} onPress={onPressConfig}>
+            <SvgConfigBtn />
+          </TouchableOpacity>
+        )}
+        {editBtn && (
+          <TouchableOpacity style={styles.button} onPress={onPressEdit}>
+            <SvgEditBtn />
+          </TouchableOpacity>
+        )}
+        {addBtn && (
+          <TouchableOpacity
+            style={[styles.button, styles.addBtn]}
+            onPress={onPressAdd}>
+            <SvgAddBtn />
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 };
@@ -71,6 +81,11 @@ const styles = StyleSheet.create({
   },
   addBtn: {
     backgroundColor: 'white',
+  },
+  btnsBlock: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 8,
   },
   title: {
     position: 'absolute',

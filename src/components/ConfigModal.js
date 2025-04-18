@@ -5,20 +5,30 @@ export const ConfigModal = ({
   visible,
   hideModal,
   handleNavigate,
-  handleRemoveClient,
+  handleRemove,
+  whereIsOpen,
 }) => {
   const [isActiveRemoveBtn, setIsActiveRemoveBtn] = useState(false);
 
-  const handleEditButton = () => {
-    handleNavigate('FullClientData', 'modal');
+  const handleFirstButton = () => {
+    if (whereIsOpen === 'CurrentProgram') {
+      handleNavigate('PinningProgram');
+    } else {
+      handleNavigate('FullClientData', 'modal');
+    }
     hideModal();
   };
 
-  const handleConfirmRemoveClientButton = () => {
-    handleRemoveClient();
+  const handleConfirmRemoveButton = () => {
+    handleRemove();
     setIsActiveRemoveBtn(false);
     hideModal();
-    handleNavigate('Clients');
+
+    if (whereIsOpen === 'CurrentProgram') {
+      handleNavigate('MyPrograms');
+    } else {
+      handleNavigate('Clients');
+    }
   };
 
   const handleCancelBtn = () => {
@@ -43,11 +53,11 @@ export const ConfigModal = ({
       <View style={styles.modalContent}>
         {isActiveRemoveBtn ? (
           <View style={styles.modalConfigsBlock}>
-            <Text style={styles.removeQuestion}>Видалити клієнта?</Text>
+            <Text style={styles.removeQuestion}>Видалити?</Text>
             <View style={styles.removeBtnsBlock}>
               <TouchableOpacity
                 style={styles.removeBlockBtn}
-                onPress={() => handleConfirmRemoveClientButton()}>
+                onPress={() => handleConfirmRemoveButton()}>
                 <Text style={styles.modalConfigsText}>Так</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -61,8 +71,12 @@ export const ConfigModal = ({
           <View style={styles.modalConfigsBlock}>
             <TouchableOpacity
               style={[styles.configBtn, styles.borderLine]}
-              onPress={() => handleEditButton()}>
-              <Text style={styles.modalConfigsText}>Редагувати клієнта</Text>
+              onPress={() => handleFirstButton()}>
+              <Text style={styles.modalConfigsText}>
+                {whereIsOpen !== 'CurrentProgram'
+                  ? 'Редагувати'
+                  : 'Закріпити за клієнтом'}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.configBtn}
@@ -94,7 +108,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     paddingHorizontal: 16,
-    paddingBottom: 32,
+    paddingBottom: 20,
     gap: 8,
   },
   modalConfigsBlock: {

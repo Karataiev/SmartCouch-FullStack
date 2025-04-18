@@ -29,7 +29,10 @@ export const CreateProgramScreen = ({navigation}) => {
     };
 
     dispatch(createNewProgram(programObject));
-    navigation.navigate('ClientPrograms');
+    setTitle('');
+    setProgram('');
+    setIsActiveSubmitBtn(false);
+    navigation.navigate('MyPrograms');
   };
 
   return (

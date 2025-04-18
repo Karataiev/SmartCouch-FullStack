@@ -135,15 +135,15 @@ export const ClientEditDataComponent = ({itemData, navigation}) => {
 
     dispatch(updateClientsArray(clientArray));
 
-    navigation.navigate('ClientsProfileScreen', {
+    navigation.navigate('ClientsProfile', {
       itemData: clientDataObject,
     });
   };
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <SafeAreaView style={styles.container}>
-        <ScrollView>
+      <ScrollView>
+        <SafeAreaView style={styles.container}>
           <View style={styles.formsContainer}>
             <CustomInput placeholder={"Ім'я"} value={name} setValue={setName} />
             <CustomInput
@@ -193,18 +193,19 @@ export const ClientEditDataComponent = ({itemData, navigation}) => {
               />
             </View>
           </View>
-        </ScrollView>
-        <SafeInfoButton
-          handleSubmit={handleSubmit}
-          disabled={!isActiveSubmitBtn}>
-          Зберегти
-        </SafeInfoButton>
-        <ConnectionMethodModal
-          visible={isModalVisible}
-          hideModal={() => setIsModalVisible(false)}
-          handleConnectionMethod={handleConnectionMethod}
-        />
-      </SafeAreaView>
+
+          <SafeInfoButton
+            handleSubmit={handleSubmit}
+            disabled={!isActiveSubmitBtn}>
+            Зберегти
+          </SafeInfoButton>
+          <ConnectionMethodModal
+            visible={isModalVisible}
+            hideModal={() => setIsModalVisible(false)}
+            handleConnectionMethod={handleConnectionMethod}
+          />
+        </SafeAreaView>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 };

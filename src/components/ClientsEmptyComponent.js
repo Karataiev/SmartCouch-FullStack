@@ -1,14 +1,39 @@
 import {StyleSheet, Text, View, Image, StatusBar} from 'react-native';
-import React from 'react';
 import {HeaderForScreens} from './HeaderForScreens';
+import {HeaderWithBackButton} from './HeaderWithBackButton';
 
-export const ClientsEmptyComponent = ({navigation}) => {
+export const ClientsEmptyComponent = ({navigation, isForPinning}) => {
+  const createNewClientBtn = () => {
+    if (isForPinning) {
+      navigation.navigate('CreateClient', {
+        data: {isForPinning: isForPinning},
+      });
+    } else {
+      navigation.navigate('CreateClient', {
+        data: {},
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={'#232323'} />
-      <HeaderForScreens navigation={navigation} addBtn={true}>
-        Клієнти
-      </HeaderForScreens>
+      {isForPinning ? (
+        <HeaderWithBackButton
+          navigation={navigation}
+          addBtn={true}
+          onPressAdd={createNewClientBtn}>
+          Клієнти
+        </HeaderWithBackButton>
+      ) : (
+        <HeaderForScreens
+          navigation={navigation}
+          addBtn={true}
+          onPressAdd={createNewClientBtn}>
+          Клієнти
+        </HeaderForScreens>
+      )}
+
       <View style={styles.mainContent}>
         <View style={styles.clientsLogoContainer}>
           <Image

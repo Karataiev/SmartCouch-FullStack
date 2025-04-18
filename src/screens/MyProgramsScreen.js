@@ -1,20 +1,13 @@
 import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
-import {CreateProgramModal} from '../components/CreateProgramModal';
-import {useState} from 'react';
 import {useSelector} from 'react-redux';
 import {ProgramItem} from '../components/ProgramItem';
 
-export const ClientProgramsScreen = ({navigation}) => {
-  const [isToggleModal, setIsToggleModal] = useState(false);
+export const MyProgramsScreen = ({navigation}) => {
   const programs = useSelector(state => state.programs);
 
   const onPressAdd = () => {
-    setIsToggleModal(true);
-  };
-
-  const handleNavigate = screen => {
-    navigation.navigate(screen);
+    navigation.navigate('CreateProgram');
   };
 
   const handleClickItem = el => {
@@ -27,42 +20,38 @@ export const ClientProgramsScreen = ({navigation}) => {
         <HeaderWithBackButton
           navigation={navigation}
           addBtn={true}
-          onPressAdd={onPressAdd}>
-          Програма
+          onPressAdd={onPressAdd}
+          goPrograms={true}>
+          Мої програми
         </HeaderWithBackButton>
 
-        <View style={[styles.mainContent, {marginTop: 12, gap: 8}]}>
-          {programs.length !== 0 ? (
-            programs.map(el => (
+        {programs.length !== 0 ? (
+          <View style={[styles.mainContent, {marginTop: 12, gap: 8}]}>
+            {programs.map(el => (
               <ProgramItem
                 key={el.id}
                 info={el}
                 handleClick={() => handleClickItem(el)}
               />
-            ))
-          ) : (
-            <>
-              <View style={styles.programsLogoContainer}>
-                <Image
-                  style={styles.programsLogo}
-                  source={require('../assets/pngIcons/emptyProgramsPNG.png')}
-                />
-              </View>
-              <Text style={styles.programsEmptyMainText}>
-                У кліента ще не має програми
-              </Text>
-              <Text style={styles.programsEmptySecondaryText}>
-                Створіть нову програму або оберіть існуючу
-              </Text>
-            </>
-          )}
-        </View>
+            ))}
+          </View>
+        ) : (
+          <View style={[styles.mainContent, {marginTop: 72}]}>
+            <View style={styles.programsLogoContainer}>
+              <Image
+                style={styles.programsLogo}
+                source={require('../assets/pngIcons/emptyProgramsPNG.png')}
+              />
+            </View>
+            <Text style={styles.programsEmptyMainText}>
+              У вас ще немає програм тренувань
+            </Text>
+            <Text style={styles.programsEmptySecondaryText}>
+              Створіть програму
+            </Text>
+          </View>
+        )}
       </View>
-      <CreateProgramModal
-        visible={isToggleModal}
-        hideModal={() => setIsToggleModal(false)}
-        handleNavigate={handleNavigate}
-      />
     </SafeAreaView>
   );
 };

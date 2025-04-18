@@ -3,14 +3,9 @@ import React from 'react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {SvgAddBtn} from '../assets/svgIcons/SvgAddBtn';
 
-export const CreateClientBtn = ({navigation}) => {
-  const createNewClientBtn = () => {
-    navigation.navigate('CreateClientScreen');
-  };
+export const CreateClientBtn = ({onPressAdd}) => {
   return (
-    <TouchableOpacity
-      style={styles.headerAddBtn}
-      onPress={() => createNewClientBtn()}>
+    <TouchableOpacity style={styles.headerAddBtn} onPress={() => onPressAdd()}>
       <SvgAddBtn />
     </TouchableOpacity>
   );

@@ -1,14 +1,14 @@
-import {StatusBar, StyleSheet, Text, TextInput, View} from 'react-native';
+import {StatusBar, StyleSheet, TextInput, View} from 'react-native';
 import {SvgSearch} from '../assets/svgIcons/SvgSearch';
 import {useState} from 'react';
 import {useSelector} from 'react-redux';
 import {ClientList} from './ClientList';
-import {HeaderForScreens} from './HeaderForScreens';
+import {HeaderWithBackButton} from './HeaderWithBackButton';
 
-export const ClientsListComponent = ({
+export const PinningClientsListComponent = ({
   navigation,
   isForPinning,
-  onPressAdd,
+  route,
 }) => {
   const [searchValue, setSearchValue] = useState('');
   const clients = useSelector(state => state.clients);
@@ -38,12 +38,9 @@ export const ClientsListComponent = ({
     <View style={styles.container}>
       <StatusBar backgroundColor={'#232323'} />
 
-      <HeaderForScreens
-        navigation={navigation}
-        addBtn={true}
-        onPressAdd={onPressAdd}>
-        Клієнти
-      </HeaderForScreens>
+      <HeaderWithBackButton navigation={navigation}>
+        Закріпити за клієнтом
+      </HeaderWithBackButton>
 
       <View style={styles.searchContainer}>
         <SvgSearch />
@@ -60,6 +57,7 @@ export const ClientsListComponent = ({
         items={searchClient}
         navigation={navigation}
         pinningClient={isForPinning}
+        route={route}
       />
     </View>
   );

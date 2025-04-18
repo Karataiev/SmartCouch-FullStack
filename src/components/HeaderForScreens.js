@@ -2,11 +2,11 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {CreateClientBtn} from './CreateClientBtn';
 
-export const HeaderForScreens = ({children, addBtn, navigation}) => {
+export const HeaderForScreens = ({children, addBtn, onPressAdd}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{children}</Text>
-      {addBtn && <CreateClientBtn navigation={navigation} />}
+      {addBtn && <CreateClientBtn onPressAdd={onPressAdd} />}
     </View>
   );
 };

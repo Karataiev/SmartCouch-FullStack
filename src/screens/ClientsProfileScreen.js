@@ -94,7 +94,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.additionalInfoBtn}
-                onPress={() => handleNavigate('ClientPrograms')}>
+                onPress={() => handleNavigate('MyPrograms')}>
                 <SvgCreateService />
                 <Text style={styles.additionalInfoTitle}>Програма</Text>
               </TouchableOpacity>
@@ -118,7 +118,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
           visible={isToggleModal}
           hideModal={() => setIsToggleModal(false)}
           handleNavigate={handleNavigate}
-          handleRemoveClient={handleRemoveClient}
+          handleRemove={handleRemoveClient}
         />
       </View>
     )

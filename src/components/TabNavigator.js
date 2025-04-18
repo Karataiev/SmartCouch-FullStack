@@ -84,7 +84,7 @@ export const TabNavigator = ({navigation}) => {
             tabBarIcon: ({focused}) => {
               return (
                 <TabItemContainer
-                  tabName="Шаблони"
+                  tabName="Програми"
                   color={changeColor(focused)}>
                   <SvgTemplates color={changeColor(focused)} />
                 </TabItemContainer>

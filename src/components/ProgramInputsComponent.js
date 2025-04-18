@@ -9,10 +9,15 @@ export const ProgramInputsComponent = ({
   program,
   setProgram,
   headerTitle,
+  previousScreen,
+  onPressConfig,
 }) => {
   return (
     <ScrollView>
-      <HeaderWithBackButton navigation={navigation}>
+      <HeaderWithBackButton
+        navigation={navigation}
+        configBtn={previousScreen !== 'Мої програми' && true}
+        onPressConfig={() => onPressConfig()}>
         {headerTitle}
       </HeaderWithBackButton>
       <View style={styles.mainContent}>

@@ -1,6 +1,5 @@
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 
 export const SafeInfoButton = ({disabled, children, handleSubmit}) => {
   return (

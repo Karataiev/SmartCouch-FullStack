@@ -3,7 +3,7 @@ import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 export const CreateProgramModal = ({visible, hideModal, handleNavigate}) => {
   const handleCreateButton = () => {
-    handleNavigate('CreateProgram');
+    handleNavigate();
     hideModal();
   };
 

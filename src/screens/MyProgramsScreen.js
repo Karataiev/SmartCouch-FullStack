@@ -5,21 +5,42 @@ import {useState} from 'react';
 import {useSelector} from 'react-redux';
 import {ProgramItem} from '../components/ProgramItem';
 
-export const ClientProgramsScreen = ({navigation}) => {
+export const MyProgramsScreen = ({navigation, route}) => {
+  const {data} = route.params;
   const [isToggleModal, setIsToggleModal] = useState(false);
   const programs = useSelector(state => state.programs);
 
   const onPressAdd = () => {
-    setIsToggleModal(true);
+    if (data.header === 'Мої програми') {
+      handleNavigate();
+    } else {
+      setIsToggleModal(true);
+    }
   };
 
-  const handleNavigate = screen => {
-    navigation.navigate(screen);
-  };
+  function handleNavigate() {
+    navigation.navigate('CreateProgram', {data: data});
+  }
 
   const handleClickItem = el => {
     navigation.navigate('CurrentProgram', {itemData: el});
   };
+
+  // const createTitle = () => {
+  //   if (screen === 'Template') {
+  //     return {
+  //       header: 'Мої програми',
+  //       notification: 'У вас ще немає програм тренувань',
+  //       suggestion: 'Створіть програму',
+  //     };
+  //   } else {
+  //     return {
+  //       header: 'Програма',
+  //       notification: 'У кліента ще не має програми',
+  //       suggestion: 'Створіть нову програму або оберіть існуючу',
+  //     };
+  //   }
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -28,35 +49,35 @@ export const ClientProgramsScreen = ({navigation}) => {
           navigation={navigation}
           addBtn={true}
           onPressAdd={onPressAdd}>
-          Програма
+          {data.header}
         </HeaderWithBackButton>
 
-        <View style={[styles.mainContent, {marginTop: 12, gap: 8}]}>
-          {programs.length !== 0 ? (
-            programs.map(el => (
+        {programs.length !== 0 ? (
+          <View style={[styles.mainContent, {marginTop: 12, gap: 8}]}>
+            {programs.map(el => (
               <ProgramItem
                 key={el.id}
                 info={el}
                 handleClick={() => handleClickItem(el)}
               />
-            ))
-          ) : (
-            <>
-              <View style={styles.programsLogoContainer}>
-                <Image
-                  style={styles.programsLogo}
-                  source={require('../assets/pngIcons/emptyProgramsPNG.png')}
-                />
-              </View>
-              <Text style={styles.programsEmptyMainText}>
-                У кліента ще не має програми
-              </Text>
-              <Text style={styles.programsEmptySecondaryText}>
-                Створіть нову програму або оберіть існуючу
-              </Text>
-            </>
-          )}
-        </View>
+            ))}
+          </View>
+        ) : (
+          <View style={[styles.mainContent, {marginTop: 72}]}>
+            <View style={styles.programsLogoContainer}>
+              <Image
+                style={styles.programsLogo}
+                source={require('../assets/pngIcons/emptyProgramsPNG.png')}
+              />
+            </View>
+            <Text style={styles.programsEmptyMainText}>
+              {data.notification}
+            </Text>
+            <Text style={styles.programsEmptySecondaryText}>
+              {data.suggestion}
+            </Text>
+          </View>
+        )}
       </View>
       <CreateProgramModal
         visible={isToggleModal}

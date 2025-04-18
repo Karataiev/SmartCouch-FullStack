@@ -18,7 +18,9 @@ import {CustomInput} from '../components/CustomInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {CreateConnectionMethod} from '../components/CreateConnectionMethod';
 
-export const CreateClientScreen = ({navigation}) => {
+export const CreateClientScreen = ({navigation, route}) => {
+  const {data} = route.params;
+
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
@@ -60,6 +62,10 @@ export const CreateClientScreen = ({navigation}) => {
       levelOfPhysical: levelOfPhysical,
       notes: notes,
     },
+    program: {
+      title: '',
+      program: '',
+    },
   };
 
   useEffect(() => {
@@ -97,9 +103,16 @@ export const CreateClientScreen = ({navigation}) => {
   const handleSubmit = () => {
     if (isActiveSubmitBtn) {
       dispatch(createNewClients(clientDataObject));
-      navigation.navigate('ClientsProfileScreen', {
-        itemData: clientDataObject,
-      });
+
+      if (data.isForPinning) {
+        navigation.navigate('PinningProgram', {
+          itemData: clientDataObject,
+        });
+      } else {
+        navigation.navigate('ClientsProfileScreen', {
+          itemData: clientDataObject,
+        });
+      }
     }
   };
 

@@ -5,13 +5,22 @@ import {useSelector} from 'react-redux';
 
 export const ClientsTabScreen = ({navigation}) => {
   const clientsState = useSelector(state => state.clients);
+  const createNewClientBtn = () => {
+    navigation.navigate('CreateClientScreen', {
+      data: {},
+    });
+  };
 
   return (
     <View style={styles.container}>
       {clientsState.length === 0 ? (
         <ClientsEmptyComponent navigation={navigation} />
       ) : (
-        <ClientsListComponent navigation={navigation} />
+        <ClientsListComponent
+          navigation={navigation}
+          isForPinning={false}
+          onPressAdd={createNewClientBtn}
+        />
       )}
     </View>
   );

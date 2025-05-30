@@ -1,4 +1,3 @@
-import {StyleSheet} from 'react-native';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {PlanTabScreen} from '../screens/PlanTabScreen';
@@ -111,5 +110,3 @@ export const TabNavigator = ({navigation}) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({});

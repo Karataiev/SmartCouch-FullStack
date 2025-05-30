@@ -1,56 +1,107 @@
-import {Keyboard, SafeAreaView, StyleSheet} from 'react-native';
-import {useEffect, useState} from 'react';
-import {SafeInfoButton} from '../components/SafeInfoButton';
+import React, {useEffect, useRef, useState, useMemo} from 'react';
+import {
+  Keyboard,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  Animated,
+  Easing,
+} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {updateProgramsArray} from '../redux/action';
+import {SafeInfoButton} from '../components/SafeInfoButton';
 import {ProgramInputsComponent} from '../components/ProgramInputsComponent';
 import {ConfigModal} from '../components/ConfigModal';
+import {updateClientProgram, updateProgramsArray} from '../redux/action';
+import {RemoveModal} from '../components/RemoveModal';
 
 export const CurrentProgramScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
-  const programsArr = useSelector(state => state.programs);
-  const {itemData} = route.params;
+  const programs = useSelector(state => state.programs);
+  const {itemData, origin, clientId} = route.params;
+
   const [title, setTitle] = useState(itemData.title);
   const [program, setProgram] = useState(itemData.program);
-  const [isActiveSubmitBtn, setIsActiveSubmitBtn] = useState(false);
-  const [isToggleModal, setIsToggleModal] = useState(false);
+  const [isSubmitActive, setSubmitActive] = useState(false);
+  const [isConfigModalVisible, setConfigModalVisible] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [removeModalVisible, setRemoveModalVisible] = useState(false);
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    if (title !== itemData.title || program !== itemData.program) {
-      setIsActiveSubmitBtn(true);
-    } else {
-      setIsActiveSubmitBtn(false);
-    }
-  }, [title, program]);
+    setSubmitActive(title !== itemData.title || program !== itemData.program);
+  }, [title, program, itemData]);
 
-  const programDataObject = {
-    id: itemData.id,
-    title: title,
-    program: program,
+  const programData = useMemo(
+    () => ({
+      id: itemData.id,
+      title,
+      program,
+    }),
+    [title, program, itemData.id],
+  );
+
+  const showAnimatedSuccessMessage = () => {
+    setShowSuccessMessage(true);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+      easing: Easing.out(Easing.ease),
+    }).start(() => {
+      setTimeout(() => {
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+          easing: Easing.in(Easing.ease),
+        }).start(() => {
+          setShowSuccessMessage(false);
+        });
+      }, 2000);
+    });
   };
 
   const handleSubmit = () => {
-    const programIndex = programsArr.findIndex(el => el.id === itemData.id);
-    programsArr.splice(programIndex, 1, programDataObject);
-    dispatch(updateProgramsArray(programsArr));
-    setIsActiveSubmitBtn(false);
+    const updatedPrograms = programs.map(p =>
+      p.id === itemData.id ? programData : p,
+    );
+
+    if (origin === 'ClientsProfileScreen') {
+      dispatch(
+        updateClientProgram({
+          clientId,
+          programInfo: updatedPrograms[0],
+        }),
+      );
+    } else {
+      dispatch(updateProgramsArray(updatedPrograms));
+    }
+
+    setSubmitActive(false);
     Keyboard.dismiss();
+    showAnimatedSuccessMessage();
   };
 
-  const onPressConfig = () => {
-    setIsToggleModal(true);
+  const handleRemoveFromAllPrograms = () => {
+    const updatedPrograms = programs.filter(p => p.id !== itemData.id);
+    dispatch(updateProgramsArray(updatedPrograms));
+    navigation.goBack();
   };
 
-  const handleRemoveProgram = () => {
-    const newProgramsArr = programsArr.filter(prog => prog.id !== itemData.id);
-    dispatch(updateProgramsArray(newProgramsArr));
+  const handleRemoveFromClient = () => {
+    dispatch(
+      updateClientProgram({
+        clientId,
+        programInfo: {id: '', title: '', program: ''},
+      }),
+    );
+    navigation.goBack();
   };
 
   const handleNavigate = screen => {
     if (screen === 'PinningProgram') {
-      navigation.navigate(screen, {
-        itemData: programDataObject,
-      });
+      navigation.navigate(screen, {itemData: programData});
     } else {
       navigation.navigate(screen);
     }
@@ -64,18 +115,35 @@ export const CurrentProgramScreen = ({navigation, route}) => {
         setTitle={setTitle}
         program={program}
         setProgram={setProgram}
-        headerTitle={'Програма'}
-        onPressConfig={onPressConfig}
+        headerTitle="Програма"
+        origin={origin}
+        isActiveConfig={true}
+        onPressConfig={() => setConfigModalVisible(true)}
+        onPressRemove={() => setRemoveModalVisible(true)}
       />
-      <SafeInfoButton handleSubmit={handleSubmit} disabled={!isActiveSubmitBtn}>
+
+      {showSuccessMessage && (
+        <Animated.View style={[styles.toastContainer, {opacity: fadeAnim}]}>
+          <Text style={styles.toastText}>Зміни збережено</Text>
+        </Animated.View>
+      )}
+
+      <SafeInfoButton handleSubmit={handleSubmit} disabled={!isSubmitActive}>
         Зберегти
       </SafeInfoButton>
+
       <ConfigModal
         whereIsOpen="CurrentProgram"
-        visible={isToggleModal}
-        hideModal={() => setIsToggleModal(false)}
+        visible={isConfigModalVisible}
+        hideModal={() => setConfigModalVisible(false)}
         handleNavigate={handleNavigate}
-        handleRemove={handleRemoveProgram}
+        handleRemove={handleRemoveFromAllPrograms}
+      />
+
+      <RemoveModal
+        visible={removeModalVisible}
+        hideModal={() => setRemoveModalVisible(false)}
+        handleRemove={handleRemoveFromClient}
       />
     </SafeAreaView>
   );
@@ -84,10 +152,30 @@ export const CurrentProgramScreen = ({navigation, route}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    height: '100%',
     backgroundColor: '#232323',
     paddingTop: 8,
     paddingHorizontal: 20,
+  },
+  toastContainer: {
+    position: 'absolute',
+    bottom: 120,
+    left: 20,
+    right: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 20,
+    alignItems: 'center',
+    zIndex: 10,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.15,
+    shadowRadius: 25,
+    elevation: 6,
+  },
+  toastText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '600',
   },
 });

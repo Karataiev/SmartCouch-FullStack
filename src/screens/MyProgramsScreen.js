@@ -1,3 +1,4 @@
+import React from 'react';
 import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {useSelector} from 'react-redux';

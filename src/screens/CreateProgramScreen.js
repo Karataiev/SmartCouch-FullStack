@@ -1,39 +1,50 @@
+import React, {useState, useMemo, useCallback} from 'react';
 import {SafeAreaView, StyleSheet} from 'react-native';
-import {useEffect, useState} from 'react';
-import {SafeInfoButton} from '../components/SafeInfoButton';
 import {useDispatch} from 'react-redux';
-import {createNewProgram} from '../redux/action';
+import {useRoute, useNavigation} from '@react-navigation/native';
+import {createNewProgram, updateClientProgram} from '../redux/action';
 import {ProgramInputsComponent} from '../components/ProgramInputsComponent';
+import {SafeInfoButton} from '../components/SafeInfoButton';
 
-export const CreateProgramScreen = ({navigation}) => {
+export const CreateProgramScreen = () => {
   const dispatch = useDispatch();
+  const route = useRoute();
+  const navigation = useNavigation();
+
   const [title, setTitle] = useState('');
   const [program, setProgram] = useState('');
-  const [isActiveSubmitBtn, setIsActiveSubmitBtn] = useState(false);
 
-  useEffect(() => {
-    if (title.length !== 0 || program.length !== 0) {
-      setIsActiveSubmitBtn(true);
-    }
-  }, [title, program]);
+  const isActiveSubmitBtn =
+    title.trim().length > 0 || program.trim().length > 0;
 
-  const handleSubmit = () => {
+  const programObject = useMemo(() => {
     const uniqueID = `id-${Date.now().toString(36)}-${Math.random()
       .toString(36)
       .slice(2)}`;
-
-    const programObject = {
+    return {
       id: uniqueID,
-      title: title,
-      program: program,
+      title: title.trim(),
+      program: program.trim(),
     };
+  }, [title, program]);
+
+  const handleSubmit = useCallback(() => {
+    if (route.params?.from === 'ClientProfileScreen') {
+      dispatch(
+        updateClientProgram({
+          clientId: route.params?.clientId,
+          programInfo: programObject,
+        }),
+      );
+      navigation.goBack();
+    } else {
+      navigation.navigate('MyPrograms');
+    }
 
     dispatch(createNewProgram(programObject));
     setTitle('');
     setProgram('');
-    setIsActiveSubmitBtn(false);
-    navigation.navigate('MyPrograms');
-  };
+  }, [dispatch, navigation, route.params, programObject]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -43,7 +54,7 @@ export const CreateProgramScreen = ({navigation}) => {
         setTitle={setTitle}
         program={program}
         setProgram={setProgram}
-        headerTitle={'Створення програми'}
+        headerTitle="Створення програми"
       />
       <SafeInfoButton handleSubmit={handleSubmit} disabled={!isActiveSubmitBtn}>
         Створити програму

@@ -1,3 +1,4 @@
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ClientsEmptyComponent} from '../components/ClientsEmptyComponent';
 import {ClientsListComponent} from '../components/ClientsListComponent';

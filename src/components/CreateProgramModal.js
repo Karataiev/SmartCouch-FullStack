@@ -1,13 +1,11 @@
-import {useState} from 'react';
+import React from 'react';
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 export const CreateProgramModal = ({visible, hideModal, handleNavigate}) => {
   const handleCreateButton = () => {
-    handleNavigate();
+    handleNavigate('CreateProgram', 'ClientProfileScreen');
     hideModal();
   };
-
-  const handleConfirmRemoveClientButton = () => {};
 
   const handleCancelBtn = () => {
     hideModal();
@@ -44,7 +42,7 @@ export const CreateProgramModal = ({visible, hideModal, handleNavigate}) => {
         <TouchableOpacity
           style={styles.closeModalBtn}
           onPress={() => handleCancelBtn()}>
-          <Text style={styles.modalConfigsText}>Відміна</Text>
+          <Text style={[styles.modalConfigsText, {color: 'red'}]}>Відміна</Text>
         </TouchableOpacity>
       </View>
     </Modal>

@@ -1,101 +1,86 @@
-import {StyleSheet, Text, View} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
-import {useEffect, useState} from 'react';
+import React, {useState, useMemo} from 'react';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {ClientListItem} from './ClientListItem';
 import {ClientListPinningItem} from './ClientListPinningItem';
 import {SafeInfoButton} from './SafeInfoButton';
-import {useDispatch, useSelector} from 'react-redux';
 import {updateClientsArray} from '../redux/action';
 
 export const ClientList = ({items, navigation, pinningClient, route}) => {
   const dispatch = useDispatch();
   const clients = useSelector(state => state.clients);
 
-  const [letters, setLetters] = useState([]);
   const [pinnedClientIds, setPinnedClientIds] = useState([]);
 
-  useEffect(() => {
-    const getEveryItemFirstLetters = items.map(item => {
-      const firstLetter = item.client.surname.split('');
-      return firstLetter[0];
-    });
-    const uniqueArr = [...new Set(getEveryItemFirstLetters)];
-    setLetters(uniqueArr);
+  const letters = useMemo(() => {
+    const firstLetters = items.map(item =>
+      item.client.surname?.charAt(0).toUpperCase(),
+    );
+    return [...new Set(firstLetters)].sort();
   }, [items]);
 
   const handlePressClientItem = item => {
-    navigation.navigate('ClientsProfile', {
-      itemData: item,
-    });
+    navigation.navigate('ClientsProfile', {itemData: item});
   };
 
   const handlePressPinningClientItem = (item, setIsChecked, isChecked) => {
     setIsChecked(!isChecked);
-
-    if (pinnedClientIds.includes(item.id)) {
-      const updatedArray = pinnedClientIds.filter(id => id !== item.id);
-      setPinnedClientIds([...updatedArray]);
-    } else {
-      setPinnedClientIds([...pinnedClientIds, item.id]);
-    }
+    setPinnedClientIds(prev =>
+      isChecked ? prev.filter(id => id !== item.id) : [...prev, item.id],
+    );
   };
 
   const safePinnedProgram = () => {
     const {itemData} = route.params;
-    pinnedClientIds.forEach(id => {
-      clients.map((client, index) => {
-        if (client.id === id) {
-          client.program = {
+    const updatedClients = clients.map(client => {
+      if (pinnedClientIds.includes(client.id)) {
+        return {
+          ...client,
+          program: {
             title: itemData.title,
             program: itemData.program,
-          };
-          clients.splice(index, 1, client);
-          dispatch(updateClientsArray(clients));
-        }
-      });
+          },
+        };
+      }
+      return client;
     });
+
+    dispatch(updateClientsArray(updatedClients));
     navigation.goBack();
   };
 
   const renderClientListItem = (item, letter) => {
-    const firstLetter = item.client.surname.split('');
+    const surnameInitial = item.client.surname?.charAt(0).toUpperCase();
+    if (surnameInitial !== letter) return null;
 
-    if (letter.toUpperCase() === firstLetter[0].toUpperCase()) {
-      if (pinningClient) {
-        return (
-          <ClientListPinningItem
-            item={item}
-            key={item.id}
-            handlePress={handlePressPinningClientItem}
-          />
-        );
-      } else {
-        return (
-          <ClientListItem
-            item={item}
-            key={item.id}
-            handlePress={handlePressClientItem}
-          />
-        );
-      }
-    }
+    const Component = pinningClient ? ClientListPinningItem : ClientListItem;
+
+    return (
+      <Component
+        key={item.id}
+        item={item}
+        handlePress={
+          pinningClient ? handlePressPinningClientItem : handlePressClientItem
+        }
+      />
+    );
   };
 
   return (
     <>
       <ScrollView style={styles.listContainer}>
-        {letters.map(le => (
-          <View style={styles.itemContainer} key={le}>
-            <Text style={styles.alphabetHeader}>{le.toUpperCase()}</Text>
-
-            {items.map(item => renderClientListItem(item, le))}
+        {letters.map(letter => (
+          <View style={styles.itemContainer} key={letter}>
+            <Text style={styles.alphabetHeader}>{letter}</Text>
+            {items.map(item => renderClientListItem(item, letter))}
           </View>
         ))}
       </ScrollView>
+
       {pinningClient && (
         <SafeInfoButton
           disabled={pinnedClientIds.length === 0}
-          handleSubmit={() => safePinnedProgram()}>
+          handleSubmit={safePinnedProgram}>
           Закріпити
         </SafeInfoButton>
       )}

@@ -68,10 +68,11 @@ export const CurrentProgramScreen = ({navigation, route}) => {
     );
 
     if (origin === 'ClientsProfileScreen') {
+      const updatedProgram = updatedPrograms.find(p => p.id === itemData.id);
       dispatch(
         updateClientProgram({
           clientId,
-          programInfo: updatedPrograms[0],
+          programInfo: updatedProgram,
         }),
       );
     } else {
@@ -100,7 +101,7 @@ export const CurrentProgramScreen = ({navigation, route}) => {
   };
 
   const handleNavigate = screen => {
-    if (screen === 'PinningProgram') {
+    if (screen === 'ClientProgramAssignment') {
       navigation.navigate(screen, {itemData: programData});
     } else {
       navigation.navigate(screen);

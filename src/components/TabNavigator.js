@@ -12,21 +12,31 @@ import {TabItemContainer} from './TabItemContainer';
 import {TabPlusButton} from './TabPlusButton';
 import {PlusMenuModal} from './PlusMenuModal';
 
+const Tab = createBottomTabNavigator();
+
+// Пустий компонент, який нічого не рендерить
+const EmptyScreen = () => null;
+
 export const TabNavigator = ({navigation}) => {
-  const Tab = createBottomTabNavigator();
   const changeColor = focused => (focused ? '#FFFF65' : '#FFFFFF');
+
+  const renderTabIcon =
+    (tabName, SvgComponent) =>
+    ({focused}) =>
+      (
+        <TabItemContainer tabName={tabName} color={changeColor(focused)}>
+          <SvgComponent color={changeColor(focused)} />
+        </TabItemContainer>
+      );
 
   const screenOptions = {
     tabBarShowLabel: false,
     headerShown: false,
     tabBarStyle: {
       position: 'relative',
-      bottom: 0,
-      right: 0,
-      left: 0,
-      elevation: 0,
       height: 65,
       backgroundColor: 'black',
+      elevation: 0,
     },
   };
 
@@ -38,72 +48,38 @@ export const TabNavigator = ({navigation}) => {
           name="Plan"
           component={PlanTabScreen}
           options={{
-            tabBarIcon: ({focused}) => {
-              return (
-                <TabItemContainer tabName="План" color={changeColor(focused)}>
-                  <SvgPlan color={changeColor(focused)} />
-                </TabItemContainer>
-              );
-            },
+            tabBarIcon: renderTabIcon('План', SvgPlan),
           }}
         />
         <Tab.Screen
           name="Clients"
           component={ClientsTabScreen}
           options={{
-            tabBarIcon: ({focused}) => {
-              return (
-                <TabItemContainer
-                  tabName="Клієнти"
-                  color={changeColor(focused)}>
-                  <SvgClients color={changeColor(focused)} />
-                </TabItemContainer>
-              );
-            },
+            tabBarIcon: renderTabIcon('Клієнти', SvgClients),
           }}
         />
         <Tab.Screen
           name="btn"
-          component={''}
+          component={EmptyScreen}
           listeners={{
-            tabPress: e => {
-              e.preventDefault();
-            },
+            tabPress: e => e.preventDefault(), // Заборонити перемикання
           }}
           options={{
-            tabBarIcon: ({}) => {
-              return <TabPlusButton />;
-            },
+            tabBarIcon: () => <TabPlusButton />,
           }}
         />
         <Tab.Screen
           name="Templates"
           component={TemplatesTabScreen}
           options={{
-            tabBarIcon: ({focused}) => {
-              return (
-                <TabItemContainer
-                  tabName="Програми"
-                  color={changeColor(focused)}>
-                  <SvgTemplates color={changeColor(focused)} />
-                </TabItemContainer>
-              );
-            },
+            tabBarIcon: renderTabIcon('Програми', SvgTemplates),
           }}
         />
         <Tab.Screen
           name="Profile"
           component={ProfileTabScreen}
           options={{
-            tabBarIcon: ({focused}) => {
-              return (
-                <TabItemContainer
-                  tabName="Профіль"
-                  color={changeColor(focused)}>
-                  <SvgProfile color={changeColor(focused)} />
-                </TabItemContainer>
-              );
-            },
+            tabBarIcon: renderTabIcon('Профіль', SvgProfile),
           }}
         />
       </Tab.Navigator>

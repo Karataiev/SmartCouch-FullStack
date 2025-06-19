@@ -2,8 +2,8 @@ import React from 'react';
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 export const CreateProgramModal = ({visible, hideModal, handleNavigate}) => {
-  const handleCreateButton = () => {
-    handleNavigate('CreateProgram', 'ClientProfileScreen');
+  const handlePressButton = (screen, origin) => {
+    handleNavigate(screen, origin);
     hideModal();
   };
 
@@ -29,10 +29,16 @@ export const CreateProgramModal = ({visible, hideModal, handleNavigate}) => {
         <View style={styles.modalConfigsBlock}>
           <TouchableOpacity
             style={[styles.configBtn, styles.borderLine]}
-            onPress={() => handleCreateButton()}>
+            onPress={() =>
+              handlePressButton('CreateProgram', 'ClientProfileScreen')
+            }>
             <Text style={styles.modalConfigsText}>Створити нову програму</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.configBtn} onPress={() => {}}>
+          <TouchableOpacity
+            style={styles.configBtn}
+            onPress={() =>
+              handlePressButton('TemplatesChooseProgram', 'ClientProfileScreen')
+            }>
             <Text style={[styles.modalConfigsText]}>
               Обрати існуючу програму
             </Text>

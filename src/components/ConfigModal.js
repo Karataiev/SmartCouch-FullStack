@@ -13,7 +13,7 @@ export const ConfigModal = ({
 
   const handleFirstButton = () => {
     if (whereIsOpen === 'CurrentProgram') {
-      handleNavigate('PinningProgram');
+      handleNavigate('ClientProgramAssignment');
     } else {
       handleNavigate('FullClientData', 'modal');
     }

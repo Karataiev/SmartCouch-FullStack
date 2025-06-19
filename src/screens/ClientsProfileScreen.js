@@ -19,7 +19,7 @@ import {ActionButton} from '../components/ActionButton';
 export const ClientsProfileScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
   const clients = useSelector(state => state.clients);
-  const {itemData} = route.params;
+  const {itemData} = route?.params;
 
   const [isConfigModalVisible, setConfigModalVisible] = useState(false);
   const [isProgramModalVisible, setProgramModalVisible] = useState(false);
@@ -53,9 +53,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
     const baseParams =
       screen === 'FullClientData'
         ? {itemData, from: origin}
-        : screen === 'CreateProgram' && origin === 'ClientProfileScreen'
-        ? {from: origin, clientId: itemData.id}
-        : undefined;
+        : {from: origin, clientId: itemData.id};
 
     navigation.navigate(screen, baseParams);
   };
@@ -95,7 +93,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
           {!!link.length && (
             <View style={styles.connectionTypesContainer}>
               {link.map((el, idx) =>
-                !!el.link?.length ? (
+                el.link?.length ? (
                   <TouchableOpacity key={idx} style={styles.connectionType}>
                     {el.icon}
                   </TouchableOpacity>

@@ -106,7 +106,7 @@ export const CreateClientScreen = ({navigation, route}) => {
       dispatch(createNewClients(clientDataObject));
 
       if (data.isForPinning) {
-        navigation.navigate('PinningProgram', {
+        navigation.navigate('ClientProgramAssignment', {
           itemData: clientDataObject,
         });
       } else {

@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {ClientListItem} from './ClientListItem';
 import {ClientListPinningItem} from './ClientListPinningItem';
 import {SafeInfoButton} from './SafeInfoButton';
-import {updateClientsArray} from '../redux/action';
+import {updateClientProgram} from '../redux/action';
 
 export const ClientList = ({items, navigation, pinningClient, route}) => {
   const dispatch = useDispatch();
@@ -32,20 +32,29 @@ export const ClientList = ({items, navigation, pinningClient, route}) => {
 
   const safePinnedProgram = () => {
     const {itemData} = route.params;
-    const updatedClients = clients.map(client => {
+
+    clients.map(client => {
       if (pinnedClientIds.includes(client.id)) {
+        const clientProgram = {
+          id: itemData.id,
+          title: itemData.title,
+          program: itemData.program,
+        };
+
+        dispatch(
+          updateClientProgram({
+            clientId: client.id,
+            programInfo: clientProgram,
+          }),
+        );
+
         return {
           ...client,
-          program: {
-            title: itemData.title,
-            program: itemData.program,
-          },
+          program: clientProgram,
         };
       }
       return client;
     });
-
-    dispatch(updateClientsArray(updatedClients));
     navigation.goBack();
   };
 

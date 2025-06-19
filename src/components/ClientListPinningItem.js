@@ -1,7 +1,7 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SvgPhone} from '../assets/svgIcons/SvgPhone';
 import {CheckboxComponent} from './CheckboxComponent';
-import {useState} from 'react';
+import React, {useState} from 'react';
 
 export const ClientListPinningItem = ({item, handlePress}) => {
   const [isChecked, setIsChecked] = useState(false);

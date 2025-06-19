@@ -1,6 +1,6 @@
 import {StatusBar, StyleSheet, TextInput, View} from 'react-native';
 import {SvgSearch} from '../assets/svgIcons/SvgSearch';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {useSelector} from 'react-redux';
 import {ClientList} from './ClientList';
 import {HeaderWithBackButton} from './HeaderWithBackButton';

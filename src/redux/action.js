@@ -7,6 +7,7 @@ export const SAFE_USER_DATA = 'SAFE_USER_DATA';
 export const UPDATE_CLIENTS_ARRAY = 'UPDATE_CLIENTS_ARRAY';
 export const CREATE_NEW_PROGRAM = 'CREATE_NEW_PROGRAM';
 export const UPDATE_PROGRAMS_ARRAY = 'UPDATE_PROGRAMS_ARRAY';
+export const UPDATE_CLIENT_PROGRAM = 'UPDATE_CLIENT_PROGRAM';
 
 export const getCurrentTime = payload => {
   return {type: GET_CURRENT_TIME, payload: payload};
@@ -42,4 +43,8 @@ export const createNewProgram = payload => {
 
 export const updateProgramsArray = payload => {
   return {type: UPDATE_PROGRAMS_ARRAY, payload: payload};
+};
+
+export const updateClientProgram = payload => {
+  return {type: UPDATE_CLIENT_PROGRAM, payload: payload};
 };

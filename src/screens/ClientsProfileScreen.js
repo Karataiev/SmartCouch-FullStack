@@ -1,127 +1,146 @@
+import React, {useEffect, useState} from 'react';
 import {
-  FlatList,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {SvgCreateService} from '../assets/svgIcons/SvgCreateService';
 import {SvgClientsParameters} from '../assets/svgIcons/SvgClientsParameters';
-import {useDispatch, useSelector} from 'react-redux';
-import {useState} from 'react';
-import {ConfigModal} from '../components/ConfigModal';
 import {SvgProfile} from '../assets/tabIcons/SvgProfile';
+import {ConfigModal} from '../components/ConfigModal';
+import {CreateProgramModal} from '../components/CreateProgramModal';
 import {updateClientsArray} from '../redux/action';
+import {ActionButton} from '../components/ActionButton';
 
 export const ClientsProfileScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const clientsArr = useSelector(state => state.clients);
-  const {itemData} = route.params;
+  const clients = useSelector(state => state.clients);
+  const {itemData} = route?.params;
 
-  const [isToggleModal, setIsToggleModal] = useState(false);
+  const [isConfigModalVisible, setConfigModalVisible] = useState(false);
+  const [isProgramModalVisible, setProgramModalVisible] = useState(false);
+  const [currentClient, setCurrentClient] = useState(null);
 
-  const handleConfigBtn = () => {
-    setIsToggleModal(!isToggleModal);
-  };
+  useEffect(() => {
+    const client = clients.find(item => item.id === itemData.id);
+    setCurrentClient(client || null);
+  }, [clients, itemData]);
 
-  const handleRemoveClient = () => {
-    const newClientsArr = clientsArr.filter(
-      client => client.id !== itemData.id,
-    );
-    dispatch(updateClientsArray(newClientsArr));
-  };
+  const toggleModal = setter => () => setter(prev => !prev);
 
-  const handleNavigate = (screen, way = '') => {
-    if (screen === 'FullClientData') {
-      navigation.navigate(screen, {
-        itemData: itemData,
-        from: way,
+  const handleProgramPress = () => {
+    if (currentClient?.program?.program?.length) {
+      navigation.navigate('CurrentProgram', {
+        itemData: currentClient.program,
+        origin: 'ClientsProfileScreen',
+        clientId: currentClient.id,
       });
     } else {
-      navigation.navigate(screen);
+      setProgramModalVisible(true);
     }
   };
 
+  const handleRemoveClient = () => {
+    const updatedClients = clients.filter(client => client.id !== itemData.id);
+    dispatch(updateClientsArray(updatedClients));
+  };
+
+  const navigateToScreen = (screen, origin = '') => {
+    const baseParams =
+      screen === 'FullClientData'
+        ? {itemData, from: origin}
+        : {from: origin, clientId: itemData.id};
+
+    navigation.navigate(screen, baseParams);
+  };
+
+  if (!currentClient) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>Клієнта не знайдено</Text>
+      </View>
+    );
+  }
+
+  const {name, surname, number, link = []} = currentClient.client;
+
   return (
-    clientsArr.length !== 0 && (
-      <View style={styles.container}>
-        <View style={isToggleModal && styles.shadowContainer}>
-          <StatusBar backgroundColor={'#2E2E2E'} />
-          <View style={styles.mainInfoContainer}>
-            <HeaderWithBackButton
-              navigation={navigation}
-              configBtn={true}
-              goHome={true}
-              onPressConfig={handleConfigBtn}
-            />
+    <View style={styles.container}>
+      {(isConfigModalVisible || isProgramModalVisible) && (
+        <View style={styles.shadowOverlay} />
+      )}
 
-            <View style={styles.mainInfoBlock}>
-              <Text style={styles.clientName}>
-                {itemData.client.name} {itemData.client.surname}
-              </Text>
-              <Text style={styles.clientNumber}>{itemData.client.number}</Text>
+      <StatusBar backgroundColor="#2E2E2E" />
 
-              {itemData.client.link && (
-                <View style={styles.connectionTypesContainer}>
-                  {itemData.client.link.map(
-                    (el, idx) =>
-                      el.link.length !== 0 && (
-                        <TouchableOpacity
-                          style={styles.connectionType}
-                          key={idx}>
-                          {el.icon}
-                        </TouchableOpacity>
-                      ),
-                  )}
-                </View>
+      <View style={styles.mainInfoContainer}>
+        <HeaderWithBackButton
+          navigation={navigation}
+          configBtn
+          goHome
+          onPressConfig={toggleModal(setConfigModalVisible)}
+        />
+
+        <View style={styles.mainInfoBlock}>
+          <Text style={styles.clientName}>
+            {name} {surname}
+          </Text>
+          <Text style={styles.clientNumber}>{number}</Text>
+
+          {!!link.length && (
+            <View style={styles.connectionTypesContainer}>
+              {link.map((el, idx) =>
+                el.link?.length ? (
+                  <TouchableOpacity key={idx} style={styles.connectionType}>
+                    {el.icon}
+                  </TouchableOpacity>
+                ) : null,
               )}
-
-              <TouchableOpacity style={styles.createNotesBtn}>
-                <Text style={styles.createNotesTitle}>
-                  Записати на тренування
-                </Text>
-              </TouchableOpacity>
             </View>
-
-            <View style={styles.additionalInfoBlock}>
-              <TouchableOpacity
-                style={styles.additionalInfoBtn}
-                onPress={() => handleNavigate('FullClientData')}>
-                <SvgProfile color={'white'} />
-                <Text style={styles.additionalInfoTitle}>Про клієнта</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.additionalInfoBtn}
-                onPress={() => handleNavigate('MyPrograms')}>
-                <SvgCreateService />
-                <Text style={styles.additionalInfoTitle}>Програма</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.additionalInfoBtn}>
-                <SvgClientsParameters />
-                <Text style={styles.additionalInfoTitle}>Заміри</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {false ? (
-            <FlatList></FlatList>
-          ) : (
-            <Text style={styles.listOfNotesTitle}>
-              У клієнта ще не було записів
-            </Text>
           )}
+
+          <TouchableOpacity style={styles.createNotesBtn}>
+            <Text style={styles.createNotesTitle}>Записати на тренування</Text>
+          </TouchableOpacity>
         </View>
 
-        <ConfigModal
-          visible={isToggleModal}
-          hideModal={() => setIsToggleModal(false)}
-          handleNavigate={handleNavigate}
-          handleRemove={handleRemoveClient}
-        />
+        <View style={styles.additionalInfoBlock}>
+          <ActionButton
+            onPress={() => navigateToScreen('FullClientData')}
+            icon={<SvgProfile color="white" />}
+            title="Про клієнта"
+          />
+          <ActionButton
+            onPress={handleProgramPress}
+            icon={<SvgCreateService />}
+            title="Програма"
+          />
+          <ActionButton
+            onPress={() => {}}
+            icon={<SvgClientsParameters />}
+            title="Заміри"
+          />
+        </View>
       </View>
-    )
+
+      <Text style={styles.listOfNotesTitle}>У клієнта ще не було записів</Text>
+
+      <ConfigModal
+        visible={isConfigModalVisible}
+        hideModal={() => setConfigModalVisible(false)}
+        handleNavigate={navigateToScreen}
+        handleRemove={handleRemoveClient}
+      />
+
+      <CreateProgramModal
+        visible={isProgramModalVisible}
+        hideModal={() => setProgramModalVisible(false)}
+        handleNavigate={navigateToScreen}
+      />
+    </View>
   );
 };
 
@@ -129,17 +148,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#232323',
-    position: 'relative',
   },
-  shadowContainer: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    flex: 1,
+  shadowOverlay: {
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'black',
     opacity: 0.6,
-    width: '100%',
-    height: '100%',
   },
   mainInfoContainer: {
     paddingTop: 8,
@@ -167,7 +180,6 @@ const styles = StyleSheet.create({
     color: '#FFFF65',
   },
   connectionTypesContainer: {
-    display: 'flex',
     flexDirection: 'row',
     marginTop: 20,
     gap: 8,
@@ -188,29 +200,12 @@ const styles = StyleSheet.create({
   createNotesTitle: {
     textAlign: 'center',
     fontSize: 17,
-    lineHeight: 20,
     fontWeight: '700',
     color: 'black',
   },
   additionalInfoBlock: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  additionalInfoBtn: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 8,
-    height: 68,
-    width: '30%',
-    backgroundColor: '#3D3D3D',
-    borderRadius: 10,
-  },
-  additionalInfoTitle: {
-    fontSize: 11,
-    fontWeight: '400',
-    lineHeight: 13,
-    color: 'white',
   },
   listOfNotesTitle: {
     marginTop: 24,
@@ -219,5 +214,15 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#D1D1D1',
     textAlign: 'center',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#232323',
+  },
+  emptyText: {
+    color: '#D1D1D1',
+    fontSize: 16,
   },
 });

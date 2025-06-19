@@ -1,3 +1,4 @@
+import React from 'react';
 import {useState} from 'react';
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
@@ -12,7 +13,7 @@ export const ConfigModal = ({
 
   const handleFirstButton = () => {
     if (whereIsOpen === 'CurrentProgram') {
-      handleNavigate('PinningProgram');
+      handleNavigate('ClientProgramAssignment');
     } else {
       handleNavigate('FullClientData', 'modal');
     }

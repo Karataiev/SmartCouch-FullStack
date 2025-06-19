@@ -1,13 +1,11 @@
-import {useState} from 'react';
+import React from 'react';
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 export const CreateProgramModal = ({visible, hideModal, handleNavigate}) => {
-  const handleCreateButton = () => {
-    handleNavigate();
+  const handlePressButton = (screen, origin) => {
+    handleNavigate(screen, origin);
     hideModal();
   };
-
-  const handleConfirmRemoveClientButton = () => {};
 
   const handleCancelBtn = () => {
     hideModal();
@@ -31,10 +29,16 @@ export const CreateProgramModal = ({visible, hideModal, handleNavigate}) => {
         <View style={styles.modalConfigsBlock}>
           <TouchableOpacity
             style={[styles.configBtn, styles.borderLine]}
-            onPress={() => handleCreateButton()}>
+            onPress={() =>
+              handlePressButton('CreateProgram', 'ClientProfileScreen')
+            }>
             <Text style={styles.modalConfigsText}>Створити нову програму</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.configBtn} onPress={() => {}}>
+          <TouchableOpacity
+            style={styles.configBtn}
+            onPress={() =>
+              handlePressButton('TemplatesChooseProgram', 'ClientProfileScreen')
+            }>
             <Text style={[styles.modalConfigsText]}>
               Обрати існуючу програму
             </Text>
@@ -44,7 +48,7 @@ export const CreateProgramModal = ({visible, hideModal, handleNavigate}) => {
         <TouchableOpacity
           style={styles.closeModalBtn}
           onPress={() => handleCancelBtn()}>
-          <Text style={styles.modalConfigsText}>Відміна</Text>
+          <Text style={[styles.modalConfigsText, {color: 'red'}]}>Відміна</Text>
         </TouchableOpacity>
       </View>
     </Modal>

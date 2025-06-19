@@ -1,39 +1,38 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {SvgInProgressStatus} from '../assets/calendarIcons/SvgInProgressStatus';
 import {SvgWaitingStatus} from '../assets/calendarIcons/SvgWaitingStatus';
 import {SvgDoneStatus} from '../assets/calendarIcons/SvgDoneStatus';
 import {AgendaTimeLine} from './AgendaTimeLine';
 import {useSelector} from 'react-redux';
 
-export const AgendaItem = ({item}) => {
+const AgendaItemComponent = ({item}) => {
   const [itemHeight, setItemHeight] = useState();
-  const [status, setStatus] = useState();
-  const [statusIcon, setStatusIcon] = useState();
-  const [statusStyle, setStatusStyle] = useState();
 
   const currentTime = useSelector(state => state.currentTime);
-  const currentTimeArr = currentTime.split(':');
-  const timeIdArr = item.timeId.split(':');
+  const currentTimeArr = currentTime?.split(':') || [];
+  const timeIdArr = item.timeId.split(':') || [];
 
-  const getStyle = (title, icon, color) => {
-    setStatus(title);
-    setStatusIcon(icon);
-    setStatusStyle({color: color});
-  };
+  let status = '';
+  let statusIcon = null;
+  let statusStyle = {};
 
-  useEffect(() => {
-    if (currentTimeArr[0] > timeIdArr[0]) {
-      getStyle('Проведено', <SvgDoneStatus />, '#00CA8D');
-    } else if (currentTimeArr[0] < timeIdArr[0]) {
-      getStyle('Очікується', <SvgWaitingStatus />, '#FFFFFF');
-    } else {
-      getStyle('Триває', <SvgInProgressStatus />, '#F79605');
-    }
-  }, [currentTime]);
+  if (currentTimeArr[0] > timeIdArr[0]) {
+    status = 'Проведено';
+    statusIcon = <SvgDoneStatus />;
+    statusStyle = {color: '#00CA8D'};
+  } else if (currentTimeArr[0] < timeIdArr[0]) {
+    status = 'Очікується';
+    statusIcon = <SvgWaitingStatus />;
+    statusStyle = {color: '#FFFFFF'};
+  } else {
+    status = 'Триває';
+    statusIcon = <SvgInProgressStatus />;
+    statusStyle = {color: '#F79605'};
+  }
 
   const onLayout = event => {
-    const {x, y, height, width} = event.nativeEvent.layout;
+    const {height} = event.nativeEvent.layout;
     setItemHeight(height);
   };
 
@@ -44,10 +43,10 @@ export const AgendaItem = ({item}) => {
   };
 
   const renderTimeLine = timeId => {
-    const timeIdArr = timeId.split(':');
+    const timeIdArray = timeId.split(':');
     if (
-      +currentTimeArr[0] >= +timeIdArr[0] &&
-      +currentTimeArr[0] < +timeIdArr[0] + 1
+      +currentTimeArr[0] >= +timeIdArray[0] &&
+      +currentTimeArr[0] < +timeIdArray[0] + 1
     ) {
       const lineTopNumber = (+itemHeight / 60) * +currentTimeArr[1];
       return <AgendaTimeLine lineTopNumber={lineTopNumber} />;
@@ -55,7 +54,7 @@ export const AgendaItem = ({item}) => {
   };
 
   return (
-    <View style={styles.itemContainer} onLayout={e => onLayout(e)}>
+    <View style={styles.itemContainer} onLayout={onLayout}>
       <View style={styles.itemContainerHeader}>
         <Text style={styles.timeId}>{item.timeId}</Text>
         <View style={styles.borderLine} />
@@ -173,3 +172,5 @@ const styles = StyleSheet.create({
     gap: 2,
   },
 });
+
+export const AgendaItem = React.memo(AgendaItemComponent);

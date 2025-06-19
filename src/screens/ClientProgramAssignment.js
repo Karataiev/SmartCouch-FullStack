@@ -1,9 +1,10 @@
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useSelector} from 'react-redux';
 import {ClientsEmptyComponent} from '../components/ClientsEmptyComponent';
 import {PinningClientsListComponent} from '../components/PinningClientListComponent';
 
-export const PinningProgramScreen = ({navigation, route}) => {
+export const ClientProgramAssignmentScreen = ({navigation, route}) => {
   const clientsState = useSelector(state => state.clients);
   return (
     <View style={styles.container}>

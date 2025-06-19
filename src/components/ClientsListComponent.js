@@ -1,6 +1,6 @@
-import {StatusBar, StyleSheet, Text, TextInput, View} from 'react-native';
+import React, {useMemo, useState} from 'react';
+import {StatusBar, StyleSheet, TextInput, View} from 'react-native';
 import {SvgSearch} from '../assets/svgIcons/SvgSearch';
-import {useState} from 'react';
 import {useSelector} from 'react-redux';
 import {ClientList} from './ClientList';
 import {HeaderForScreens} from './HeaderForScreens';
@@ -13,26 +13,29 @@ export const ClientsListComponent = ({
   const [searchValue, setSearchValue] = useState('');
   const clients = useSelector(state => state.clients);
 
-  const sortByAlphabet = clients.sort((a, b) => {
-    if (a.client.surname < b.client.surname) {
-      return -1;
-    }
-    if (a.client.surname > b.client.surname) {
-      return 1;
-    }
-    return 0;
-  });
+  const filteredClients = useMemo(() => {
+    const sorted = [...clients].sort((a, b) => {
+      if (a.client.surname < b.client.surname) {
+        return -1;
+      }
+      if (a.client.surname > b.client.surname) {
+        return 1;
+      }
+      return 0;
+    });
 
-  const searchClient = sortByAlphabet.filter(el => {
     if (!searchValue) {
-      return el;
-    } else {
-      return (
-        el.client.surname.toLowerCase().includes(searchValue.toLowerCase()) ||
-        el.client.name.toLowerCase().includes(searchValue.toLowerCase())
-      );
+      return sorted;
     }
-  });
+
+    const lowerSearch = searchValue.toLowerCase();
+
+    return sorted.filter(
+      el =>
+        el.client.surname.toLowerCase().includes(lowerSearch) ||
+        el.client.name.toLowerCase().includes(lowerSearch),
+    );
+  }, [clients, searchValue]);
 
   return (
     <View style={styles.container}>
@@ -57,7 +60,7 @@ export const ClientsListComponent = ({
       </View>
 
       <ClientList
-        items={searchClient}
+        items={filteredClients}
         navigation={navigation}
         pinningClient={isForPinning}
       />
@@ -72,19 +75,6 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     width: '100%',
   },
-  header: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-  },
-  headerTitle: {
-    fontSize: 22,
-    lineHeight: 26,
-    fontWeight: '700',
-    color: 'white',
-  },
   searchContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -98,5 +88,6 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     color: 'white',
+    flex: 1,
   },
 });

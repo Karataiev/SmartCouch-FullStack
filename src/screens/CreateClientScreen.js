@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {ConnectionMethodModal} from '../components/ConnectionMethodModal';
 import {useDispatch} from 'react-redux';
@@ -63,6 +63,7 @@ export const CreateClientScreen = ({navigation, route}) => {
       notes: notes,
     },
     program: {
+      id: '',
       title: '',
       program: '',
     },
@@ -105,7 +106,7 @@ export const CreateClientScreen = ({navigation, route}) => {
       dispatch(createNewClients(clientDataObject));
 
       if (data.isForPinning) {
-        navigation.navigate('PinningProgram', {
+        navigation.navigate('ClientProgramAssignment', {
           itemData: clientDataObject,
         });
       } else {

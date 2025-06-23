@@ -9,6 +9,7 @@ import {
   CREATE_NEW_PROGRAM,
   UPDATE_PROGRAMS_ARRAY,
   UPDATE_CLIENT_PROGRAM,
+  UPDATE_CLIENT_PARAMETERS,
 } from './action';
 
 const defaultState = {
@@ -84,7 +85,18 @@ export const reducer = (state = defaultState, action) => {
         ),
       };
     }
+    case UPDATE_CLIENT_PARAMETERS: {
+      const {clientId, FirstParamsInfo, SecondParamsInfo} = action.payload;
 
+      return {
+        ...state,
+        clients: state.clients.map(client =>
+          client.id === clientId
+            ? {...client, params: [{...FirstParamsInfo}, {...SecondParamsInfo}]}
+            : client,
+        ),
+      };
+    }
     default:
       return state;
   }

@@ -6,10 +6,10 @@ import {SvgEditBtn} from '../assets/svgIcons/SvgEditBtn';
 import {SvgAddBtn} from '../assets/svgIcons/SvgAddBtn';
 import {SvgFastenBtn} from '../assets/svgIcons/SvgFastenBtn';
 import {SvgRemoveBtn} from '../assets/svgIcons/SvgRemoveBtn';
+import {useNavigation} from '@react-navigation/native';
 
 export const HeaderWithBackButton = ({
   children,
-  navigation,
   configBtn = false,
   editBtn = false,
   addBtn = false,
@@ -23,6 +23,8 @@ export const HeaderWithBackButton = ({
   onPressRemove,
   origin,
 }) => {
+  const navigation = useNavigation();
+
   const handleBackBtn = () => {
     if (goHome) {
       navigation.navigate('Clients');

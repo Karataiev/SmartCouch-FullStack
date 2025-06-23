@@ -44,6 +44,9 @@ export const ClientsProfileScreen = ({route, navigation}) => {
     }
   };
 
+  const handleClientParamsPress = () => {
+    navigation.navigate('ClientParameters', {clientId: currentClient.id});
+  };
   const handleRemoveClient = () => {
     const updatedClients = clients.filter(client => client.id !== itemData.id);
     dispatch(updateClientsArray(updatedClients));
@@ -119,7 +122,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
             title="Програма"
           />
           <ActionButton
-            onPress={() => {}}
+            onPress={() => handleClientParamsPress()}
             icon={<SvgClientsParameters />}
             title="Заміри"
           />

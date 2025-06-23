@@ -67,6 +67,7 @@ export const CreateClientScreen = ({navigation, route}) => {
       title: '',
       program: '',
     },
+    params: [],
   };
 
   useEffect(() => {

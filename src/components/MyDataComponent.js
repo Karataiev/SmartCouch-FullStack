@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import {CustomInput} from './CustomInput';
 import {CustomPhoneInput} from './CustomPhoneInput';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeInfoButton} from './SafeInfoButton';
 import {safeUserData} from '../redux/action';
 import {useDispatch, useSelector} from 'react-redux';

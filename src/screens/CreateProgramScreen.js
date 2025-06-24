@@ -29,14 +29,18 @@ export const CreateProgramScreen = () => {
   }, [title, program]);
 
   const handleSubmit = useCallback(() => {
-    if (route.params?.from === 'ClientProfileScreen') {
+    if (route.params?.clientId) {
       dispatch(
         updateClientProgram({
-          clientId: route.params?.clientId,
+          clientId: route.params.clientId,
           programInfo: programObject,
         }),
       );
-      navigation.goBack();
+
+      navigation.navigate('ProgramClientAssignment', {
+        origin: route.params?.origin || 'MyPrograms',
+        clientId: route.params?.clientId,
+      });
     } else {
       navigation.navigate('MyPrograms');
     }

@@ -7,21 +7,21 @@ import {
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {SvgBackBtn} from '../assets/svgIcons/SvgBackBtn';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {CheckboxComponent} from '../components/CheckboxComponent';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {updateClientProgram} from '../redux/action';
+import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 
 export const ProgramClientAssignmentScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const originWay = route.params?.origin;
+  const originWay = route.params?.origin || 'MyPrograms';
 
   const dispatch = useDispatch();
   const myProgramList = useSelector(state => state.programs);
-  const readyMadeProgramsList = useSelector(state => state.programs); // Замінити при потребі
+  const readyMadeProgramsList = useSelector(state => state.programs);
 
   const [programsArr, setProgramsArr] = useState([]);
   const [selectedProgramId, setSelectedProgramId] = useState(null);
@@ -29,12 +29,8 @@ export const ProgramClientAssignmentScreen = () => {
   useEffect(() => {
     const source =
       originWay === 'MyPrograms' ? myProgramList : readyMadeProgramsList;
-    setProgramsArr(source);
+    setProgramsArr(source || []);
   }, [originWay, myProgramList, readyMadeProgramsList]);
-
-  const handleBackBtn = () => {
-    navigation.goBack();
-  };
 
   const returnHeaderName = () => {
     return originWay === 'MyPrograms' ? 'Мої програми' : 'Готові програми';
@@ -58,6 +54,13 @@ export const ProgramClientAssignmentScreen = () => {
     );
 
     navigation.pop(2);
+  };
+
+  const onPressAdd = () => {
+    navigation.navigate('CreateProgram', {
+      origin: originWay,
+      clientId: route.params?.clientId,
+    });
   };
 
   const renderItem = ({item}) => (
@@ -86,12 +89,13 @@ export const ProgramClientAssignmentScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity style={styles.backButton} onPress={handleBackBtn}>
-          <SvgBackBtn />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>{returnHeaderName()}</Text>
-      </View>
+      <HeaderWithBackButton
+        navigation={navigation}
+        addBtn={programsArr.length === 0}
+        onPressAdd={onPressAdd}
+        goPrograms>
+        {returnHeaderName()}
+      </HeaderWithBackButton>
 
       <View style={styles.contentContainer}>
         <FlatList
@@ -108,9 +112,13 @@ export const ProgramClientAssignmentScreen = () => {
         />
       </View>
 
-      <SafeInfoButton disabled={!selectedProgramId} handleSubmit={handleSubmit}>
-        Закріпити
-      </SafeInfoButton>
+      {programsArr.length !== 0 && (
+        <SafeInfoButton
+          disabled={!selectedProgramId}
+          handleSubmit={handleSubmit}>
+          Закріпити
+        </SafeInfoButton>
+      )}
     </View>
   );
 };

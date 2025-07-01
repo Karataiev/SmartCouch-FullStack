@@ -1,6 +1,6 @@
 import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
 import {SvgRemoveItem} from '../assets/svgIcons/SvgRemoveItem';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SvgInstagram} from '../assets/svgIcons/SvgInstagram';
 import {SvgTelegram} from '../assets/svgIcons/SvgTelegram';
 import {SvgViber} from '../assets/svgIcons/SvgViber';

@@ -14,6 +14,7 @@ import {TemplatesChooseProgramScreen} from '../screens/TemplatesChooseProgramScr
 import {ClientProgramAssignmentScreen} from '../screens/ClientProgramAssignment';
 import {ProgramClientAssignmentScreen} from '../screens/ProgramClientAssignmentScreen';
 import {ClientParametersScreen} from '../screens/ClientParametersScreen';
+import {TrainingPlanningScreen} from '../screens/TrainingPlanningScreen';
 
 export const StackNavigator = () => {
   const Stack = createStackNavigator();
@@ -47,6 +48,10 @@ export const StackNavigator = () => {
       <Stack.Screen
         name="ClientParameters"
         component={ClientParametersScreen}
+      />
+      <Stack.Screen
+        name="TrainingPlanning"
+        component={TrainingPlanningScreen}
       />
     </Stack.Navigator>
   );

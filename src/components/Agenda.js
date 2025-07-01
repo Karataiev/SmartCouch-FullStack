@@ -1,4 +1,5 @@
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import {FlatList, StyleSheet, View} from 'react-native';
 import {agendaData} from '../mocks/agendaData';
 import {AgendaItem} from './AgendaItem';
 

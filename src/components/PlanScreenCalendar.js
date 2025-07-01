@@ -6,6 +6,7 @@ import {
   LayoutAnimation,
   UIManager,
   StatusBar,
+  Platform,
 } from 'react-native';
 import {
   CalendarProvider,
@@ -15,7 +16,7 @@ import {
 import {agendaItems} from '../mocks/agendaItems';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {SvgBell} from '../assets/calendarIcons/SvgBell';
-import {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {SvgArrowUp} from '../assets/calendarIcons/SvgArrowUp';
 import {SvgArrowDown} from '../assets/calendarIcons/SvgArrowDown';
 import {defaultLocaleConfig, monthArray} from '../helper/localeConfig';

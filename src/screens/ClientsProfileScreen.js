@@ -106,8 +106,12 @@ export const ClientsProfileScreen = ({route, navigation}) => {
             </View>
           )}
 
-          <TouchableOpacity style={styles.createNotesBtn}>
-            <Text style={styles.createNotesTitle}>Записати на тренування</Text>
+          <TouchableOpacity
+            style={styles.createNotesBtn}
+            onPress={() =>
+              navigateToScreen('TrainingPlanning', 'clientProfile')
+            }>
+            <Text style={styles.createNotesTitle}>Запланувати тренування</Text>
           </TouchableOpacity>
         </View>
 

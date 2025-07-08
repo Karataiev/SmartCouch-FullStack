@@ -1,17 +1,32 @@
 import {StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {TimestampWheelTrigger} from './TimestampWheelTrigger';
 import {SvgPlan} from '../assets/tabIcons/SvgPlan';
 import {SvgWatch} from '../assets/svgIcons/SvgWatch';
+import {DatePickerComponent} from './DatePickerComponent';
 
 export const DateAndTimeBlock = () => {
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+  const pressDatePickerBtn = () => {
+    setDatePickerVisibility(prev => !prev);
+  };
+
   return (
     <View style={styles.dateAndTimeBlock}>
-      <TimestampWheelTrigger
-        title="День запису"
-        icon={<SvgPlan color="white" />}>
-        14 березня 2024
-      </TimestampWheelTrigger>
+      <View style={styles.dateBlock}>
+        <TimestampWheelTrigger
+          pressDatePickerBtn={pressDatePickerBtn}
+          title="День запису"
+          icon={<SvgPlan color="white" />}>
+          14 березня 2024
+        </TimestampWheelTrigger>
+
+        <DatePickerComponent
+          isVisible={isDatePickerVisible}
+          pressDatePickerBtn={pressDatePickerBtn}
+        />
+      </View>
 
       <View style={styles.timeBlock}>
         <View style={[styles.timeItem, styles.timeItemFirstChild]}>
@@ -35,6 +50,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     marginTop: 24,
+  },
+  dateBlock: {
+    width: '100%',
   },
   timeBlock: {
     flexDirection: 'row',

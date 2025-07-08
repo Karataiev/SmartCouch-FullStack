@@ -10,6 +10,7 @@ import {
   UPDATE_PROGRAMS_ARRAY,
   UPDATE_CLIENT_PROGRAM,
   UPDATE_CLIENT_PARAMETERS,
+  GET_PINNING_CLIENT_ID,
 } from './action';
 
 const defaultState = {
@@ -27,6 +28,7 @@ const defaultState = {
   isCreateClientBtn: false,
   isPlusMenuBtn: false,
   programs: [],
+  pinningClientId: '',
 };
 
 export const reducer = (state = defaultState, action) => {
@@ -97,6 +99,11 @@ export const reducer = (state = defaultState, action) => {
         ),
       };
     }
+    case GET_PINNING_CLIENT_ID:
+      return {
+        ...state,
+        pinningClientId: action.payload,
+      };
     default:
       return state;
   }

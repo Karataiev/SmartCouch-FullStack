@@ -17,9 +17,11 @@ import {CustomPhoneInput} from '../components/CustomPhoneInput';
 import {CustomInput} from '../components/CustomInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {CreateConnectionMethod} from '../components/CreateConnectionMethod';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
-export const CreateClientScreen = ({navigation, route}) => {
-  const {data} = route.params;
+export const CreateClientScreen = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
 
   const dispatch = useDispatch();
   const [name, setName] = useState('');
@@ -106,9 +108,12 @@ export const CreateClientScreen = ({navigation, route}) => {
     if (isActiveSubmitBtn) {
       dispatch(createNewClients(clientDataObject));
 
-      if (data.isForPinning) {
+      if (route.params.data.isForPinning) {
         navigation.navigate('ClientProgramAssignment', {
           itemData: clientDataObject,
+          id: route.params.data.routeData.params.id,
+          origin: route.params.data.routeData.params.origin,
+          routeData: route.params.data.routeData,
         });
       } else {
         navigation.navigate('ClientsProfile', {

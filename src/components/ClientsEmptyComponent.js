@@ -1,12 +1,17 @@
+import React from 'react';
 import {StyleSheet, Text, View, Image, StatusBar} from 'react-native';
 import {HeaderForScreens} from './HeaderForScreens';
 import {HeaderWithBackButton} from './HeaderWithBackButton';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
-export const ClientsEmptyComponent = ({navigation, isForPinning}) => {
+export const ClientsEmptyComponent = ({isForPinning}) => {
+  const navigation = useNavigation();
+  const route = useRoute();
+
   const createNewClientBtn = () => {
     if (isForPinning) {
       navigation.navigate('CreateClient', {
-        data: {isForPinning: isForPinning},
+        data: {isForPinning: isForPinning, routeData: route},
       });
     } else {
       navigation.navigate('CreateClient', {
@@ -19,17 +24,11 @@ export const ClientsEmptyComponent = ({navigation, isForPinning}) => {
     <View style={styles.container}>
       <StatusBar backgroundColor={'#232323'} />
       {isForPinning ? (
-        <HeaderWithBackButton
-          navigation={navigation}
-          addBtn={true}
-          onPressAdd={createNewClientBtn}>
+        <HeaderWithBackButton addBtn={true} onPressAdd={createNewClientBtn}>
           Клієнти
         </HeaderWithBackButton>
       ) : (
-        <HeaderForScreens
-          navigation={navigation}
-          addBtn={true}
-          onPressAdd={createNewClientBtn}>
+        <HeaderForScreens addBtn={true} onPressAdd={createNewClientBtn}>
           Клієнти
         </HeaderForScreens>
       )}

@@ -4,10 +4,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import {ClientListItem} from './ClientListItem';
 import {ClientListPinningItem} from './ClientListPinningItem';
 import {SafeInfoButton} from './SafeInfoButton';
-import {updateClientProgram} from '../redux/action';
+import {getPinningClientId, updateClientProgram} from '../redux/action';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
-export const ClientList = ({items, navigation, pinningClient, route}) => {
+export const ClientList = ({items, pinningClient}) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const route = useRoute();
   const clients = useSelector(state => state.clients);
 
   const [pinnedClientIds, setPinnedClientIds] = useState([]);
@@ -31,30 +34,34 @@ export const ClientList = ({items, navigation, pinningClient, route}) => {
   };
 
   const safePinnedProgram = () => {
-    const {itemData} = route.params;
+    const routeData = route.params;
 
-    clients.map(client => {
-      if (pinnedClientIds.includes(client.id)) {
-        const clientProgram = {
-          id: itemData.id,
-          title: itemData.title,
-          program: itemData.program,
-        };
+    if (routeData?.origin === 'TrainingPlanningContent') {
+      dispatch(getPinningClientId(...pinnedClientIds));
+    } else {
+      clients.map(client => {
+        if (pinnedClientIds.includes(client.id)) {
+          const clientProgram = {
+            id: routeData.itemData.id,
+            title: routeData.itemData.title,
+            program: routeData.itemData.program,
+          };
 
-        dispatch(
-          updateClientProgram({
-            clientId: client.id,
-            programInfo: clientProgram,
-          }),
-        );
+          dispatch(
+            updateClientProgram({
+              clientId: client.id,
+              programInfo: clientProgram,
+            }),
+          );
 
-        return {
-          ...client,
-          program: clientProgram,
-        };
-      }
-      return client;
-    });
+          return {
+            ...client,
+            program: clientProgram,
+          };
+        }
+        return client;
+      });
+    }
     navigation.goBack();
   };
 

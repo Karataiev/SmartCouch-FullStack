@@ -1,12 +1,17 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 
-export const TimestampWheelTrigger = ({title, children, icon}) => {
+export const TimestampWheelTrigger = ({
+  title,
+  children,
+  icon,
+  pressDatePickerBtn,
+}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
 
-      <TouchableOpacity style={styles.pickDateBtn}>
+      <TouchableOpacity style={styles.pickDateBtn} onPress={pressDatePickerBtn}>
         {icon}
         <Text style={styles.dateInfo}>{children}</Text>
       </TouchableOpacity>

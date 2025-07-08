@@ -5,11 +5,7 @@ import {useSelector} from 'react-redux';
 import {ClientList} from './ClientList';
 import {HeaderWithBackButton} from './HeaderWithBackButton';
 
-export const PinningClientsListComponent = ({
-  navigation,
-  isForPinning,
-  route,
-}) => {
+export const PinningClientsListComponent = ({isForPinning}) => {
   const [searchValue, setSearchValue] = useState('');
   const clients = useSelector(state => state.clients);
 
@@ -38,9 +34,7 @@ export const PinningClientsListComponent = ({
     <View style={styles.container}>
       <StatusBar backgroundColor={'#232323'} />
 
-      <HeaderWithBackButton navigation={navigation}>
-        Закріпити за клієнтом
-      </HeaderWithBackButton>
+      <HeaderWithBackButton>Оберіть клієнта</HeaderWithBackButton>
 
       <View style={styles.searchContainer}>
         <SvgSearch />
@@ -53,12 +47,7 @@ export const PinningClientsListComponent = ({
         />
       </View>
 
-      <ClientList
-        items={searchClient}
-        navigation={navigation}
-        pinningClient={isForPinning}
-        route={route}
-      />
+      <ClientList items={searchClient} pinningClient={isForPinning} />
     </View>
   );
 };

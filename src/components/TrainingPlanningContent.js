@@ -5,11 +5,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {TrainingPlanningItemLayout} from './TrainingPlanningItemLayout';
 import {TrainingTypeCheckbox} from './TrainingTypeCheckbox';
 import {SvgArrowRight} from '../assets/svgIcons/SvgArrowRight';
 import {SafeInfoButton} from './SafeInfoButton';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {ClientListItem} from './ClientListItem';
 
 const COLORS = {
   personal: '#00704F',
@@ -17,12 +20,52 @@ const COLORS = {
 };
 
 export const TrainingPlanningContent = () => {
+  const clientId = useSelector(state => state.pinningClientId);
+  const clientsArr = useSelector(state => state.clients);
+
+  const navigation = useNavigation();
+
   const [selectedType, setSelectedType] = useState(null);
   const [trainingName, setTrainingName] = useState('');
   const [location, setLocation] = useState('');
+  const [pinnedClient, setPinnedClient] = useState(null);
 
   const placeholderName = 'Split/Trx/Functional etc.';
   const placeholderLocation = 'Вкажіть локацію';
+  const uniqueID = `id-${Date.now().toString(36)}-${Math.random()
+    .toString(36)
+    .slice(2)}`;
+
+  useEffect(() => {
+    if (clientId.length !== 0) {
+      const foundClient = clientsArr.find(item => item.id === clientId);
+      setPinnedClient(foundClient);
+    }
+  }, [clientId, clientsArr]);
+
+  const createTrainingPlan = () => {
+    const trainingPlanObject = {
+      id: uniqueID,
+      date: [],
+      time: [],
+
+      trainingName: trainingName,
+      trainingType: selectedType,
+      client: pinnedClient,
+      location: location,
+    };
+  };
+
+  const handleGetClient = () => {
+    navigation.navigate('ClientProgramAssignment', {
+      id: uniqueID,
+      origin: 'TrainingPlanningContent',
+    });
+  };
+
+  const handlePressClientItem = item => {
+    navigation.navigate('ClientsProfile', {itemData: pinnedClient});
+  };
 
   return (
     <>
@@ -59,10 +102,19 @@ export const TrainingPlanningContent = () => {
         </TrainingPlanningItemLayout>
 
         <TrainingPlanningItemLayout title="Клієнт">
-          <TouchableOpacity style={styles.getClientBtn}>
-            <Text style={styles.getClientTitle}>Обрати клієнта</Text>
-            <SvgArrowRight />
-          </TouchableOpacity>
+          {pinnedClient ? (
+            <ClientListItem
+              item={pinnedClient}
+              handlePress={handlePressClientItem}
+            />
+          ) : (
+            <TouchableOpacity
+              style={styles.getClientBtn}
+              onPress={handleGetClient}>
+              <Text style={styles.getClientTitle}>Обрати клієнта</Text>
+              <SvgArrowRight />
+            </TouchableOpacity>
+          )}
         </TrainingPlanningItemLayout>
 
         <TrainingPlanningItemLayout title="Локація">
@@ -77,7 +129,7 @@ export const TrainingPlanningContent = () => {
         </TrainingPlanningItemLayout>
       </View>
 
-      <SafeInfoButton disabled={true} handleSubmit={() => {}}>
+      <SafeInfoButton disabled={false} handleSubmit={createTrainingPlan}>
         Створити запис
       </SafeInfoButton>
     </>

@@ -1,3 +1,4 @@
+import React from 'react';
 import {Modal, StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {isPlusMenuBtn} from '../redux/action';
@@ -43,7 +44,7 @@ export const PlusMenuModal = ({navigation}) => {
           <PlusMenuItem
             title={'Запис тренування'}
             icon={<SvgTrainingRecord />}
-            onPress={() => handleCreate()}
+            onPress={() => handleCreate('TrainingPlanning')}
           />
           <PlusMenuItem
             title={'Клієнта'}

@@ -13,7 +13,7 @@ import {SvgClientsParameters} from '../assets/svgIcons/SvgClientsParameters';
 import {SvgProfile} from '../assets/tabIcons/SvgProfile';
 import {ConfigModal} from '../components/ConfigModal';
 import {CreateProgramModal} from '../components/CreateProgramModal';
-import {updateClientsArray} from '../redux/action';
+import {getPinningClientId, updateClientsArray} from '../redux/action';
 import {ActionButton} from '../components/ActionButton';
 
 export const ClientsProfileScreen = ({route, navigation}) => {
@@ -62,6 +62,11 @@ export const ClientsProfileScreen = ({route, navigation}) => {
     navigation.navigate(screen, baseParams);
   };
 
+  const handlePlaningBtn = (screen, origin) => {
+    dispatch(getPinningClientId(itemData.id));
+    navigateToScreen(screen, origin);
+  };
+
   if (!currentClient) {
     return (
       <View style={styles.emptyContainer}>
@@ -82,7 +87,6 @@ export const ClientsProfileScreen = ({route, navigation}) => {
 
       <View style={styles.mainInfoContainer}>
         <HeaderWithBackButton
-          navigation={navigation}
           configBtn
           goHome
           onPressConfig={toggleModal(setConfigModalVisible)}
@@ -109,7 +113,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
           <TouchableOpacity
             style={styles.createNotesBtn}
             onPress={() =>
-              navigateToScreen('TrainingPlanning', 'clientProfile')
+              handlePlaningBtn('TrainingPlanning', 'clientProfile')
             }>
             <Text style={styles.createNotesTitle}>Запланувати тренування</Text>
           </TouchableOpacity>

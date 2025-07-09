@@ -9,6 +9,7 @@ import React from 'react';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {DateAndTimeBlock} from '../components/DateAndTimeBlock';
 import {TrainingPlanningContent} from '../components/TrainingPlanningContent';
+import {DayAndTimeBlock} from '../components/DayAndTimeBlock';
 
 export const TrainingPlanningScreen = () => {
   return (
@@ -17,6 +18,7 @@ export const TrainingPlanningScreen = () => {
         <StatusBar backgroundColor="#232323" />
         <HeaderWithBackButton>Створення запису</HeaderWithBackButton>
         <DateAndTimeBlock />
+        <DayAndTimeBlock />
         <TrainingPlanningContent />
       </ScrollView>
     </TouchableWithoutFeedback>

@@ -16,7 +16,7 @@ export const DatePickerComponent = ({isVisible, pressDatePickerBtn}) => {
 
   const heightInterpolate = animatedHeight.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 260], // висота видимого компоненту (можеш змінити)
+    outputRange: [0, 260],
   });
 
   return (

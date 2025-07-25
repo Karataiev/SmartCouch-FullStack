@@ -6,19 +6,17 @@ import {
   LayoutAnimation,
   UIManager,
   StatusBar,
+  Platform,
 } from 'react-native';
-import {
-  CalendarProvider,
-  WeekCalendar,
-  CalendarList,
-} from 'react-native-calendars';
+import {CalendarProvider, WeekCalendar} from 'react-native-calendars';
 import {agendaItems} from '../mocks/agendaItems';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {SvgBell} from '../assets/calendarIcons/SvgBell';
-import {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {SvgArrowUp} from '../assets/calendarIcons/SvgArrowUp';
 import {SvgArrowDown} from '../assets/calendarIcons/SvgArrowDown';
 import {defaultLocaleConfig, monthArray} from '../helper/localeConfig';
+import {CustomMonthCalendar} from './CustomMonthCalendar';
 
 if (
   Platform.OS === 'android' &&
@@ -36,26 +34,6 @@ export const PlanScreenCalendar = () => {
   const [isOpenFullCalendar, setIsOpenFullCalendar] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(monthArray[data.getMonth()]);
   const [currentYear, setCurrentYear] = useState(data.getFullYear());
-
-  // const currentDayValue = data.getDate();
-  // setCurrentMonth(monthArray[data.getMonth()]);
-  // setCurrentYear(data.getFullYear());
-
-  // const getRightInfo = num => {
-  //   return num.toString().length === 1 ? '0' + num.toString() : num;
-  // };
-  // const currentDate = `${data.getFullYear()}-${getRightInfo(
-  //   Number(data.getMonth()) + 1,
-  // )}-${getRightInfo(currentDayValue)}`;
-
-  // useEffect(() => {
-  //   LayoutAnimation.configureNext({
-  //     duration: 1500,
-  //     create: {type: 'linear', property: 'opacity'},
-  //     update: {type: 'spring', springDamping: 1},
-  //     delete: {type: 'linear', property: 'opacity'},
-  //   });
-  // }, []);
 
   const openCloseFullCalendar = () => {
     LayoutAnimation.configureNext({
@@ -100,14 +78,7 @@ export const PlanScreenCalendar = () => {
         {!isOpenFullCalendar ? (
           <WeekCalendar firstDay={1} theme={styles.weekCalendarTheme} />
         ) : (
-          <CalendarList
-            firstDay={1}
-            horizontal={true}
-            theme={styles.monthCalendarTheme}
-            renderHeader={() => null}
-            onVisibleMonthsChange={months => getActualData(months)}
-            pagingEnabled={true}
-          />
+          <CustomMonthCalendar getActualData={getActualData} />
         )}
       </CalendarProvider>
     </SafeAreaView>
@@ -168,19 +139,6 @@ const styles = StyleSheet.create({
       color: 'white',
       fontSize: 17,
       fontWeight: 'bold',
-    },
-  },
-  monthCalendarTheme: {
-    calendarBackground: 'transparent',
-    textDayHeaderFontSize: 15,
-    selectedDayBackgroundColor: 'white',
-    selectedDayTextColor: 'black',
-    todayBackgroundColor: '#FFFF65',
-    todayTextColor: 'black',
-
-    textDayStyle: {
-      color: 'white',
-      fontSize: 15,
     },
   },
 });

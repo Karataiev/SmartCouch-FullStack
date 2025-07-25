@@ -9,6 +9,8 @@ export const CREATE_NEW_PROGRAM = 'CREATE_NEW_PROGRAM';
 export const UPDATE_PROGRAMS_ARRAY = 'UPDATE_PROGRAMS_ARRAY';
 export const UPDATE_CLIENT_PROGRAM = 'UPDATE_CLIENT_PROGRAM';
 export const UPDATE_CLIENT_PARAMETERS = 'UPDATE_CLIENT_PARAMETERS';
+export const GET_PINNING_CLIENT_ID = 'GET_PINNING_CLIENT_ID';
+export const CREATE_WORKOUT_PLAN = 'CREATE_WORKOUT_PLAN';
 
 export const getCurrentTime = payload => {
   return {type: GET_CURRENT_TIME, payload: payload};
@@ -52,4 +54,12 @@ export const updateClientProgram = payload => {
 
 export const updateClientParameters = payload => {
   return {type: UPDATE_CLIENT_PARAMETERS, payload: payload};
+};
+
+export const getPinningClientId = payload => {
+  return {type: GET_PINNING_CLIENT_ID, payload: payload};
+};
+
+export const createWorkoutPlan = payload => {
+  return {type: CREATE_WORKOUT_PLAN, payload: payload};
 };

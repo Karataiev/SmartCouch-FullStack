@@ -4,22 +4,14 @@ import {useSelector} from 'react-redux';
 import {ClientsEmptyComponent} from '../components/ClientsEmptyComponent';
 import {PinningClientsListComponent} from '../components/PinningClientListComponent';
 
-export const ClientProgramAssignmentScreen = ({navigation, route}) => {
+export const ClientProgramAssignmentScreen = () => {
   const clientsState = useSelector(state => state.clients);
   return (
     <View style={styles.container}>
       {clientsState.length === 0 ? (
-        <ClientsEmptyComponent
-          navigation={navigation}
-          isForPinning={true}
-          route={route}
-        />
+        <ClientsEmptyComponent isForPinning={true} />
       ) : (
-        <PinningClientsListComponent
-          navigation={navigation}
-          isForPinning={true}
-          route={route}
-        />
+        <PinningClientsListComponent isForPinning={true} />
       )}
     </View>
   );

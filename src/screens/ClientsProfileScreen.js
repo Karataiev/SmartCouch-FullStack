@@ -13,7 +13,7 @@ import {SvgClientsParameters} from '../assets/svgIcons/SvgClientsParameters';
 import {SvgProfile} from '../assets/tabIcons/SvgProfile';
 import {ConfigModal} from '../components/ConfigModal';
 import {CreateProgramModal} from '../components/CreateProgramModal';
-import {updateClientsArray} from '../redux/action';
+import {getPinningClientId, updateClientsArray} from '../redux/action';
 import {ActionButton} from '../components/ActionButton';
 
 export const ClientsProfileScreen = ({route, navigation}) => {
@@ -47,6 +47,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
   const handleClientParamsPress = () => {
     navigation.navigate('ClientParameters', {clientId: currentClient.id});
   };
+
   const handleRemoveClient = () => {
     const updatedClients = clients.filter(client => client.id !== itemData.id);
     dispatch(updateClientsArray(updatedClients));
@@ -59,6 +60,11 @@ export const ClientsProfileScreen = ({route, navigation}) => {
         : {from: origin, clientId: itemData.id};
 
     navigation.navigate(screen, baseParams);
+  };
+
+  const handlePlaningBtn = (screen, origin) => {
+    dispatch(getPinningClientId(itemData.id));
+    navigateToScreen(screen, origin);
   };
 
   if (!currentClient) {
@@ -81,7 +87,6 @@ export const ClientsProfileScreen = ({route, navigation}) => {
 
       <View style={styles.mainInfoContainer}>
         <HeaderWithBackButton
-          navigation={navigation}
           configBtn
           goHome
           onPressConfig={toggleModal(setConfigModalVisible)}
@@ -105,8 +110,12 @@ export const ClientsProfileScreen = ({route, navigation}) => {
             </View>
           )}
 
-          <TouchableOpacity style={styles.createNotesBtn}>
-            <Text style={styles.createNotesTitle}>Записати на тренування</Text>
+          <TouchableOpacity
+            style={styles.createNotesBtn}
+            onPress={() =>
+              handlePlaningBtn('TrainingPlanning', 'clientProfile')
+            }>
+            <Text style={styles.createNotesTitle}>Запланувати тренування</Text>
           </TouchableOpacity>
         </View>
 
@@ -122,7 +131,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
             title="Програма"
           />
           <ActionButton
-            onPress={() => handleClientParamsPress()}
+            onPress={handleClientParamsPress}
             icon={<SvgClientsParameters />}
             title="Заміри"
           />
@@ -141,7 +150,12 @@ export const ClientsProfileScreen = ({route, navigation}) => {
       <CreateProgramModal
         visible={isProgramModalVisible}
         hideModal={() => setProgramModalVisible(false)}
-        handleNavigate={navigateToScreen}
+        handleNavigate={(screen, origin) =>
+          navigation.navigate(screen, {
+            origin,
+            clientId: currentClient.id,
+          })
+        }
       />
     </View>
   );

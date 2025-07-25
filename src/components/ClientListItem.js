@@ -1,3 +1,4 @@
+import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SvgPhone} from '../assets/svgIcons/SvgPhone';
 import {SvgArrowRight} from '../assets/svgIcons/SvgArrowRight';

@@ -1,17 +1,17 @@
-import {StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-import {SvgInProgressStatus} from '../assets/calendarIcons/SvgInProgressStatus';
-import {SvgWaitingStatus} from '../assets/calendarIcons/SvgWaitingStatus';
-import {SvgDoneStatus} from '../assets/calendarIcons/SvgDoneStatus';
-import {AgendaTimeLine} from './AgendaTimeLine';
 import {useSelector} from 'react-redux';
+import {SvgDoneStatus} from '../assets/calendarIcons/SvgDoneStatus';
+import {SvgWaitingStatus} from '../assets/calendarIcons/SvgWaitingStatus';
+import {SvgInProgressStatus} from '../assets/calendarIcons/SvgInProgressStatus';
+import {StyleSheet, Text, View} from 'react-native';
+import {AgendaTimeLine} from './AgendaTimeLine';
 
 const AgendaItemComponent = ({item}) => {
-  const [itemHeight, setItemHeight] = useState();
+  const [itemHeight, setItemHeight] = useState(null);
 
   const currentTime = useSelector(state => state.currentTime);
   const currentTimeArr = currentTime?.split(':') || [];
-  const timeIdArr = item.timeId.split(':') || [];
+  const timeIdArr = item?.timeId?.split(':') || ['00', '00'];
 
   let status = '';
   let statusIcon = null;
@@ -37,12 +37,14 @@ const AgendaItemComponent = ({item}) => {
   };
 
   const returnTypeOfTrainingStyle = type => {
-    return type === 'PERSONAL'
+    return type === 'personal'
       ? {backgroundColor: '#00704F'}
       : {backgroundColor: '#4195B9'};
   };
 
   const renderTimeLine = timeId => {
+    if (!timeId) return null;
+
     const timeIdArray = timeId.split(':');
     if (
       +currentTimeArr[0] >= +timeIdArray[0] &&
@@ -51,6 +53,8 @@ const AgendaItemComponent = ({item}) => {
       const lineTopNumber = (+itemHeight / 60) * +currentTimeArr[1];
       return <AgendaTimeLine lineTopNumber={lineTopNumber} />;
     }
+
+    return null;
   };
 
   return (
@@ -67,20 +71,24 @@ const AgendaItemComponent = ({item}) => {
           item.trainings.map((el, index) => (
             <View style={styles.item} key={index}>
               <View style={styles.itemCommonStyles}>
-                <Text style={styles.itemFirstText}>{el.nameOfTraining}</Text>
+                <Text style={styles.itemFirstText}>{el.trainingName}</Text>
                 <Text
                   style={[
                     styles.itemSecondText,
-                    returnTypeOfTrainingStyle(el.typeOfTraining),
+                    returnTypeOfTrainingStyle(el.trainingType),
                   ]}>
-                  {el.typeOfTraining}
+                  {el.trainingType.toUpperCase()}
                 </Text>
               </View>
               <View style={[styles.itemCommonStyles, styles.itemSecondBlock]}>
-                <Text style={styles.itemText}>{el.nameOfClient}</Text>
+                <Text style={styles.itemText}>
+                  {`${el.client.client.name} ${el.client.client.surname}`.toUpperCase()}
+                </Text>
               </View>
               <View style={[styles.itemCommonStyles, styles.itemThirdBlock]}>
-                <Text style={styles.itemTimeText}>{el.timeOfTraining}</Text>
+                <Text style={styles.itemTimeText}>
+                  {`${el.oneTimeTrainingDate.time[0]} - ${el.oneTimeTrainingDate.time[1]}`}
+                </Text>
                 <View style={styles.itemStatusBlock}>
                   {statusIcon}
                   <Text style={[styles.itemText, statusStyle]}>{status}</Text>
@@ -97,6 +105,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     position: 'relative',
     width: '100%',
+    minHeight: 80,
   },
   itemContainerHeader: {
     display: 'flex',

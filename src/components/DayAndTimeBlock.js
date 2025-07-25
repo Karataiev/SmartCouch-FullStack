@@ -6,21 +6,51 @@ import {TimeInputComponent} from './TimeInputComponent';
 import {HidenDayAndTimeBlock} from './HidenDayAndTimeBlock';
 import {dayTimeStyles} from '../shared/dayTimeStyles';
 
-export const DayAndTimeBlock = () => {
+export const DayAndTimeBlock = ({setConstantDate}) => {
   const [isChecked, setIsChecked] = useState(false);
   const [selectedDays, setSelectedDays] = useState([]);
+  const [dayTimeMap, setDayTimeMap] = useState({});
+
   const [contentHeight, setContentHeight] = useState(0);
   const animatedHeight = useRef(new Animated.Value(0)).current;
 
   const toggleBlock = () => setIsChecked(prev => !prev);
 
   const toggleDay = day => {
-    setSelectedDays(prev =>
-      prev.includes(day.id)
+    setSelectedDays(prev => {
+      const updated = prev.includes(day.id)
         ? prev.filter(id => id !== day.id)
-        : [...prev, day.id],
-    );
+        : [...prev, day.id];
+
+      if (!prev.includes(day.id)) {
+        setDayTimeMap(map => ({
+          ...map,
+          [day.id]: ['', ''],
+        }));
+      }
+
+      return updated;
+    });
   };
+
+  const handleTimeChange = (dayId, from, to) => {
+    setDayTimeMap(map => ({
+      ...map,
+      [dayId]: [from, to],
+    }));
+  };
+
+  useEffect(() => {
+    if (isChecked) {
+      const result = selectedDays.map(dayId => ({
+        day: dayId,
+        time: dayTimeMap[dayId] || ['', ''],
+      }));
+      setConstantDate(result);
+    } else {
+      setConstantDate([]);
+    }
+  }, [selectedDays, dayTimeMap, isChecked]);
 
   useEffect(() => {
     Animated.timing(animatedHeight, {
@@ -69,14 +99,22 @@ export const DayAndTimeBlock = () => {
 
           {selectedDays.length > 0 && (
             <View style={dayTimeStyles.selectedDaysContainer}>
-              {weekDaysObj
-                .filter(day => selectedDays.includes(day.id))
-                .map(day => (
-                  <View key={day.id} style={dayTimeStyles.listItem}>
-                    <Text style={dayTimeStyles.listItemText}>{day.title}</Text>
-                    <TimeInputComponent />
+              {selectedDays.map(dayId => {
+                const dayObj = weekDaysObj.find(d => d.id === dayId);
+                const [from, to] = dayTimeMap[dayId] || ['', ''];
+                return (
+                  <View key={dayId} style={dayTimeStyles.listItem}>
+                    <Text style={dayTimeStyles.listItemText}>
+                      {dayObj?.title || dayId}
+                    </Text>
+                    <TimeInputComponent
+                      timeFrom={from}
+                      timeTo={to}
+                      onChange={(from, to) => handleTimeChange(dayId, from, to)}
+                    />
                   </View>
-                ))}
+                );
+              })}
             </View>
           )}
         </View>

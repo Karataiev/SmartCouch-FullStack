@@ -1,44 +1,103 @@
-import {StyleSheet, View} from 'react-native';
-import React, {useState} from 'react';
+import {StyleSheet, Text, TextInput, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {TimestampWheelTrigger} from './TimestampWheelTrigger';
 import {SvgPlan} from '../assets/tabIcons/SvgPlan';
 import {SvgWatch} from '../assets/svgIcons/SvgWatch';
 import {DatePickerComponent} from './DatePickerComponent';
 
-export const DateAndTimeBlock = () => {
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+export const DateAndTimeBlock = ({
+  date,
+  setDate,
+  isDatePickerVisible,
+  setDatePickerVisibility,
+  setOneTimeTrainingDate,
+}) => {
+  const [formattedDate, setFormattedDate] = useState(null);
+  const [dayTimeFrom, setDayTimeFrom] = useState('');
+  const [dayTimeTo, setDayTimeTo] = useState('');
 
-  const pressDatePickerBtn = () => {
-    setDatePickerVisibility(prev => !prev);
+  useEffect(() => {
+    if (!date) return;
+    const [year, month, day] = date.split('-');
+    const months = [
+      'січня',
+      'лютого',
+      'березня',
+      'квітня',
+      'травня',
+      'червня',
+      'липня',
+      'серпня',
+      'вересня',
+      'жовтня',
+      'листопада',
+      'грудня',
+    ];
+    const monthName = months[parseInt(month, 10) - 1];
+    const fulldate = `${parseInt(day)} ${monthName} ${year} р.`;
+    setFormattedDate(fulldate);
+
+    setOneTimeTrainingDate({
+      date: fulldate,
+      time: [dayTimeFrom, dayTimeTo],
+    });
+  }, [date, dayTimeFrom, dayTimeTo]);
+
+  const formatTimeInput = text => {
+    const digits = text.replace(/\D/g, '').slice(0, 4);
+    if (digits.length <= 2) return digits;
+    return `${digits.slice(0, 2)}:${digits.slice(2, 4)}`;
   };
 
   return (
     <View style={styles.dateAndTimeBlock}>
       <View style={styles.dateBlock}>
         <TimestampWheelTrigger
-          pressDatePickerBtn={pressDatePickerBtn}
+          pressDatePickerBtn={() => setDatePickerVisibility(prev => !prev)}
           title="День запису"
           icon={<SvgPlan color="white" />}>
-          14 березня 2024
+          {formattedDate || 'Оберіть дату'}
         </TimestampWheelTrigger>
 
         <DatePickerComponent
           isVisible={isDatePickerVisible}
-          pressDatePickerBtn={pressDatePickerBtn}
+          pressDatePickerBtn={setDatePickerVisibility}
+          date={date}
+          setDate={setDate}
         />
       </View>
 
       <View style={styles.timeBlock}>
         <View style={[styles.timeItem, styles.timeItemFirstChild]}>
-          <TimestampWheelTrigger title="Початок" icon={<SvgWatch />}>
-            11:00
-          </TimestampWheelTrigger>
+          <Text style={styles.timeItemTitle}>Початок</Text>
+          <View style={styles.timeItemBlock}>
+            <SvgWatch />
+            <TextInput
+              style={styles.singleInput}
+              placeholder="00:00"
+              placeholderTextColor="#888"
+              keyboardType="numeric"
+              maxLength={5}
+              value={dayTimeFrom}
+              onChangeText={text => setDayTimeFrom(formatTimeInput(text))}
+            />
+          </View>
         </View>
 
         <View style={styles.timeItem}>
-          <TimestampWheelTrigger title="Кінець" icon={<SvgWatch />}>
-            12:00
-          </TimestampWheelTrigger>
+          <Text style={styles.timeItemTitle}>Кінець</Text>
+          <View style={styles.timeItemBlock}>
+            <SvgWatch />
+            <TextInput
+              style={styles.singleInput}
+              placeholder="00:00"
+              placeholderTextColor="#888"
+              keyboardType="numeric"
+              maxLength={5}
+              value={dayTimeTo}
+              onChangeText={text => setDayTimeTo(formatTimeInput(text))}
+            />
+          </View>
         </View>
       </View>
     </View>
@@ -47,8 +106,6 @@ export const DateAndTimeBlock = () => {
 
 const styles = StyleSheet.create({
   dateAndTimeBlock: {
-    flexDirection: 'column',
-    alignItems: 'center',
     marginTop: 24,
   },
   dateBlock: {
@@ -56,14 +113,36 @@ const styles = StyleSheet.create({
   },
   timeBlock: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     width: '100%',
-    marginTop: 20,
+    marginTop: 16,
   },
   timeItem: {
-    flex: 1,
+    width: '50%',
+    marginTop: 12,
+    paddingLeft: 12,
+    borderBottomColor: '#303030',
+    borderBottomWidth: 1,
+  },
+  timeItemTitle: {
+    fontSize: 14,
+    lineHeight: 16,
+    fontWeight: '400',
+    color: 'white',
+    marginBottom: 6,
+  },
+  timeItemBlock: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   timeItemFirstChild: {
     marginRight: 15,
+  },
+  singleInput: {
+    paddingLeft: 8,
+    fontSize: 17,
+    lineHeight: 26,
+    fontWeight: '400',
+    color: 'white',
+    flex: 1,
   },
 });

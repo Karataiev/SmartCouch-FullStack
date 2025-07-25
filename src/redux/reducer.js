@@ -1,3 +1,4 @@
+import {agendaData} from '../mocks/agendaData';
 import {
   GET_CURRENT_TIME,
   CREATE_NEW_CLIENTS,
@@ -11,6 +12,7 @@ import {
   UPDATE_CLIENT_PROGRAM,
   UPDATE_CLIENT_PARAMETERS,
   GET_PINNING_CLIENT_ID,
+  CREATE_WORKOUT_PLAN,
 } from './action';
 
 const defaultState = {
@@ -29,6 +31,7 @@ const defaultState = {
   isPlusMenuBtn: false,
   programs: [],
   pinningClientId: '',
+  workoutPlanArr: agendaData,
 };
 
 export const reducer = (state = defaultState, action) => {
@@ -102,8 +105,28 @@ export const reducer = (state = defaultState, action) => {
     case GET_PINNING_CLIENT_ID:
       return {
         ...state,
-        pinningClientId: action.payload,
+        pinningClientId: action.payload || null,
       };
+    case CREATE_WORKOUT_PLAN: {
+      const {oneTimeTrainingDate} = action.payload;
+
+      return {
+        ...state,
+        workoutPlanArr: state.workoutPlanArr.map(plan => {
+          const hour = plan.timeId.split(':')[0];
+          const newHour = oneTimeTrainingDate.time[0].slice(0, 2);
+
+          if (hour === newHour) {
+            return {
+              ...plan,
+              trainings: [...plan.trainings, action.payload],
+            };
+          }
+
+          return plan;
+        }),
+      };
+    }
     default:
       return state;
   }

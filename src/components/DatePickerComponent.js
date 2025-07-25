@@ -1,9 +1,13 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Animated, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import DatePicker from 'react-native-date-picker';
+import React, {useEffect, useRef} from 'react';
+import {Animated, StyleSheet, View, TouchableOpacity, Text} from 'react-native';
+import {CustomMonthCalendar} from './CustomMonthCalendar';
 
-export const DatePickerComponent = ({isVisible, pressDatePickerBtn}) => {
-  const [date, setDate] = useState(new Date());
+export const DatePickerComponent = ({
+  isVisible,
+  pressDatePickerBtn,
+  date,
+  setDate,
+}) => {
   const animatedHeight = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -16,20 +20,21 @@ export const DatePickerComponent = ({isVisible, pressDatePickerBtn}) => {
 
   const heightInterpolate = animatedHeight.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 260],
+    outputRange: [0, 350],
   });
+
+  const handleConfirm = () => {
+    pressDatePickerBtn(false);
+  };
 
   return (
     <Animated.View
       style={[styles.animatedContainer, {height: heightInterpolate}]}>
       <View style={styles.pickerContainer}>
-        <DatePicker
-          date={date}
-          onDateChange={setDate}
-          mode="date"
-          locale="uk"
-          androidVariant="iosClone"
-        />
+        <CustomMonthCalendar selectedDate={date} setSelectedDate={setDate} />
+        <TouchableOpacity onPress={handleConfirm} style={styles.button}>
+          <Text style={styles.buttonText}>Готово</Text>
+        </TouchableOpacity>
       </View>
     </Animated.View>
   );
@@ -38,9 +43,25 @@ export const DatePickerComponent = ({isVisible, pressDatePickerBtn}) => {
 const styles = StyleSheet.create({
   animatedContainer: {
     overflow: 'hidden',
+    width: '100%',
   },
   pickerContainer: {
-    backgroundColor: '#232323',
-    paddingHorizontal: 20,
+    height: 300,
+    width: '100%',
+    alignItems: 'center',
+    paddingTop: 10,
+  },
+  button: {
+    minWidth: '100%',
+    paddingVertical: 12,
+    backgroundColor: '#FFFF65',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'black',
+    fontSize: 17,
+    fontWeight: '700',
+    lineHeight: 20,
   },
 });

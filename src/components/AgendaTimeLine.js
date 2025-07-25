@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import {SvgTimeDot} from '../assets/calendarIcons/SvgTimeDot';
-import {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {useDispatch} from 'react-redux';
 import {getCurrentTime} from '../redux/action';
 
 export const AgendaTimeLine = ({lineTopNumber}) => {
@@ -9,10 +9,10 @@ export const AgendaTimeLine = ({lineTopNumber}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const time = setInterval(function () {
+    setInterval(function () {
       const date = new Date();
       const returnTimeString = () => {
-        return `${date.getHours() + 3}:${
+        return `${date.getHours()}:${
           date.getMinutes().toString().length < 2
             ? `0${date.getMinutes()}`
             : date.getMinutes()

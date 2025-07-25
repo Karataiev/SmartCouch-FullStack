@@ -1,30 +1,15 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import {SvgWatch} from '../assets/svgIcons/SvgWatch';
 
-export const TimeInputComponent = () => {
-  const [timeFrom, setTimeFrom] = useState('');
-  const [timeTo, setTimeTo] = useState('');
-
+export const TimeInputComponent = ({timeFrom, timeTo, onChange}) => {
   const formatTime = text => {
-    // Видаляємо всі нецифри
-    const numbersOnly = text.replace(/[^\d]/g, '');
-
-    // Обмежуємо довжину до 4 символів (HHmm)
-    const trimmed = numbersOnly.slice(0, 4);
-
-    // Форматуємо у HH:mm
-    if (trimmed.length >= 3) {
-      return `${trimmed.slice(0, 2)}:${trimmed.slice(2)}`;
-    } else if (trimmed.length >= 1) {
-      return trimmed;
+    const numbers = text.replace(/[^\d]/g, '').slice(0, 4);
+    if (numbers.length >= 3) {
+      return `${numbers.slice(0, 2)}:${numbers.slice(2)}`;
     }
-
+    if (numbers.length >= 1) return numbers;
     return '';
-  };
-
-  const handleChange = setter => text => {
-    setter(formatTime(text));
   };
 
   return (
@@ -37,7 +22,7 @@ export const TimeInputComponent = () => {
           placeholderTextColor="#888"
           value={timeFrom}
           keyboardType="numeric"
-          onChangeText={handleChange(setTimeFrom)}
+          onChangeText={text => onChange(formatTime(text), timeTo)}
           maxLength={5}
         />
         <Text style={styles.dash}>-</Text>
@@ -47,7 +32,7 @@ export const TimeInputComponent = () => {
           placeholderTextColor="#888"
           value={timeTo}
           keyboardType="numeric"
-          onChangeText={handleChange(setTimeTo)}
+          onChangeText={text => onChange(timeFrom, formatTime(text))}
           maxLength={5}
         />
       </View>

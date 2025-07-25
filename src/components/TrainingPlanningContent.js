@@ -9,8 +9,7 @@ import React, {useEffect, useState} from 'react';
 import {TrainingPlanningItemLayout} from './TrainingPlanningItemLayout';
 import {TrainingTypeCheckbox} from './TrainingTypeCheckbox';
 import {SvgArrowRight} from '../assets/svgIcons/SvgArrowRight';
-import {SafeInfoButton} from './SafeInfoButton';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {ClientListItem} from './ClientListItem';
 
@@ -19,13 +18,13 @@ const COLORS = {
   group: '#4195B9',
 };
 
-export const TrainingPlanningContent = () => {
+export const TrainingPlanningContent = ({setPlanningTrainingData}) => {
   const clientId = useSelector(state => state.pinningClientId);
   const clientsArr = useSelector(state => state.clients);
 
   const navigation = useNavigation();
 
-  const [selectedType, setSelectedType] = useState(null);
+  const [selectedType, setSelectedType] = useState('');
   const [trainingName, setTrainingName] = useState('');
   const [location, setLocation] = useState('');
   const [pinnedClient, setPinnedClient] = useState(null);
@@ -37,24 +36,20 @@ export const TrainingPlanningContent = () => {
     .slice(2)}`;
 
   useEffect(() => {
+    setPlanningTrainingData({
+      trainingName: trainingName,
+      trainingType: selectedType,
+      client: pinnedClient,
+      location: location,
+    });
+  }, [selectedType, trainingName, location, pinnedClient]);
+
+  useEffect(() => {
     if (clientId.length !== 0) {
       const foundClient = clientsArr.find(item => item.id === clientId);
       setPinnedClient(foundClient);
     }
   }, [clientId, clientsArr]);
-
-  const createTrainingPlan = () => {
-    const trainingPlanObject = {
-      id: uniqueID,
-      date: [],
-      time: [],
-
-      trainingName: trainingName,
-      trainingType: selectedType,
-      client: pinnedClient,
-      location: location,
-    };
-  };
 
   const handleGetClient = () => {
     navigation.navigate('ClientProgramAssignment', {
@@ -68,71 +63,65 @@ export const TrainingPlanningContent = () => {
   };
 
   return (
-    <>
-      <View style={styles.container}>
-        <TrainingPlanningItemLayout title="Назва тренування">
-          <TextInput
-            value={trainingName}
-            onChangeText={setTrainingName}
-            style={styles.input}
-            placeholder={placeholderName}
-            placeholderTextColor={'#A1A1A1'}
-            inputMode={'text'}
+    <View style={styles.container}>
+      <TrainingPlanningItemLayout title="Назва тренування">
+        <TextInput
+          value={trainingName}
+          onChangeText={setTrainingName}
+          style={styles.input}
+          placeholder={placeholderName}
+          placeholderTextColor={'#A1A1A1'}
+          inputMode={'text'}
+        />
+      </TrainingPlanningItemLayout>
+
+      <TrainingPlanningItemLayout title="Тип тренування">
+        <View style={styles.serviceTypeBlock}>
+          <TrainingTypeCheckbox
+            type="personal"
+            title="ПЕРСОНАЛЬНЕ"
+            isSelected={selectedType === 'personal'}
+            onSelect={() => setSelectedType('personal')}
+            color={COLORS.personal}
+            style={styles.personalItem}
           />
-        </TrainingPlanningItemLayout>
-
-        <TrainingPlanningItemLayout title="Тип тренування">
-          <View style={styles.serviceTypeBlock}>
-            <TrainingTypeCheckbox
-              type="personal"
-              title="ПЕРСОНАЛЬНЕ"
-              isSelected={selectedType === 'personal'}
-              onSelect={() => setSelectedType('personal')}
-              color={COLORS.personal}
-              style={styles.personalItem}
-            />
-            <TrainingTypeCheckbox
-              type="group"
-              title="ГРУПОВЕ"
-              isSelected={selectedType === 'group'}
-              onSelect={() => setSelectedType('group')}
-              color={COLORS.group}
-            />
-          </View>
-        </TrainingPlanningItemLayout>
-
-        <TrainingPlanningItemLayout title="Клієнт">
-          {pinnedClient ? (
-            <ClientListItem
-              item={pinnedClient}
-              handlePress={handlePressClientItem}
-            />
-          ) : (
-            <TouchableOpacity
-              style={styles.getClientBtn}
-              onPress={handleGetClient}>
-              <Text style={styles.getClientTitle}>Обрати клієнта</Text>
-              <SvgArrowRight />
-            </TouchableOpacity>
-          )}
-        </TrainingPlanningItemLayout>
-
-        <TrainingPlanningItemLayout title="Локація">
-          <TextInput
-            value={location}
-            onChangeText={setLocation}
-            style={styles.input}
-            placeholder={placeholderLocation}
-            placeholderTextColor={'#A1A1A1'}
-            inputMode={'text'}
+          <TrainingTypeCheckbox
+            type="group"
+            title="ГРУПОВЕ"
+            isSelected={selectedType === 'group'}
+            onSelect={() => setSelectedType('group')}
+            color={COLORS.group}
           />
-        </TrainingPlanningItemLayout>
-      </View>
+        </View>
+      </TrainingPlanningItemLayout>
 
-      <SafeInfoButton disabled={false} handleSubmit={createTrainingPlan}>
-        Створити запис
-      </SafeInfoButton>
-    </>
+      <TrainingPlanningItemLayout title="Клієнт">
+        {pinnedClient ? (
+          <ClientListItem
+            item={pinnedClient}
+            handlePress={handlePressClientItem}
+          />
+        ) : (
+          <TouchableOpacity
+            style={styles.getClientBtn}
+            onPress={handleGetClient}>
+            <Text style={styles.getClientTitle}>Обрати клієнта</Text>
+            <SvgArrowRight />
+          </TouchableOpacity>
+        )}
+      </TrainingPlanningItemLayout>
+
+      <TrainingPlanningItemLayout title="Локація">
+        <TextInput
+          value={location}
+          onChangeText={setLocation}
+          style={styles.input}
+          placeholder={placeholderLocation}
+          placeholderTextColor={'#A1A1A1'}
+          inputMode={'text'}
+        />
+      </TrainingPlanningItemLayout>
+    </View>
   );
 };
 

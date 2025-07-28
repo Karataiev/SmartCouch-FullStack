@@ -1,3 +1,4 @@
+import React from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {SvgArrowRight} from '../assets/svgIcons/SvgArrowRight';
 
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#2E2E2E',
+    backgroundColor: '#232929',
     borderRadius: 10,
   },
   title: {

@@ -13,12 +13,10 @@ import {TabPlusButton} from './TabPlusButton';
 import {PlusMenuModal} from './PlusMenuModal';
 
 const Tab = createBottomTabNavigator();
-
-// Пустий компонент, який нічого не рендерить
 const EmptyScreen = () => null;
 
 export const TabNavigator = ({navigation}) => {
-  const changeColor = focused => (focused ? '#FFFF65' : '#FFFFFF');
+  const changeColor = focused => (focused ? '#3EB1CC' : '#FFFFFF');
 
   const renderTabIcon =
     (tabName, SvgComponent) =>
@@ -62,7 +60,7 @@ export const TabNavigator = ({navigation}) => {
           name="btn"
           component={EmptyScreen}
           listeners={{
-            tabPress: e => e.preventDefault(), // Заборонити перемикання
+            tabPress: e => e.preventDefault(),
           }}
           options={{
             tabBarIcon: () => <TabPlusButton />,

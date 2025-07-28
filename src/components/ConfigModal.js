@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     width: '100%',
     borderRadius: 14,
-    backgroundColor: '#2E2E2E',
+    backgroundColor: '#364040',
   },
   configBtn: {
     display: 'flex',
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 17,
     width: '100%',
-    backgroundColor: '#3D3D3D',
+    backgroundColor: '#364040',
     borderRadius: 14,
   },
 

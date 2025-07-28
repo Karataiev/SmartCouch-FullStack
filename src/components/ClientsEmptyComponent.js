@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image, StatusBar} from 'react-native';
+import {StyleSheet, Text, View, Image} from 'react-native';
 import {HeaderForScreens} from './HeaderForScreens';
 import {HeaderWithBackButton} from './HeaderWithBackButton';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -22,7 +22,6 @@ export const ClientsEmptyComponent = ({isForPinning}) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={'#232323'} />
       {isForPinning ? (
         <HeaderWithBackButton addBtn={true} onPressAdd={createNewClientBtn}>
           Клієнти
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
   clientsLogoContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#292929',
+    backgroundColor: '#232929',
     width: 160,
     height: 160,
     borderRadius: 16,

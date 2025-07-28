@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   theme: {
     calendarBackground: 'transparent',
     textDayHeaderFontSize: 15,
-    todayBackgroundColor: '#FFFF65',
+    todayBackgroundColor: '#3EB1CC',
     todayTextColor: 'black',
     textDayStyle: {
       color: 'white',

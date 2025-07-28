@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 12,
     gap: 12,
-    backgroundColor: '#2E2E2E',
+    backgroundColor: '#232929',
   },
   name: {
     fontSize: 16,

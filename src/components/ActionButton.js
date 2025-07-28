@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     gap: 8,
     height: 68,
     width: '30%',
-    backgroundColor: '#3D3D3D',
+    backgroundColor: '#232929',
     borderRadius: 10,
   },
   additionalInfoTitle: {

@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     lineHeight: 16,
-    color: '#FFFF65',
+    color: '#3EB1CC',
   },
   currentLine: {
     width: '100%',
@@ -62,6 +62,6 @@ const styles = StyleSheet.create({
   line: {
     width: '100%',
     borderTopWidth: 1,
-    borderBlockColor: '#FFFF65',
+    borderBlockColor: '#3EB1CC',
   },
 });

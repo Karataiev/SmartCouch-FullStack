@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {ClientDataComponent} from '../components/ClientDataComponent';
 import {ClientEditDataComponent} from '../components/ClientEditDataComponent';
+import {LayoutComponent} from '../components/LayoutComponent';
 
 export const FullClientDataScreen = ({navigation, route}) => {
   const {itemData, from} = route.params;
@@ -21,28 +22,32 @@ export const FullClientDataScreen = ({navigation, route}) => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor={'#232323'} />
-      <HeaderWithBackButton
-        navigation={navigation}
-        editBtn={!isToggleEdit}
-        onPressEdit={handleEdit}>
-        {isToggleEdit ? 'Редагування' : 'Дані клієнта'}
-      </HeaderWithBackButton>
+    <LayoutComponent>
+      <View style={styles.container}>
+        <StatusBar backgroundColor="#121313" />
+        <HeaderWithBackButton
+          navigation={navigation}
+          editBtn={!isToggleEdit}
+          onPressEdit={handleEdit}>
+          {isToggleEdit ? 'Редагування' : 'Дані клієнта'}
+        </HeaderWithBackButton>
 
-      {isToggleEdit ? (
-        <ClientEditDataComponent itemData={itemData} navigation={navigation} />
-      ) : (
-        <ClientDataComponent itemData={itemData} />
-      )}
-    </View>
+        {isToggleEdit ? (
+          <ClientEditDataComponent
+            itemData={itemData}
+            navigation={navigation}
+          />
+        ) : (
+          <ClientDataComponent itemData={itemData} />
+        )}
+      </View>
+    </LayoutComponent>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#232323',
     paddingHorizontal: 20,
     paddingTop: 8,
   },

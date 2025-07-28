@@ -56,7 +56,6 @@ export const PlanScreenCalendar = () => {
         styles.container,
         isOpenFullCalendar && styles.fullCalendarContainer,
       ]}>
-      <StatusBar backgroundColor={'#292929'} />
       <View style={styles.calendarHeader}>
         <TouchableOpacity
           style={styles.calendarButton}
@@ -89,7 +88,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     maxHeight: 144,
-    backgroundColor: '#292929',
+    backgroundColor: '#232929',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     overflow: 'hidden',
@@ -124,7 +123,7 @@ const styles = StyleSheet.create({
     width: 44,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#424242',
+    backgroundColor: 'rgba(133, 193, 219, 0.15)',
     borderRadius: 50,
   },
   weekCalendarTheme: {
@@ -132,7 +131,7 @@ const styles = StyleSheet.create({
     textDayHeaderFontSize: 12,
     selectedDayBackgroundColor: 'white',
     selectedDayTextColor: 'black',
-    todayBackgroundColor: '#FFFF65',
+    todayBackgroundColor: '#3EB1CC',
     todayTextColor: 'black',
 
     textDayStyle: {

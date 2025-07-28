@@ -6,6 +6,7 @@ import {
   Text,
   Animated,
   Easing,
+  StatusBar,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {SafeInfoButton} from '../components/SafeInfoButton';
@@ -13,6 +14,7 @@ import {ProgramInputsComponent} from '../components/ProgramInputsComponent';
 import {ConfigModal} from '../components/ConfigModal';
 import {updateClientProgram, updateProgramsArray} from '../redux/action';
 import {RemoveModal} from '../components/RemoveModal';
+import {LayoutComponent} from '../components/LayoutComponent';
 
 export const CurrentProgramScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -109,51 +111,53 @@ export const CurrentProgramScreen = ({navigation, route}) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ProgramInputsComponent
-        navigation={navigation}
-        title={title}
-        setTitle={setTitle}
-        program={program}
-        setProgram={setProgram}
-        headerTitle="Програма"
-        origin={origin}
-        isActiveConfig={true}
-        onPressConfig={() => setConfigModalVisible(true)}
-        onPressRemove={() => setRemoveModalVisible(true)}
-      />
+    <LayoutComponent>
+      <StatusBar backgroundColor="#121313" />
+      <SafeAreaView style={styles.container}>
+        <ProgramInputsComponent
+          navigation={navigation}
+          title={title}
+          setTitle={setTitle}
+          program={program}
+          setProgram={setProgram}
+          headerTitle="Програма"
+          origin={origin}
+          isActiveConfig={true}
+          onPressConfig={() => setConfigModalVisible(true)}
+          onPressRemove={() => setRemoveModalVisible(true)}
+        />
 
-      {showSuccessMessage && (
-        <Animated.View style={[styles.toastContainer, {opacity: fadeAnim}]}>
-          <Text style={styles.toastText}>Зміни збережено</Text>
-        </Animated.View>
-      )}
+        {showSuccessMessage && (
+          <Animated.View style={[styles.toastContainer, {opacity: fadeAnim}]}>
+            <Text style={styles.toastText}>Зміни збережено</Text>
+          </Animated.View>
+        )}
 
-      <SafeInfoButton handleSubmit={handleSubmit} disabled={!isSubmitActive}>
-        Зберегти
-      </SafeInfoButton>
+        <SafeInfoButton handleSubmit={handleSubmit} disabled={!isSubmitActive}>
+          Зберегти
+        </SafeInfoButton>
 
-      <ConfigModal
-        whereIsOpen="CurrentProgram"
-        visible={isConfigModalVisible}
-        hideModal={() => setConfigModalVisible(false)}
-        handleNavigate={handleNavigate}
-        handleRemove={handleRemoveFromAllPrograms}
-      />
+        <ConfigModal
+          whereIsOpen="CurrentProgram"
+          visible={isConfigModalVisible}
+          hideModal={() => setConfigModalVisible(false)}
+          handleNavigate={handleNavigate}
+          handleRemove={handleRemoveFromAllPrograms}
+        />
 
-      <RemoveModal
-        visible={removeModalVisible}
-        hideModal={() => setRemoveModalVisible(false)}
-        handleRemove={handleRemoveFromClient}
-      />
-    </SafeAreaView>
+        <RemoveModal
+          visible={removeModalVisible}
+          hideModal={() => setRemoveModalVisible(false)}
+          handleRemove={handleRemoveFromClient}
+        />
+      </SafeAreaView>
+    </LayoutComponent>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#232323',
     paddingTop: 8,
     paddingHorizontal: 20,
   },

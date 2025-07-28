@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 13,
     borderRadius: 12,
-    backgroundColor: '#2E2E2E',
+    backgroundColor: '#232929',
   },
   itemCommonStyles: {
     display: 'flex',

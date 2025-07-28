@@ -1,22 +1,24 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
-import {PlanScreenCalendar} from '../components/PlanScreenCalendar';
+import {StatusBar, StyleSheet, View} from 'react-native';
 import {Agenda} from '../components/Agenda';
+import {PlanScreenCalendar} from '../components/PlanScreenCalendar';
+import {LayoutComponent} from '../components/LayoutComponent';
 
 export const PlanTabScreen = () => {
   return (
-    <View style={styles.container}>
-      <PlanScreenCalendar />
-      <Agenda />
-    </View>
+    <LayoutComponent>
+      <StatusBar backgroundColor="#232929" />
+      <View style={styles.content}>
+        <PlanScreenCalendar />
+        <Agenda />
+      </View>
+    </LayoutComponent>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  content: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#1C1C1C',
+    zIndex: 1,
   },
 });

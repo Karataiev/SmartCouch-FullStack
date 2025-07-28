@@ -1,3 +1,4 @@
+import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {SvgPlus} from '../assets/tabIcons/SvgPlus';
 import {useDispatch, useSelector} from 'react-redux';
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   plusButton: {
-    backgroundColor: '#FFFF65',
+    backgroundColor: '#3EB1CC',
     position: 'absolute',
     bottom: 10,
     alignItems: 'center',

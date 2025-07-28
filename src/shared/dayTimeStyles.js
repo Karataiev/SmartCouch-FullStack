@@ -11,7 +11,7 @@ export const dayTimeStyles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   dayItem: {
-    backgroundColor: '#232323',
+    backgroundColor: '#364040',
     paddingVertical: 12,
     borderRadius: 16,
     minWidth: 40,
@@ -20,7 +20,7 @@ export const dayTimeStyles = StyleSheet.create({
     marginHorizontal: 2,
   },
   dayItemActive: {
-    backgroundColor: '#FFFF65',
+    backgroundColor: '#3EB1CC',
   },
   dayTitle: {
     fontSize: 16,
@@ -40,7 +40,7 @@ export const dayTimeStyles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     marginTop: 8,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: '#364040',
     borderRadius: 12,
   },
   listItemText: {

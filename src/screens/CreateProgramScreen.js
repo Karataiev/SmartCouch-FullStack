@@ -1,10 +1,11 @@
 import React, {useState, useMemo, useCallback} from 'react';
-import {SafeAreaView, StyleSheet} from 'react-native';
+import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import {createNewProgram, updateClientProgram} from '../redux/action';
 import {ProgramInputsComponent} from '../components/ProgramInputsComponent';
 import {SafeInfoButton} from '../components/SafeInfoButton';
+import {LayoutComponent} from '../components/LayoutComponent';
 
 export const CreateProgramScreen = () => {
   const dispatch = useDispatch();
@@ -51,28 +52,30 @@ export const CreateProgramScreen = () => {
   }, [dispatch, navigation, route.params, programObject]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ProgramInputsComponent
-        navigation={navigation}
-        title={title}
-        setTitle={setTitle}
-        program={program}
-        setProgram={setProgram}
-        headerTitle="Створення програми"
-      />
-      <SafeInfoButton handleSubmit={handleSubmit} disabled={!isActiveSubmitBtn}>
-        Створити програму
-      </SafeInfoButton>
-    </SafeAreaView>
+    <LayoutComponent>
+      <StatusBar backgroundColor="#121313" />
+      <SafeAreaView style={styles.container}>
+        <ProgramInputsComponent
+          navigation={navigation}
+          title={title}
+          setTitle={setTitle}
+          program={program}
+          setProgram={setProgram}
+          headerTitle="Створення програми"
+        />
+        <SafeInfoButton
+          handleSubmit={handleSubmit}
+          disabled={!isActiveSubmitBtn}>
+          Створити програму
+        </SafeInfoButton>
+      </SafeAreaView>
+    </LayoutComponent>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#232323',
     paddingTop: 8,
     paddingHorizontal: 20,
   },

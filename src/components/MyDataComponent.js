@@ -3,6 +3,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import {CustomInput} from './CustomInput';
 import {CustomPhoneInput} from './CustomPhoneInput';
@@ -64,51 +65,62 @@ export const MyDataComponent = ({navigation}) => {
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <ScrollView style={styles.container}>
-        <CustomInput placeholder="Імʼя" value={name} setValue={setName} />
-        <CustomInput
-          placeholder="Прізвище"
-          value={surname}
-          setValue={setSurname}
-        />
-        <CustomPhoneInput
-          inputHeader={true}
-          placeholderTextColor={'#A1A1A1'}
-          number={number}
-          setNumber={setNumber}
-        />
-        <CustomInput
-          placeholder="Email"
-          value={email}
-          setValue={setEmail}
-          inputType="email"
-        />
-        <CustomInput
-          placeholder="Дата народження"
-          value={birthday}
-          setValue={setBirthday}
-          inputType="numeric"
-        />
-        <CustomInput
-          placeholder="Стаж тренувань (років)"
-          value={experience}
-          setValue={setExperience}
-          inputType="numeric"
-        />
-        <CustomInput placeholder="Місто" value={city} setValue={setCity} />
+      <View style={styles.wrapper}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled">
+          <CustomInput placeholder="Імʼя" value={name} setValue={setName} />
+          <CustomInput
+            placeholder="Прізвище"
+            value={surname}
+            setValue={setSurname}
+          />
+          <CustomPhoneInput
+            inputHeader={true}
+            placeholderTextColor={'#A1A1A1'}
+            number={number}
+            setNumber={setNumber}
+          />
+          <CustomInput
+            placeholder="Email"
+            value={email}
+            setValue={setEmail}
+            inputType="email"
+          />
+          <CustomInput
+            placeholder="Дата народження"
+            value={birthday}
+            setValue={setBirthday}
+            inputType="numeric"
+          />
+          <CustomInput
+            placeholder="Стаж тренувань (років)"
+            value={experience}
+            setValue={setExperience}
+            inputType="numeric"
+          />
+          <CustomInput placeholder="Місто" value={city} setValue={setCity} />
+        </ScrollView>
 
+        {/* Кнопка — завжди знизу */}
         <SafeInfoButton
           handleSubmit={handleSubmit}
           disabled={!isActiveSubmitBtn}>
           Зберегти
         </SafeInfoButton>
-      </ScrollView>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 24,
+  wrapper: {
+    flex: 1,
+    justifyContent: 'space-between',
+    paddingTop: 24,
+    paddingBottom: 16,
+  },
+  scrollContainer: {
+    flexGrow: 1,
   },
 });

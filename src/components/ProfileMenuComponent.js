@@ -1,4 +1,5 @@
-import {StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import {StyleSheet, View} from 'react-native';
 import {SvgMyData} from '../assets/ProfileIcons/SvgMyData';
 import {SvgAnalytics} from '../assets/ProfileIcons/SvgAnalytics';
 import {ProfileMenuItem} from './ProfileMenuItem';

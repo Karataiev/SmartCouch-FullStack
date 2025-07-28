@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   modalContainer: {
-    backgroundColor: '#2E2E2E',
+    backgroundColor: '#232929',
     borderRadius: 14,
     padding: 20,
     width: '100%',
@@ -77,10 +77,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   confirmButton: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: '#3EB1CC',
   },
   cancelButton: {
-    backgroundColor: '#4A4A4A',
+    backgroundColor: '#364040',
   },
   buttonText: {
     color: '#fff',

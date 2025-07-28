@@ -1,23 +1,25 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StatusBar, StyleSheet, View} from 'react-native';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
+import {LayoutComponent} from '../components/LayoutComponent';
 
 export const ReadyMadeProgramsScreen = ({navigation}) => {
   return (
-    <View style={styles.container}>
-      <HeaderWithBackButton navigation={navigation}>
-        Готові програми
-      </HeaderWithBackButton>
-    </View>
+    <LayoutComponent>
+      <StatusBar backgroundColor="#121313" />
+
+      <View style={styles.container}>
+        <HeaderWithBackButton navigation={navigation}>
+          Готові програми
+        </HeaderWithBackButton>
+      </View>
+    </LayoutComponent>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#232323',
     paddingTop: 8,
     paddingHorizontal: 20,
   },

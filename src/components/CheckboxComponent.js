@@ -1,3 +1,4 @@
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 
 export const CheckboxComponent = ({pinned}) => {
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   check: {
-    backgroundColor: '#FFFF65',
+    backgroundColor: '#3EB1CC',
     borderRadius: 50,
     width: '100%',
     height: '100%',

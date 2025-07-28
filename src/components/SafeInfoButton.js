@@ -7,9 +7,9 @@ export const SafeInfoButton = ({disabled, children, handleSubmit}) => {
     <HideWithKeyboard>
       <TouchableOpacity
         disabled={disabled}
-        style={[styles.submitBtn, disabled && {backgroundColor: '#363636'}]}
+        style={[styles.submitBtn, disabled && styles.disabledBtn]}
         onPress={() => handleSubmit()}>
-        <Text style={[styles.submitBtnTitle, disabled && {color: '#A1A1A1'}]}>
+        <Text style={[styles.submitBtnTitle, disabled && styles.disabledTitle]}>
           {children}
         </Text>
       </TouchableOpacity>
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     marginBottom: 21,
     width: '100%',
     paddingVertical: 16,
-    backgroundColor: '#FFFF65',
+    backgroundColor: 'white',
     borderRadius: 100,
   },
   submitBtnTitle: {
@@ -32,5 +32,11 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontWeight: '700',
     color: 'black',
+  },
+  disabledBtn: {
+    backgroundColor: '#141A1A',
+  },
+  disabledTitle: {
+    color: '#A1A1A1',
   },
 });

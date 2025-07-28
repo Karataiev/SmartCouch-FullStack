@@ -1,3 +1,4 @@
+import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SvgProfileOptions} from '../assets/svgIcons/SvgProfileOptions';
 import {SvgCreateService} from '../assets/svgIcons/SvgCreateService';
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     height: 130,
     width: '100%',
     paddingHorizontal: 20,
-    backgroundColor: '#2E2E2E',
+    backgroundColor: '#232929',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
   },
   profileOptionsBtn: {
     padding: 12,
-    backgroundColor: '#3D3D3D',
+    backgroundColor: 'rgba(133, 193, 219, 0.15)',
     borderRadius: 200,
   },
   profileName: {
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     padding: 21,
     borderRadius: 10,
     width: '32%',
-    backgroundColor: '#3D3D3D',
+    backgroundColor: '#364040',
   },
   itemTitle: {
     color: 'white',

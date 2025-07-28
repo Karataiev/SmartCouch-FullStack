@@ -79,7 +79,6 @@ const styles = StyleSheet.create({
   },
   containerMenuModal: {
     flex: 1,
-    display: 'flex',
     alignItems: 'center',
     width: '100%',
     marginTop: 'auto',

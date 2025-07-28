@@ -16,6 +16,7 @@ import {useDispatch} from 'react-redux';
 import {createWorkoutPlan} from '../redux/action';
 import {useNavigation} from '@react-navigation/native';
 import {useToast} from '../castomHooks/useToast';
+import {LayoutComponent} from '../components/LayoutComponent';
 
 export const TrainingPlanningScreen = () => {
   const dispatch = useDispatch();
@@ -47,39 +48,40 @@ export const TrainingPlanningScreen = () => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={{flex: 1}}>
-        <ScrollView style={styles.container}>
-          <StatusBar backgroundColor="#232323" />
-          <HeaderWithBackButton>Створення запису</HeaderWithBackButton>
+    <LayoutComponent>
+      <StatusBar backgroundColor="#121313" />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={{flex: 1}}>
+          <ScrollView style={styles.container}>
+            <HeaderWithBackButton>Створення запису</HeaderWithBackButton>
 
-          <DateAndTimeBlock
-            date={date}
-            setDate={setDate}
-            isDatePickerVisible={isDatePickerVisible}
-            setDatePickerVisibility={setDatePickerVisibility}
-            setOneTimeTrainingDate={setOneTimeTrainingDate}
-          />
+            <DateAndTimeBlock
+              date={date}
+              setDate={setDate}
+              isDatePickerVisible={isDatePickerVisible}
+              setDatePickerVisibility={setDatePickerVisibility}
+              setOneTimeTrainingDate={setOneTimeTrainingDate}
+            />
 
-          <DayAndTimeBlock setConstantDate={setConstantDate} />
+            <DayAndTimeBlock setConstantDate={setConstantDate} />
 
-          <TrainingPlanningContent
-            setPlanningTrainingData={setPlanningTrainingData}
-          />
+            <TrainingPlanningContent
+              setPlanningTrainingData={setPlanningTrainingData}
+            />
 
-          <SafeInfoButton disabled={!date} handleSubmit={createTrainingPlan}>
-            Створити запис
-          </SafeInfoButton>
-        </ScrollView>
-      </View>
-    </TouchableWithoutFeedback>
+            <SafeInfoButton disabled={!date} handleSubmit={createTrainingPlan}>
+              Створити запис
+            </SafeInfoButton>
+          </ScrollView>
+        </View>
+      </TouchableWithoutFeedback>
+    </LayoutComponent>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#232323',
     paddingTop: 8,
     paddingHorizontal: 20,
   },

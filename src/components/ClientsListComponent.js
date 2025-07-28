@@ -39,8 +39,6 @@ export const ClientsListComponent = ({
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={'#232323'} />
-
       <HeaderForScreens
         navigation={navigation}
         addBtn={true}

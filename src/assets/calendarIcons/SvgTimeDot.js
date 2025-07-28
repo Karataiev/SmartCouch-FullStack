@@ -7,6 +7,6 @@ export const SvgTimeDot = props => (
     height={5}
     fill="none"
     {...props}>
-    <Rect width={7} height={5} fill="#FFFF65" rx={2} />
+    <Rect width={7} height={5} fill="#3EB1CC" rx={2} />
   </Svg>
 );

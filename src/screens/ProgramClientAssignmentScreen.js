@@ -1,6 +1,7 @@
 import {
   FlatList,
   Image,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -13,6 +14,7 @@ import {CheckboxComponent} from '../components/CheckboxComponent';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {updateClientProgram} from '../redux/action';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
+import {LayoutComponent} from '../components/LayoutComponent';
 
 export const ProgramClientAssignmentScreen = () => {
   const navigation = useNavigation();
@@ -88,45 +90,47 @@ export const ProgramClientAssignmentScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <HeaderWithBackButton
-        navigation={navigation}
-        addBtn={programsArr.length === 0}
-        onPressAdd={onPressAdd}
-        goPrograms>
-        {returnHeaderName()}
-      </HeaderWithBackButton>
+    <LayoutComponent>
+      <StatusBar backgroundColor="#121313" />
+      <View style={styles.container}>
+        <HeaderWithBackButton
+          navigation={navigation}
+          addBtn={programsArr.length === 0}
+          onPressAdd={onPressAdd}
+          goPrograms>
+          {returnHeaderName()}
+        </HeaderWithBackButton>
 
-      <View style={styles.contentContainer}>
-        <FlatList
-          data={programsArr}
-          keyExtractor={item => item.id.toString()}
-          renderItem={renderItem}
-          ItemSeparatorComponent={() => <View style={{height: 12}} />}
-          ListEmptyComponent={renderEmptyList}
-          contentContainerStyle={
-            programsArr.length === 0
-              ? styles.emptyListContent
-              : styles.listContent
-          }
-        />
+        <View style={styles.contentContainer}>
+          <FlatList
+            data={programsArr}
+            keyExtractor={item => item.id.toString()}
+            renderItem={renderItem}
+            ItemSeparatorComponent={() => <View style={{height: 12}} />}
+            ListEmptyComponent={renderEmptyList}
+            contentContainerStyle={
+              programsArr.length === 0
+                ? styles.emptyListContent
+                : styles.listContent
+            }
+          />
+        </View>
+
+        {programsArr.length !== 0 && (
+          <SafeInfoButton
+            disabled={!selectedProgramId}
+            handleSubmit={handleSubmit}>
+            Закріпити
+          </SafeInfoButton>
+        )}
       </View>
-
-      {programsArr.length !== 0 && (
-        <SafeInfoButton
-          disabled={!selectedProgramId}
-          handleSubmit={handleSubmit}>
-          Закріпити
-        </SafeInfoButton>
-      )}
-    </View>
+    </LayoutComponent>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#232323',
     paddingHorizontal: 20,
     paddingTop: 8,
   },
@@ -198,7 +202,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2D2D2D',
+    backgroundColor: '#232929',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 20,

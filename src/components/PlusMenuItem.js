@@ -1,3 +1,4 @@
+import React from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 export const PlusMenuItem = ({title, icon, onPress}) => {
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     borderRadius: 12,
-    backgroundColor: '#292929',
+    backgroundColor: '#232929',
     paddingVertical: 22,
     width: '47%',
     gap: 12,

@@ -8,6 +8,7 @@ import {
   View,
   ScrollView,
   TouchableWithoutFeedback,
+  StatusBar,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
@@ -15,6 +16,7 @@ import {ClientParametersDate} from '../components/ClientParametersDate';
 import {ClientParametersContent} from '../components/ClientParametersContent';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {updateClientParameters} from '../redux/action';
+import {LayoutComponent} from '../components/LayoutComponent';
 
 const bodyMeasurements = [
   {key: 'bodyWeight', label: 'Вага тіла', unit: 'кг'},
@@ -100,96 +102,98 @@ export const ClientParametersScreen = ({route}) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{flex: 1}}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <SafeAreaView style={styles.container}>
-          <HeaderWithBackButton>Заміри</HeaderWithBackButton>
+    <LayoutComponent>
+      <StatusBar backgroundColor="#121313" />
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <SafeAreaView style={styles.container}>
+            <HeaderWithBackButton>Заміри</HeaderWithBackButton>
 
-          <ScrollView
-            contentContainerStyle={styles.scrollContent}
-            keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="on-drag">
-            <View style={styles.row}>
-              <View style={styles.column}>
-                <ClientParametersDate
-                  value={firstDate}
-                  onChange={val => {
-                    setFirstDate(val);
-                    checkIfChanged(
-                      firstColumnData,
-                      secondColumnData,
-                      val,
-                      secondDate,
-                    );
-                  }}
-                  title="Дата-1"
-                />
-                <ClientParametersContent
-                  data={bodyMeasurements}
-                  columnKeyPrefix="1"
-                  values={firstColumnData}
-                  onValueChange={(key, val) => {
-                    const updated = {...firstColumnData, [key]: val};
-                    setFirstColumnData(updated);
-                    checkIfChanged(
-                      updated,
-                      secondColumnData,
-                      firstDate,
-                      secondDate,
-                    );
-                  }}
-                />
+            <ScrollView
+              contentContainerStyle={styles.scrollContent}
+              keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="on-drag">
+              <View style={styles.row}>
+                <View style={styles.column}>
+                  <ClientParametersDate
+                    value={firstDate}
+                    onChange={val => {
+                      setFirstDate(val);
+                      checkIfChanged(
+                        firstColumnData,
+                        secondColumnData,
+                        val,
+                        secondDate,
+                      );
+                    }}
+                    title="Дата-1"
+                  />
+                  <ClientParametersContent
+                    data={bodyMeasurements}
+                    columnKeyPrefix="1"
+                    values={firstColumnData}
+                    onValueChange={(key, val) => {
+                      const updated = {...firstColumnData, [key]: val};
+                      setFirstColumnData(updated);
+                      checkIfChanged(
+                        updated,
+                        secondColumnData,
+                        firstDate,
+                        secondDate,
+                      );
+                    }}
+                  />
+                </View>
+                <View style={styles.column}>
+                  <ClientParametersDate
+                    value={secondDate}
+                    onChange={val => {
+                      setSecondDate(val);
+                      checkIfChanged(
+                        firstColumnData,
+                        secondColumnData,
+                        firstDate,
+                        val,
+                      );
+                    }}
+                    title="Дата-2"
+                  />
+                  <ClientParametersContent
+                    data={bodyMeasurements}
+                    columnKeyPrefix="2"
+                    values={secondColumnData}
+                    onValueChange={(key, val) => {
+                      const updated = {...secondColumnData, [key]: val};
+                      setSecondColumnData(updated);
+                      checkIfChanged(
+                        firstColumnData,
+                        updated,
+                        firstDate,
+                        secondDate,
+                      );
+                    }}
+                  />
+                </View>
               </View>
-              <View style={styles.column}>
-                <ClientParametersDate
-                  value={secondDate}
-                  onChange={val => {
-                    setSecondDate(val);
-                    checkIfChanged(
-                      firstColumnData,
-                      secondColumnData,
-                      firstDate,
-                      val,
-                    );
-                  }}
-                  title="Дата-2"
-                />
-                <ClientParametersContent
-                  data={bodyMeasurements}
-                  columnKeyPrefix="2"
-                  values={secondColumnData}
-                  onValueChange={(key, val) => {
-                    const updated = {...secondColumnData, [key]: val};
-                    setSecondColumnData(updated);
-                    checkIfChanged(
-                      firstColumnData,
-                      updated,
-                      firstDate,
-                      secondDate,
-                    );
-                  }}
-                />
-              </View>
-            </View>
 
-            <SafeInfoButton
-              handleSubmit={handleSubmit}
-              disabled={!isActiveSubmitBtn}>
-              Зберегти
-            </SafeInfoButton>
-          </ScrollView>
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+              <SafeInfoButton
+                handleSubmit={handleSubmit}
+                disabled={!isActiveSubmitBtn}>
+                Зберегти
+              </SafeInfoButton>
+            </ScrollView>
+          </SafeAreaView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </LayoutComponent>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#232323',
     paddingHorizontal: 20,
     paddingTop: 8,
   },

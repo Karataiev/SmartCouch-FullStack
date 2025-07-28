@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   activeDayAndTimeBlock: {
-    backgroundColor: '#2E2E2E',
+    backgroundColor: '#232929',
     borderRadius: 16,
   },
   dayAndTimeBtn: {
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 16,
-    backgroundColor: '#2E2E2E',
+    backgroundColor: '#232929',
   },
   title: {
     fontSize: 17,

@@ -3,6 +3,7 @@ import {
   FlatList,
   Image,
   SafeAreaView,
+  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -10,6 +11,7 @@ import {
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {useSelector} from 'react-redux';
 import {ProgramItem} from '../components/ProgramItem';
+import {LayoutComponent} from '../components/LayoutComponent';
 
 export const MyProgramsScreen = ({navigation}) => {
   const programs = useSelector(state => state.programs);
@@ -38,35 +40,40 @@ export const MyProgramsScreen = ({navigation}) => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <HeaderWithBackButton
-        navigation={navigation}
-        addBtn={true}
-        onPressAdd={onPressAdd}
-        goPrograms={true}>
-        Мої програми
-      </HeaderWithBackButton>
+    <LayoutComponent>
+      <StatusBar backgroundColor="#121313" />
+      <SafeAreaView style={styles.container}>
+        <HeaderWithBackButton
+          navigation={navigation}
+          addBtn={true}
+          onPressAdd={onPressAdd}
+          goPrograms={true}>
+          Мої програми
+        </HeaderWithBackButton>
 
-      <FlatList
-        data={programs}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({item}) => (
-          <ProgramItem info={item} handleClick={() => handleClickItem(item)} />
-        )}
-        contentContainerStyle={
-          programs.length === 0 ? styles.emptyListContent : styles.listContent
-        }
-        ItemSeparatorComponent={() => <View style={{height: 8}} />}
-        ListEmptyComponent={renderEmptyList}
-      />
-    </SafeAreaView>
+        <FlatList
+          data={programs}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({item}) => (
+            <ProgramItem
+              info={item}
+              handleClick={() => handleClickItem(item)}
+            />
+          )}
+          contentContainerStyle={
+            programs.length === 0 ? styles.emptyListContent : styles.listContent
+          }
+          ItemSeparatorComponent={() => <View style={{height: 8}} />}
+          ListEmptyComponent={renderEmptyList}
+        />
+      </SafeAreaView>
+    </LayoutComponent>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#232323',
     paddingTop: 8,
     paddingHorizontal: 20,
   },

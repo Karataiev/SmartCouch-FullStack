@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   ImageBackground,
   StyleSheet,
@@ -39,7 +40,7 @@ export const ProfileMenuItem = ({title, icon, subscription, navigation}) => {
           source={require('../assets/pngIcons/subscribeBtnIcon.png')}
           resizeMode="cover"
           imageStyle={{borderRadius: 10}}
-          style={[styles.profileMenuItem, {backgroundColor: '#2E2E2E'}]}>
+          style={[styles.profileMenuItem, {backgroundColor: '#232929'}]}>
           <View style={styles.profileMenuTitleSubscriptionBlock}>
             {icon}
             <Text style={styles.profileMenuItemTitle}>{title}</Text>
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 16,
     borderRadius: 10,
-    backgroundColor: '#2E2E2E',
+    backgroundColor: '#232929',
   },
   profileMenuTitleBlock: {
     display: 'flex',
@@ -95,6 +96,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 18,
-    color: '#FFFF65',
+    color: '#3EB1CC',
   },
 });

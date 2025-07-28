@@ -1,8 +1,15 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import {SvgBackBtn} from '../assets/svgIcons/SvgBackBtn';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {TemplateItem} from '../components/TemplateItem';
+import {LayoutComponent} from '../components/LayoutComponent';
 
 export const TemplatesChooseProgramScreen = () => {
   const navigation = useNavigation();
@@ -20,30 +27,32 @@ export const TemplatesChooseProgramScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity style={styles.backButton} onPress={handleBackBtn}>
-          <SvgBackBtn />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Програми</Text>
+    <LayoutComponent>
+      <StatusBar backgroundColor="#121313" />
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity style={styles.backButton} onPress={handleBackBtn}>
+            <SvgBackBtn />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Програми</Text>
+        </View>
+        <View style={styles.mainContentBlock}>
+          <TemplateItem handlePress={() => handlePressFolder('MyPrograms')}>
+            Мої програми тренувань
+          </TemplateItem>
+          <TemplateItem
+            handlePress={() => handlePressFolder('ReadyMadePrograms')}>
+            Готові програми тренувань
+          </TemplateItem>
+        </View>
       </View>
-      <View style={styles.mainContentBlock}>
-        <TemplateItem handlePress={() => handlePressFolder('MyPrograms')}>
-          Мої програми тренувань
-        </TemplateItem>
-        <TemplateItem
-          handlePress={() => handlePressFolder('ReadyMadePrograms')}>
-          Готові програми тренувань
-        </TemplateItem>
-      </View>
-    </View>
+    </LayoutComponent>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#232323',
     paddingHorizontal: 20,
     paddingTop: 8,
   },

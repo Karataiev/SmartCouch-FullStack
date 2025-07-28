@@ -15,6 +15,7 @@ import {ConfigModal} from '../components/ConfigModal';
 import {CreateProgramModal} from '../components/CreateProgramModal';
 import {getPinningClientId, updateClientsArray} from '../redux/action';
 import {ActionButton} from '../components/ActionButton';
+import {LayoutComponent} from '../components/LayoutComponent';
 
 export const ClientsProfileScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -78,93 +79,100 @@ export const ClientsProfileScreen = ({route, navigation}) => {
   const {name, surname, number, link = []} = currentClient.client;
 
   return (
-    <View style={styles.container}>
-      {(isConfigModalVisible || isProgramModalVisible) && (
-        <View style={styles.shadowOverlay} />
-      )}
+    <LayoutComponent>
+      <View style={styles.container}>
+        {(isConfigModalVisible || isProgramModalVisible) && (
+          <View style={styles.shadowOverlay} />
+        )}
 
-      <StatusBar backgroundColor="#2E2E2E" />
+        <StatusBar backgroundColor="#121313" />
 
-      <View style={styles.mainInfoContainer}>
-        <HeaderWithBackButton
-          configBtn
-          goHome
-          onPressConfig={toggleModal(setConfigModalVisible)}
+        <View style={styles.mainInfoContainer}>
+          <HeaderWithBackButton
+            configBtn
+            goHome
+            onPressConfig={toggleModal(setConfigModalVisible)}
+          />
+
+          <View style={styles.mainInfoBlock}>
+            <Text style={styles.clientName}>
+              {name} {surname}
+            </Text>
+            <Text style={styles.clientNumber}>{number}</Text>
+
+            {!!link.length && (
+              <View style={styles.connectionTypesContainer}>
+                {link.map((el, idx) =>
+                  el.link?.length ? (
+                    <TouchableOpacity
+                      key={idx + 1}
+                      style={styles.connectionType}>
+                      {el.icon}
+                    </TouchableOpacity>
+                  ) : null,
+                )}
+              </View>
+            )}
+
+            <TouchableOpacity
+              style={styles.createNotesBtn}
+              onPress={() =>
+                handlePlaningBtn('TrainingPlanning', 'clientProfile')
+              }>
+              <Text style={styles.createNotesTitle}>
+                Запланувати тренування
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.additionalInfoBlock}>
+            <ActionButton
+              onPress={() => navigateToScreen('FullClientData')}
+              icon={<SvgProfile color="white" />}
+              title="Про клієнта"
+            />
+            <ActionButton
+              onPress={handleProgramPress}
+              icon={<SvgCreateService />}
+              title="Програма"
+            />
+            <ActionButton
+              onPress={handleClientParamsPress}
+              icon={<SvgClientsParameters />}
+              title="Заміри"
+            />
+          </View>
+        </View>
+
+        <Text style={styles.listOfNotesTitle}>
+          У клієнта ще не було записів
+        </Text>
+
+        <ConfigModal
+          visible={isConfigModalVisible}
+          hideModal={() => setConfigModalVisible(false)}
+          handleNavigate={navigateToScreen}
+          handleRemove={handleRemoveClient}
         />
 
-        <View style={styles.mainInfoBlock}>
-          <Text style={styles.clientName}>
-            {name} {surname}
-          </Text>
-          <Text style={styles.clientNumber}>{number}</Text>
-
-          {!!link.length && (
-            <View style={styles.connectionTypesContainer}>
-              {link.map((el, idx) =>
-                el.link?.length ? (
-                  <TouchableOpacity key={idx} style={styles.connectionType}>
-                    {el.icon}
-                  </TouchableOpacity>
-                ) : null,
-              )}
-            </View>
-          )}
-
-          <TouchableOpacity
-            style={styles.createNotesBtn}
-            onPress={() =>
-              handlePlaningBtn('TrainingPlanning', 'clientProfile')
-            }>
-            <Text style={styles.createNotesTitle}>Запланувати тренування</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.additionalInfoBlock}>
-          <ActionButton
-            onPress={() => navigateToScreen('FullClientData')}
-            icon={<SvgProfile color="white" />}
-            title="Про клієнта"
-          />
-          <ActionButton
-            onPress={handleProgramPress}
-            icon={<SvgCreateService />}
-            title="Програма"
-          />
-          <ActionButton
-            onPress={handleClientParamsPress}
-            icon={<SvgClientsParameters />}
-            title="Заміри"
-          />
-        </View>
+        <CreateProgramModal
+          visible={isProgramModalVisible}
+          hideModal={() => setProgramModalVisible(false)}
+          handleNavigate={(screen, origin) =>
+            navigation.navigate(screen, {
+              origin,
+              clientId: currentClient.id,
+            })
+          }
+        />
       </View>
-
-      <Text style={styles.listOfNotesTitle}>У клієнта ще не було записів</Text>
-
-      <ConfigModal
-        visible={isConfigModalVisible}
-        hideModal={() => setConfigModalVisible(false)}
-        handleNavigate={navigateToScreen}
-        handleRemove={handleRemoveClient}
-      />
-
-      <CreateProgramModal
-        visible={isProgramModalVisible}
-        hideModal={() => setProgramModalVisible(false)}
-        handleNavigate={(screen, origin) =>
-          navigation.navigate(screen, {
-            origin,
-            clientId: currentClient.id,
-          })
-        }
-      />
-    </View>
+    </LayoutComponent>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#232323',
   },
   shadowOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -175,7 +183,7 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingHorizontal: 20,
     paddingBottom: 20,
-    backgroundColor: '#2E2E2E',
+    backgroundColor: 'transparent',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
@@ -194,7 +202,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     lineHeight: 21,
-    color: '#FFFF65',
+    color: 'white',
   },
   connectionTypesContainer: {
     flexDirection: 'row',
@@ -203,7 +211,7 @@ const styles = StyleSheet.create({
   },
   connectionType: {
     padding: 14,
-    backgroundColor: '#3D3D3D',
+    backgroundColor: '#FFFFFF1A',
     borderRadius: 200,
   },
   createNotesBtn: {
@@ -211,7 +219,7 @@ const styles = StyleSheet.create({
     marginBottom: 21,
     width: '100%',
     paddingVertical: 16,
-    backgroundColor: '#FFFF65',
+    backgroundColor: 'white',
     borderRadius: 100,
   },
   createNotesTitle: {

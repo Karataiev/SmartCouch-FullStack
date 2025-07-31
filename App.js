@@ -1,20 +1,26 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {StackNavigator} from './src/components/StackNavigator';
 import {ToastProvider} from './src/castomHooks/useToast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {StackNavigator} from './src/components/StackNavigator';
 
 function App() {
+  const [initialRoute, setInitialRoute] = useState(null);
+
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      const seen = await AsyncStorage.getItem('hasSeenOnboarding');
+      setInitialRoute(seen ? 'TabBar' : 'Onboarding');
+    };
+    checkOnboarding();
+  }, []);
+
+  if (!initialRoute) return null;
+
   return (
     <ToastProvider>
       <NavigationContainer>
-        <StackNavigator />
+        <StackNavigator initialRouteName={initialRoute} />
       </NavigationContainer>
     </ToastProvider>
   );

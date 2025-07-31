@@ -15,11 +15,15 @@ import {ClientProgramAssignmentScreen} from '../screens/ClientProgramAssignment'
 import {ProgramClientAssignmentScreen} from '../screens/ProgramClientAssignmentScreen';
 import {ClientParametersScreen} from '../screens/ClientParametersScreen';
 import {TrainingPlanningScreen} from '../screens/TrainingPlanningScreen';
+import {OnboardingScreen} from '../screens/OnboardingScreen';
 
-export const StackNavigator = () => {
+export const StackNavigator = ({initialRouteName = 'TabBar'}) => {
   const Stack = createStackNavigator();
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Navigator
+      screenOptions={{headerShown: false}}
+      initialRouteName={initialRouteName}>
+      <Stack.Screen name="Onboarding" component={OnboardingScreen} />
       <Stack.Screen name="TabBar" component={TabNavigator} />
       <Stack.Screen name="MyData" component={MyDataScreen} />
       <Stack.Screen name="FullClientData" component={FullClientDataScreen} />

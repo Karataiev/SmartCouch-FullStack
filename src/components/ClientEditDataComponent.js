@@ -1,12 +1,5 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {
-  Keyboard,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import {SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
 import {CustomInput} from './CustomInput';
 import {CustomPhoneInput} from './CustomPhoneInput';
 import {CreateConnectionMethod} from './CreateConnectionMethod';
@@ -141,72 +134,70 @@ export const ClientEditDataComponent = ({itemData, navigation}) => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <ScrollView>
-        <SafeAreaView style={styles.container}>
-          <View style={styles.formsContainer}>
-            <CustomInput placeholder={"Ім'я"} value={name} setValue={setName} />
-            <CustomInput
-              placeholder={'Прізвище'}
-              value={surname}
-              setValue={setSurname}
-            />
-            <CustomPhoneInput
-              inputHeader={true}
-              placeholderTextColor={'white'}
-              number={number}
-              setNumber={setNumber}
-            />
-
-            {connectionMethods.map(el =>
-              el.type.length !== 0 ? (
-                <ClientEditConnectionMethod
-                  el={el}
-                  key={el.type}
-                  handleRemoveBtn={handleRemoveBtn}
-                  setIsActiveSubmitBtn={setIsActiveSubmitBtn}
-                  getConnectionMethodLink={getConnectionMethodLink}
-                />
-              ) : null,
-            )}
-            <CreateConnectionMethod toggleModal={toggleModal} />
-            <View style={styles.customInputBlock}>
-              <CustomInput
-                placeholder={'Цілі та основні побажання'}
-                value={targetAndWishes}
-                setValue={setTargetAndWishes}
-              />
-              <CustomInput
-                placeholder={'Стан здоровʼя (травми / протипоказання)'}
-                value={stateOfHealth}
-                setValue={setStateOfHealth}
-              />
-              <CustomInput
-                placeholder={'Рівень фізичної підготовки'}
-                value={levelOfPhysical}
-                setValue={setLevelOfPhysical}
-              />
-              <CustomInput
-                placeholder={'Замітки'}
-                value={notes}
-                setValue={setNotes}
-              />
-            </View>
-          </View>
-
-          <SafeInfoButton
-            handleSubmit={handleSubmit}
-            disabled={!isActiveSubmitBtn}>
-            Зберегти
-          </SafeInfoButton>
-          <ConnectionMethodModal
-            visible={isModalVisible}
-            hideModal={() => setIsModalVisible(false)}
-            handleConnectionMethod={handleConnectionMethod}
+    <ScrollView>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.formsContainer}>
+          <CustomInput placeholder={"Ім'я"} value={name} setValue={setName} />
+          <CustomInput
+            placeholder={'Прізвище'}
+            value={surname}
+            setValue={setSurname}
           />
-        </SafeAreaView>
-      </ScrollView>
-    </TouchableWithoutFeedback>
+          <CustomPhoneInput
+            inputHeader={true}
+            placeholderTextColor={'white'}
+            number={number}
+            setNumber={setNumber}
+          />
+
+          {connectionMethods.map(el =>
+            el.type.length !== 0 ? (
+              <ClientEditConnectionMethod
+                el={el}
+                key={el.type}
+                handleRemoveBtn={handleRemoveBtn}
+                setIsActiveSubmitBtn={setIsActiveSubmitBtn}
+                getConnectionMethodLink={getConnectionMethodLink}
+              />
+            ) : null,
+          )}
+          <CreateConnectionMethod toggleModal={toggleModal} />
+          <View style={styles.customInputBlock}>
+            <CustomInput
+              placeholder={'Цілі та основні побажання'}
+              value={targetAndWishes}
+              setValue={setTargetAndWishes}
+            />
+            <CustomInput
+              placeholder={'Стан здоровʼя (травми / протипоказання)'}
+              value={stateOfHealth}
+              setValue={setStateOfHealth}
+            />
+            <CustomInput
+              placeholder={'Рівень фізичної підготовки'}
+              value={levelOfPhysical}
+              setValue={setLevelOfPhysical}
+            />
+            <CustomInput
+              placeholder={'Замітки'}
+              value={notes}
+              setValue={setNotes}
+            />
+          </View>
+        </View>
+
+        <SafeInfoButton
+          handleSubmit={handleSubmit}
+          disabled={!isActiveSubmitBtn}>
+          Зберегти
+        </SafeInfoButton>
+        <ConnectionMethodModal
+          visible={isModalVisible}
+          hideModal={() => setIsModalVisible(false)}
+          handleConnectionMethod={handleConnectionMethod}
+        />
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 

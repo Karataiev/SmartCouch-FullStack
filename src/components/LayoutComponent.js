@@ -1,10 +1,15 @@
-import {StyleSheet, View} from 'react-native';
+import {
+  Keyboard,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import React from 'react';
 import Svg, {Circle, Defs, RadialGradient, Stop} from 'react-native-svg';
 
-export const LayoutComponent = ({children, statusBarStyle}) => {
+export const LayoutComponent = ({children, addedStyles}) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, addedStyles]}>
       <Svg height="700" width="700" style={styles.gradientBall}>
         <Defs>
           <RadialGradient
@@ -59,7 +64,9 @@ export const LayoutComponent = ({children, statusBarStyle}) => {
           fill="url(#grad)" // Застосування градієнта
         />
       </Svg>
-      {children}
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <>{children}</>
+      </TouchableWithoutFeedback>
     </View>
   );
 };

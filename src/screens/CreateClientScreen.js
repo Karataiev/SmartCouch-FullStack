@@ -1,10 +1,8 @@
 import {
-  Keyboard,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   TextInput,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -126,85 +124,83 @@ export const CreateClientScreen = () => {
 
   return (
     <LayoutComponent>
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <SafeAreaView style={styles.container}>
-          <ScrollView>
-            <HeaderWithBackButton navigation={navigation}>
-              Новий клієнт
-            </HeaderWithBackButton>
+      <SafeAreaView style={styles.container}>
+        <ScrollView>
+          <HeaderWithBackButton navigation={navigation}>
+            Новий клієнт
+          </HeaderWithBackButton>
 
-            <View style={styles.formsContainer}>
-              <TextInput
-                value={name}
-                onChangeText={setName}
-                style={styles.input}
-                placeholder="Імʼя"
-                placeholderTextColor="white"
-              />
-              <TextInput
-                value={surname}
-                onChangeText={setSurname}
-                style={styles.input}
-                placeholder="Прізвище"
-                placeholderTextColor="white"
-              />
-              <CustomPhoneInput
-                placeholderTextColor={'white'}
-                number={number}
-                setNumber={setNumber}
-              />
-              {connectionMethods &&
-                connectionMethods.map(el => (
-                  <ChooseConnectionMethod
-                    el={el}
-                    key={el.type}
-                    setLinks={[
-                      setInstagramLink,
-                      setViberLink,
-                      setTelegramLink,
-                      setWhatsAppLink,
-                    ]}
-                    handleRemoveBtn={handleRemoveBtn}
-                  />
-                ))}
-              <CreateConnectionMethod toggleModal={toggleModal} />
+          <View style={styles.formsContainer}>
+            <TextInput
+              value={name}
+              onChangeText={setName}
+              style={styles.input}
+              placeholder="Імʼя"
+              placeholderTextColor="white"
+            />
+            <TextInput
+              value={surname}
+              onChangeText={setSurname}
+              style={styles.input}
+              placeholder="Прізвище"
+              placeholderTextColor="white"
+            />
+            <CustomPhoneInput
+              placeholderTextColor={'white'}
+              number={number}
+              setNumber={setNumber}
+            />
+            {connectionMethods &&
+              connectionMethods.map(el => (
+                <ChooseConnectionMethod
+                  el={el}
+                  key={el.type}
+                  setLinks={[
+                    setInstagramLink,
+                    setViberLink,
+                    setTelegramLink,
+                    setWhatsAppLink,
+                  ]}
+                  handleRemoveBtn={handleRemoveBtn}
+                />
+              ))}
+            <CreateConnectionMethod toggleModal={toggleModal} />
 
-              <View style={styles.containerClientInfo}>
-                <CustomInput
-                  placeholder={targetPlaceholder}
-                  value={targetAndWishes}
-                  setValue={setTargetAndWishes}
-                />
-                <CustomInput
-                  placeholder={healthPlaceholder}
-                  value={stateOfHealth}
-                  setValue={setStateOfHealth}
-                />
-                <CustomInput
-                  placeholder={levelPlaceholder}
-                  value={levelOfPhysical}
-                  setValue={setLevelOfPhysical}
-                />
-                <CustomInput
-                  placeholder={notesPlaceholder}
-                  value={notes}
-                  setValue={setNotes}
-                />
-              </View>
+            <View style={styles.containerClientInfo}>
+              <CustomInput
+                placeholder={targetPlaceholder}
+                value={targetAndWishes}
+                setValue={setTargetAndWishes}
+              />
+              <CustomInput
+                placeholder={healthPlaceholder}
+                value={stateOfHealth}
+                setValue={setStateOfHealth}
+              />
+              <CustomInput
+                placeholder={levelPlaceholder}
+                value={levelOfPhysical}
+                setValue={setLevelOfPhysical}
+              />
+              <CustomInput
+                placeholder={notesPlaceholder}
+                value={notes}
+                setValue={setNotes}
+              />
             </View>
-          </ScrollView>
-          <SafeInfoButton
-            handleSubmit={handleSubmit}
-            disabled={!isActiveSubmitBtn}>
-            Створити клієнта
-          </SafeInfoButton>
-          <ConnectionMethodModal
-            visible={isModalVisible}
-            hideModal={() => setIsModalVisible(false)}
-            handleConnectionMethod={handleConnectionMethod}
-          />
-        </SafeAreaView>
-      </TouchableWithoutFeedback>
+          </View>
+        </ScrollView>
+        <SafeInfoButton
+          handleSubmit={handleSubmit}
+          disabled={!isActiveSubmitBtn}>
+          Створити клієнта
+        </SafeInfoButton>
+        <ConnectionMethodModal
+          visible={isModalVisible}
+          hideModal={() => setIsModalVisible(false)}
+          handleConnectionMethod={handleConnectionMethod}
+        />
+      </SafeAreaView>
     </LayoutComponent>
   );
 };

@@ -1,11 +1,4 @@
-import {
-  Keyboard,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import {ScrollView, StatusBar, StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {DateAndTimeBlock} from '../components/DateAndTimeBlock';
@@ -50,31 +43,29 @@ export const TrainingPlanningScreen = () => {
   return (
     <LayoutComponent>
       <StatusBar backgroundColor="#121313" />
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={{flex: 1}}>
-          <ScrollView style={styles.container}>
-            <HeaderWithBackButton>Створення запису</HeaderWithBackButton>
+      <View style={{flex: 1}}>
+        <ScrollView style={styles.container}>
+          <HeaderWithBackButton>Створення запису</HeaderWithBackButton>
 
-            <DateAndTimeBlock
-              date={date}
-              setDate={setDate}
-              isDatePickerVisible={isDatePickerVisible}
-              setDatePickerVisibility={setDatePickerVisibility}
-              setOneTimeTrainingDate={setOneTimeTrainingDate}
-            />
+          <DateAndTimeBlock
+            date={date}
+            setDate={setDate}
+            isDatePickerVisible={isDatePickerVisible}
+            setDatePickerVisibility={setDatePickerVisibility}
+            setOneTimeTrainingDate={setOneTimeTrainingDate}
+          />
 
-            <DayAndTimeBlock setConstantDate={setConstantDate} />
+          <DayAndTimeBlock setConstantDate={setConstantDate} />
 
-            <TrainingPlanningContent
-              setPlanningTrainingData={setPlanningTrainingData}
-            />
+          <TrainingPlanningContent
+            setPlanningTrainingData={setPlanningTrainingData}
+          />
 
-            <SafeInfoButton disabled={!date} handleSubmit={createTrainingPlan}>
-              Створити запис
-            </SafeInfoButton>
-          </ScrollView>
-        </View>
-      </TouchableWithoutFeedback>
+          <SafeInfoButton disabled={!date} handleSubmit={createTrainingPlan}>
+            Створити запис
+          </SafeInfoButton>
+        </ScrollView>
+      </View>
     </LayoutComponent>
   );
 };

@@ -16,7 +16,7 @@ export const ProfileMenuItem = ({title, icon, subscription, navigation}) => {
         navigation.navigate('MyData');
         break;
       case 'Аналітика':
-        navigation.navigate('Onboarding');
+        navigation.navigate('Login');
         break;
       case 'Підписка':
         navigation.navigate('Subscribe');

@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   LayoutAnimation,
   UIManager,
-  StatusBar,
   Platform,
 } from 'react-native';
 import {CalendarProvider, WeekCalendar} from 'react-native-calendars';

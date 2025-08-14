@@ -16,6 +16,10 @@ import {ProgramClientAssignmentScreen} from '../screens/ProgramClientAssignmentS
 import {ClientParametersScreen} from '../screens/ClientParametersScreen';
 import {TrainingPlanningScreen} from '../screens/TrainingPlanningScreen';
 import {OnboardingScreen} from '../screens/OnboardingScreen';
+import {LoginScreen} from '../screens/LoginScreen';
+import {RegistrationScreen} from '../screens/RegistrationScreen';
+import {RegistrationCodeScreen} from '../screens/RegistrationCodeScreen';
+import {CreatePasswordScreen} from '../screens/CreatePasswordScreen';
 
 export const StackNavigator = ({initialRouteName = 'TabBar'}) => {
   const Stack = createStackNavigator();
@@ -24,6 +28,13 @@ export const StackNavigator = ({initialRouteName = 'TabBar'}) => {
       screenOptions={{headerShown: false}}
       initialRouteName={initialRouteName}>
       <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Registration" component={RegistrationScreen} />
+      <Stack.Screen
+        name="RegistrationCode"
+        component={RegistrationCodeScreen}
+      />
+      <Stack.Screen name="CreatePassword" component={CreatePasswordScreen} />
       <Stack.Screen name="TabBar" component={TabNavigator} />
       <Stack.Screen name="MyData" component={MyDataScreen} />
       <Stack.Screen name="FullClientData" component={FullClientDataScreen} />

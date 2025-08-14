@@ -2,12 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
-  Keyboard,
   SafeAreaView,
   StyleSheet,
   View,
   ScrollView,
-  TouchableWithoutFeedback,
   StatusBar,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
@@ -103,11 +101,11 @@ export const ClientParametersScreen = ({route}) => {
 
   return (
     <LayoutComponent>
-      <StatusBar backgroundColor="#121313" />
-      <KeyboardAvoidingView
-        style={{flex: 1}}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <>
+        <StatusBar backgroundColor="#121313" />
+        <KeyboardAvoidingView
+          style={{flex: 1}}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <SafeAreaView style={styles.container}>
             <HeaderWithBackButton>Заміри</HeaderWithBackButton>
 
@@ -185,8 +183,8 @@ export const ClientParametersScreen = ({route}) => {
               </SafeInfoButton>
             </ScrollView>
           </SafeAreaView>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </>
     </LayoutComponent>
   );
 };

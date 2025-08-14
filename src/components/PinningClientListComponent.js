@@ -32,8 +32,6 @@ export const PinningClientsListComponent = ({isForPinning}) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={'#232323'} />
-
       <HeaderWithBackButton>Оберіть клієнта</HeaderWithBackButton>
 
       <View style={styles.searchContainer}>

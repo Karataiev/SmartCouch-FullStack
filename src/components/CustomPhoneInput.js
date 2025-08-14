@@ -1,41 +1,39 @@
+import React, {useCallback} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {TextInputMask} from 'react-native-masked-text';
 
 export const CustomPhoneInput = ({
-  placeholderTextColor,
-  inputHeader,
+  placeholderTextColor = '#aaa',
+  inputHeader = false,
   number,
   setNumber,
+  style,
 }) => {
-  const handleFocusNumber = () => {
+  const mask = '+38 0** *** ** **';
+
+  const handleFocusNumber = useCallback(() => {
     if (!number) {
       setNumber('+38 0');
-    } else {
-      setNumber(number);
     }
-  };
+  }, [number, setNumber]);
 
-  const handleOutNumber = () => {
-    if (number && number.length > 5) {
-      setNumber(number);
-    } else {
+  const handleOutNumber = useCallback(() => {
+    if (!number || number.length <= 5) {
       setNumber('');
     }
-  };
+  }, [number, setNumber]);
 
   return (
-    <View>
+    <View style={style}>
       {inputHeader && <Text style={styles.inputHeader}>Телефон</Text>}
       <TextInputMask
-        type={'custom'}
-        options={{
-          mask: '+38 0** *** ** **',
-        }}
+        type="custom"
+        options={{mask}}
         value={number}
         onChangeText={setNumber}
-        onFocus={() => handleFocusNumber()}
-        onBlur={() => handleOutNumber()}
-        style={styles.input}
+        onFocus={handleFocusNumber}
+        onBlur={handleOutNumber}
+        style={[styles.input]}
         placeholder="Телефон"
         placeholderTextColor={placeholderTextColor}
         keyboardType="numeric"
@@ -62,5 +60,6 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     fontWeight: '400',
     color: 'white',
+    marginBottom: 4,
   },
 });

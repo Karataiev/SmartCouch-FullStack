@@ -1,10 +1,4 @@
-import {
-  Keyboard,
-  ScrollView,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {CustomInput} from './CustomInput';
 import {CustomPhoneInput} from './CustomPhoneInput';
 import React, {useEffect, useState} from 'react';
@@ -64,52 +58,48 @@ export const MyDataComponent = ({navigation}) => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={styles.wrapper}>
-        <ScrollView
-          contentContainerStyle={styles.scrollContainer}
-          keyboardShouldPersistTaps="handled">
-          <CustomInput placeholder="Імʼя" value={name} setValue={setName} />
-          <CustomInput
-            placeholder="Прізвище"
-            value={surname}
-            setValue={setSurname}
-          />
-          <CustomPhoneInput
-            inputHeader={true}
-            placeholderTextColor={'#A1A1A1'}
-            number={number}
-            setNumber={setNumber}
-          />
-          <CustomInput
-            placeholder="Email"
-            value={email}
-            setValue={setEmail}
-            inputType="email"
-          />
-          <CustomInput
-            placeholder="Дата народження"
-            value={birthday}
-            setValue={setBirthday}
-            inputType="numeric"
-          />
-          <CustomInput
-            placeholder="Стаж тренувань (років)"
-            value={experience}
-            setValue={setExperience}
-            inputType="numeric"
-          />
-          <CustomInput placeholder="Місто" value={city} setValue={setCity} />
-        </ScrollView>
+    <View style={styles.wrapper}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled">
+        <CustomInput placeholder="Імʼя" value={name} setValue={setName} />
+        <CustomInput
+          placeholder="Прізвище"
+          value={surname}
+          setValue={setSurname}
+        />
+        <CustomPhoneInput
+          inputHeader={true}
+          placeholderTextColor={'#A1A1A1'}
+          number={number}
+          setNumber={setNumber}
+        />
+        <CustomInput
+          placeholder="Email"
+          value={email}
+          setValue={setEmail}
+          inputType="email"
+        />
+        <CustomInput
+          placeholder="Дата народження"
+          value={birthday}
+          setValue={setBirthday}
+          inputType="numeric"
+        />
+        <CustomInput
+          placeholder="Стаж тренувань (років)"
+          value={experience}
+          setValue={setExperience}
+          inputType="numeric"
+        />
+        <CustomInput placeholder="Місто" value={city} setValue={setCity} />
+      </ScrollView>
 
-        {/* Кнопка — завжди знизу */}
-        <SafeInfoButton
-          handleSubmit={handleSubmit}
-          disabled={!isActiveSubmitBtn}>
-          Зберегти
-        </SafeInfoButton>
-      </View>
-    </TouchableWithoutFeedback>
+      {/* Кнопка — завжди знизу */}
+      <SafeInfoButton handleSubmit={handleSubmit} disabled={!isActiveSubmitBtn}>
+        Зберегти
+      </SafeInfoButton>
+    </View>
   );
 };
 

@@ -1,0 +1,216 @@
+import React, {useEffect, useState} from 'react';
+import {
+  Dimensions,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+  TouchableOpacity,
+} from 'react-native';
+import {LayoutComponent} from '../components/LayoutComponent';
+import {CustomPhoneInput} from '../components/CustomPhoneInput';
+import {PasswordCustomInput} from '../components/PasswordCustomInput';
+import {SafeInfoButton} from '../components/SafeInfoButton';
+import {useNavigation} from '@react-navigation/native';
+
+const {width, height} = Dimensions.get('window');
+
+const authenticationData = [
+  {login: '+38 098 628 69 74', password: '10Karat10'},
+  {login: '+38 050 230 40 21', password: '10Karat10'},
+];
+
+export const LoginScreen = () => {
+  const navigation = useNavigation();
+  const [number, setNumber] = useState('');
+  const [password, setPassword] = useState('');
+  const [isDisabled, setIsDisabled] = useState(true);
+  const [passwordError, setPasswordError] = useState('');
+  const [showErrors, setShowErrors] = useState(false);
+  const [authError, setAuthError] = useState('');
+
+  const goToScreen = screen => {
+    navigation.navigate(screen);
+  };
+
+  const handleLogin = () => {
+    setShowErrors(true);
+    setAuthError('');
+
+    if (!passwordError && number.length === 17 && password) {
+      const userExists = authenticationData.some(
+        user => user.login === number && user.password === password,
+      );
+
+      if (userExists) {
+        goToScreen('TabBar');
+      } else {
+        setAuthError(
+          'Невірні дані користувача. Перевірте правильність логіну та паролю',
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (number.length === 17 && password.length > 0) {
+      setIsDisabled(false);
+    } else {
+      setIsDisabled(true);
+    }
+  }, [number, password, passwordError]);
+
+  return (
+    <View style={styles.container}>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
+
+      <ImageBackground
+        source={require('../assets/authorization/loginBackground.png')}
+        resizeMode="cover"
+        style={styles.imageBackground}
+      />
+
+      <LayoutComponent addedStyles={styles.layoutStyles}>
+        <View style={styles.contentContainer}>
+          <Text style={styles.header}>Вхід</Text>
+
+          <CustomPhoneInput
+            inputHeader={true}
+            number={number}
+            setNumber={setNumber}
+            style={styles.input}
+          />
+
+          <PasswordCustomInput
+            password={password}
+            setPassword={setPassword}
+            setPasswordError={setPasswordError}
+            placeholder="Пароль"
+          />
+          {showErrors && passwordError ? (
+            <Text style={styles.errorText}>{passwordError}</Text>
+          ) : null}
+          {showErrors && !passwordError && authError ? (
+            <Text style={styles.errorText}>{authError}</Text>
+          ) : null}
+
+          <TouchableOpacity style={styles.forgotPassword}>
+            <Text style={styles.forgotPasswordTitle}>Забули пароль?</Text>
+          </TouchableOpacity>
+
+          <SafeInfoButton disabled={isDisabled} handleSubmit={handleLogin}>
+            Увійти
+          </SafeInfoButton>
+
+          <View style={styles.privacyPolicyBlock}>
+            <Text style={styles.title}>
+              Натискаючи кнопку «Увійти», ви приймаєте умови
+            </Text>
+            <TouchableOpacity style={styles.privacyPolicyBtn}>
+              <Text style={[styles.title, styles.btnTitle]}>
+                Політики конфіденційності
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.goToRegistrationBlock}>
+            <Text style={styles.title}>Немає акаунта?</Text>
+            <TouchableOpacity
+              style={styles.privacyPolicyBtn}
+              onPress={() => goToScreen('Registration')}>
+              <Text style={[styles.title, styles.btnTitle]}>
+                Зареєструватися
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </LayoutComponent>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {flex: 1},
+  imageBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 260,
+    width: '100%',
+    zIndex: 0,
+  },
+  layoutStyles: {
+    position: 'absolute',
+    top: 180,
+    width: width,
+    height: height,
+    zIndex: 1,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  contentContainer: {
+    flex: 1,
+    width: '100%',
+    paddingTop: 32,
+    paddingHorizontal: 20,
+    position: 'relative',
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: '700',
+    lineHeight: 34,
+    color: 'white',
+    marginBottom: 24,
+    textAlign: 'center',
+    width: '100%',
+  },
+  input: {width: '100%'},
+  forgotPassword: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  forgotPasswordTitle: {
+    marginBottom: 32,
+    fontSize: 15,
+    fontWeight: '700',
+    lineHeight: 18,
+    color: 'white',
+  },
+  privacyPolicyBlock: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 15,
+    fontWeight: '400',
+    lineHeight: 22,
+    color: '#D1D1D1',
+  },
+  btnTitle: {color: '#3EB1CC', fontWeight: '700'},
+  privacyPolicyBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 6,
+  },
+  goToRegistrationBlock: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginTop: 'auto',
+    paddingBottom: 170,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 13,
+    marginTop: 4,
+    marginBottom: 8,
+  },
+});

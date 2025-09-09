@@ -6,7 +6,6 @@ import {
   StyleSheet,
   View,
   ScrollView,
-  StatusBar,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
@@ -102,7 +101,6 @@ export const ClientParametersScreen = ({route}) => {
   return (
     <LayoutComponent>
       <>
-        <StatusBar backgroundColor="#121313" />
         <KeyboardAvoidingView
           style={{flex: 1}}
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -193,7 +191,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 8,
+    paddingTop: 42,
   },
   scrollContent: {
     paddingBottom: 40,

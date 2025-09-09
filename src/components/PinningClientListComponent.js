@@ -1,4 +1,4 @@
-import {StatusBar, StyleSheet, TextInput, View} from 'react-native';
+import {StyleSheet, TextInput, View} from 'react-native';
 import {SvgSearch} from '../assets/svgIcons/SvgSearch';
 import React, {useState} from 'react';
 import {useSelector} from 'react-redux';

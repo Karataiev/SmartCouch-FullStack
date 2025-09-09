@@ -1,7 +1,6 @@
 import {
   FlatList,
   Image,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -91,7 +90,6 @@ export const ProgramClientAssignmentScreen = () => {
 
   return (
     <LayoutComponent>
-      <StatusBar backgroundColor="#121313" />
       <View style={styles.container}>
         <HeaderWithBackButton
           navigation={navigation}
@@ -132,7 +130,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 8,
+    paddingTop: 42,
   },
   headerContainer: {
     flexDirection: 'row',

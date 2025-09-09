@@ -1,4 +1,4 @@
-import {StatusBar, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {ClientDataComponent} from '../components/ClientDataComponent';
@@ -19,12 +19,11 @@ export const FullClientDataScreen = ({navigation, route}) => {
     } else {
       setIsToggleEdit(false);
     }
-  }, []);
+  }, [from]);
 
   return (
     <LayoutComponent>
       <View style={styles.container}>
-        <StatusBar backgroundColor="#121313" />
         <HeaderWithBackButton
           navigation={navigation}
           editBtn={!isToggleEdit}
@@ -49,6 +48,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 8,
+    paddingTop: 42,
   },
 });

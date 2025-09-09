@@ -86,7 +86,8 @@ export const PlanScreenCalendar = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    maxHeight: 144,
+    maxHeight: 184,
+    paddingTop: 40,
     backgroundColor: '#232929',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,

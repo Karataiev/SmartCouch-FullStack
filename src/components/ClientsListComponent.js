@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import {StatusBar, StyleSheet, TextInput, View} from 'react-native';
+import {StyleSheet, TextInput, View} from 'react-native';
 import {SvgSearch} from '../assets/svgIcons/SvgSearch';
 import {useSelector} from 'react-redux';
 import {ClientList} from './ClientList';

@@ -3,7 +3,6 @@ import {
   FlatList,
   Image,
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -41,7 +40,6 @@ export const MyProgramsScreen = ({navigation}) => {
 
   return (
     <LayoutComponent>
-      <StatusBar backgroundColor="#121313" />
       <SafeAreaView style={styles.container}>
         <HeaderWithBackButton
           navigation={navigation}
@@ -74,7 +72,7 @@ export const MyProgramsScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 8,
+    paddingTop: 42,
     paddingHorizontal: 20,
   },
   listContent: {

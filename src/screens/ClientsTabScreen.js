@@ -1,5 +1,5 @@
 import React from 'react';
-import {StatusBar, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {ClientsEmptyComponent} from '../components/ClientsEmptyComponent';
 import {ClientsListComponent} from '../components/ClientsListComponent';
 import {useSelector} from 'react-redux';
@@ -15,8 +15,6 @@ export const ClientsTabScreen = ({navigation}) => {
 
   return (
     <LayoutComponent>
-      <StatusBar backgroundColor="#121313" />
-
       <View style={styles.container}>
         {clientsState.length === 0 ? (
           <ClientsEmptyComponent navigation={navigation} />
@@ -35,5 +33,6 @@ export const ClientsTabScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 42,
   },
 });

@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Text,
   View,
-  StatusBar,
   TouchableOpacity,
 } from 'react-native';
 import {LayoutComponent} from '../components/LayoutComponent';
@@ -63,12 +62,6 @@ export const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle="light-content"
-      />
-
       <ImageBackground
         source={require('../assets/authorization/loginBackground.png')}
         resizeMode="cover"

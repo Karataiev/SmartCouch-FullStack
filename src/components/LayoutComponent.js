@@ -65,7 +65,7 @@ export const LayoutComponent = ({children, addedStyles}) => {
         />
       </Svg>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <>{children}</>
+        {children}
       </TouchableWithoutFeedback>
     </View>
   );

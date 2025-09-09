@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {ToastProvider} from './src/castomHooks/useToast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackNavigator} from './src/components/StackNavigator';
+import {StatusBar} from 'react-native';
 
 function App() {
   const [initialRoute, setInitialRoute] = useState(null);
@@ -19,6 +20,11 @@ function App() {
 
   return (
     <ToastProvider>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
       <NavigationContainer>
         <StackNavigator initialRouteName={initialRoute} />
       </NavigationContainer>

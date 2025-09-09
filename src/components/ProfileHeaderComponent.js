@@ -37,7 +37,8 @@ export const ProfileHeaderComponent = () => {
 const styles = StyleSheet.create({
   profileHeaderContainer: {
     position: 'relative',
-    height: 130,
+    paddingTop: 42,
+    height: 172,
     width: '100%',
     paddingHorizontal: 20,
     backgroundColor: '#232929',

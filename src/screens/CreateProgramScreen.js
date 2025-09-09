@@ -1,5 +1,5 @@
 import React, {useState, useMemo, useCallback} from 'react';
-import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
+import {SafeAreaView, StyleSheet} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import {createNewProgram, updateClientProgram} from '../redux/action';
@@ -53,7 +53,6 @@ export const CreateProgramScreen = () => {
 
   return (
     <LayoutComponent>
-      <StatusBar backgroundColor="#121313" />
       <SafeAreaView style={styles.container}>
         <ProgramInputsComponent
           navigation={navigation}
@@ -76,7 +75,7 @@ export const CreateProgramScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 8,
+    paddingTop: 42,
     paddingHorizontal: 20,
   },
 });

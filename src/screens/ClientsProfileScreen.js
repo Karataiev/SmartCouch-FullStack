@@ -1,11 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {SvgCreateService} from '../assets/svgIcons/SvgCreateService';
@@ -84,8 +78,6 @@ export const ClientsProfileScreen = ({route, navigation}) => {
         {(isConfigModalVisible || isProgramModalVisible) && (
           <View style={styles.shadowOverlay} />
         )}
-
-        <StatusBar backgroundColor="#121313" />
 
         <View style={styles.mainInfoContainer}>
           <HeaderWithBackButton
@@ -173,6 +165,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 42,
   },
   shadowOverlay: {
     ...StyleSheet.absoluteFillObject,

@@ -95,7 +95,6 @@ export const MyDataComponent = ({navigation}) => {
         <CustomInput placeholder="Місто" value={city} setValue={setCity} />
       </ScrollView>
 
-      {/* Кнопка — завжди знизу */}
       <SafeInfoButton handleSubmit={handleSubmit} disabled={!isActiveSubmitBtn}>
         Зберегти
       </SafeInfoButton>

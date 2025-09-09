@@ -6,7 +6,6 @@ import {
   Text,
   Animated,
   Easing,
-  StatusBar,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {SafeInfoButton} from '../components/SafeInfoButton';
@@ -112,7 +111,6 @@ export const CurrentProgramScreen = ({navigation, route}) => {
 
   return (
     <LayoutComponent>
-      <StatusBar backgroundColor="#121313" />
       <SafeAreaView style={styles.container}>
         <ProgramInputsComponent
           navigation={navigation}
@@ -158,7 +156,7 @@ export const CurrentProgramScreen = ({navigation, route}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 8,
+    paddingTop: 42,
     paddingHorizontal: 20,
   },
   toastContainer: {

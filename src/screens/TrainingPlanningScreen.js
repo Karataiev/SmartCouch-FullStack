@@ -1,4 +1,4 @@
-import {ScrollView, StatusBar, StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {DateAndTimeBlock} from '../components/DateAndTimeBlock';
@@ -42,7 +42,6 @@ export const TrainingPlanningScreen = () => {
 
   return (
     <LayoutComponent>
-      <StatusBar backgroundColor="#121313" />
       <View style={{flex: 1}}>
         <ScrollView style={styles.container}>
           <HeaderWithBackButton>Створення запису</HeaderWithBackButton>
@@ -73,7 +72,7 @@ export const TrainingPlanningScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 8,
+    paddingTop: 42,
     paddingHorizontal: 20,
   },
 });

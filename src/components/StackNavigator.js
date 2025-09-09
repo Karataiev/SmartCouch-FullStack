@@ -21,7 +21,7 @@ import {RegistrationScreen} from '../screens/RegistrationScreen';
 import {RegistrationCodeScreen} from '../screens/RegistrationCodeScreen';
 import {CreatePasswordScreen} from '../screens/CreatePasswordScreen';
 
-export const StackNavigator = ({initialRouteName = 'TabBar'}) => {
+export const StackNavigator = ({initialRouteName = 'Login'}) => {
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator

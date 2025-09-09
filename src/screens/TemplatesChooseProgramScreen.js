@@ -1,10 +1,4 @@
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {SvgBackBtn} from '../assets/svgIcons/SvgBackBtn';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -28,7 +22,6 @@ export const TemplatesChooseProgramScreen = () => {
 
   return (
     <LayoutComponent>
-      <StatusBar backgroundColor="#121313" />
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <TouchableOpacity style={styles.backButton} onPress={handleBackBtn}>
@@ -54,7 +47,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 8,
+    paddingTop: 42,
   },
   headerContainer: {
     flexDirection: 'row',

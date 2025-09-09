@@ -50,7 +50,7 @@ export const OnboardingScreen = () => {
 
   const finishOnboarding = async () => {
     await AsyncStorage.setItem('hasSeenOnboarding', 'true');
-    navigation.replace('TabBar');
+    navigation.replace('Login');
   };
 
   const renderItem = ({item}) => (
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   },
   topBar: {
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 52,
     position: 'absolute',
     zIndex: 2,
   },
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     width: width,
-    height: height,
+    height: height + 52,
     flex: 1,
     justifyContent: 'flex-end',
   },

@@ -31,7 +31,7 @@ export const TemplatesTabScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 17,
+    paddingTop: 52,
     paddingHorizontal: 20,
   },
   headerTitle: {

@@ -24,7 +24,7 @@ export const TrainingPlanningContent = ({setPlanningTrainingData}) => {
 
   const navigation = useNavigation();
 
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedType, setSelectedType] = useState('personal');
   const [trainingName, setTrainingName] = useState('');
   const [location, setLocation] = useState('');
   const [pinnedClient, setPinnedClient] = useState(null);
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 18,
     borderRadius: 10,
-    backgroundColor: '#2E2E2E',
+    backgroundColor: '#232929',
   },
   getClientTitle: {
     fontSize: 14,

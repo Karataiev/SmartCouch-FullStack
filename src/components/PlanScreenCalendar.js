@@ -26,7 +26,7 @@ if (
 
 defaultLocaleConfig('en');
 
-export const PlanScreenCalendar = () => {
+export const PlanScreenCalendar = ({chooseDate}) => {
   const ITEMS = agendaItems;
   let data = new Date();
 
@@ -74,7 +74,13 @@ export const PlanScreenCalendar = () => {
 
       <CalendarProvider date={ITEMS[1]?.title}>
         {!isOpenFullCalendar ? (
-          <WeekCalendar firstDay={1} theme={styles.weekCalendarTheme} />
+          <WeekCalendar
+            firstDay={1}
+            theme={styles.weekCalendarTheme}
+            onDayPress={day => {
+              chooseDate(day.dateString);
+            }}
+          />
         ) : (
           <CustomMonthCalendar getActualData={getActualData} />
         )}

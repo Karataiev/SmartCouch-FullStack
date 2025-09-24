@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useMemo, useRef} from 'react';
 import {useSelector} from 'react-redux';
 import {SvgDoneStatus} from '../assets/calendarIcons/SvgDoneStatus';
 import {SvgWaitingStatus} from '../assets/calendarIcons/SvgWaitingStatus';
@@ -7,55 +7,70 @@ import {StyleSheet, Text, View} from 'react-native';
 import {AgendaTimeLine} from './AgendaTimeLine';
 
 const AgendaItemComponent = ({item}) => {
-  const [itemHeight, setItemHeight] = useState(null);
-
   const currentTime = useSelector(state => state.currentTime);
-  const currentTimeArr = currentTime?.split(':') || [];
-  const timeIdArr = item?.timeId?.split(':') || ['00', '00'];
+  const itemHeightRef = useRef(null);
 
-  let status = '';
-  let statusIcon = null;
-  let statusStyle = {};
+  const currentTimeArr = useMemo(
+    () => currentTime?.split(':') || ['00', '00'],
+    [currentTime],
+  );
 
-  if (currentTimeArr[0] > timeIdArr[0]) {
-    status = 'Проведено';
-    statusIcon = <SvgDoneStatus />;
-    statusStyle = {color: '#00CA8D'};
-  } else if (currentTimeArr[0] < timeIdArr[0]) {
-    status = 'Очікується';
-    statusIcon = <SvgWaitingStatus />;
-    statusStyle = {color: '#FFFFFF'};
-  } else {
-    status = 'Триває';
-    statusIcon = <SvgInProgressStatus />;
-    statusStyle = {color: '#F79605'};
-  }
+  const timeIdArr = useMemo(
+    () => item?.timeId?.split(':') || ['00', '00'],
+    [item?.timeId],
+  );
+
+  const {status, statusIcon, statusStyle} = useMemo(() => {
+    if (+currentTimeArr[0] > +timeIdArr[0]) {
+      return {
+        status: 'Проведено',
+        statusIcon: <SvgDoneStatus />,
+        statusStyle: {color: '#00CA8D'},
+      };
+    }
+    if (+currentTimeArr[0] < +timeIdArr[0]) {
+      return {
+        status: 'Очікується',
+        statusIcon: <SvgWaitingStatus />,
+        statusStyle: {color: '#FFFFFF'},
+      };
+    }
+    return {
+      status: 'Триває',
+      statusIcon: <SvgInProgressStatus />,
+      statusStyle: {color: '#F79605'},
+    };
+  }, [currentTimeArr, timeIdArr]);
 
   const onLayout = event => {
-    const {height} = event.nativeEvent.layout;
-    setItemHeight(height);
+    itemHeightRef.current = event.nativeEvent.layout.height;
   };
 
-  const returnTypeOfTrainingStyle = type => {
-    return type === 'personal'
+  const returnTypeOfTrainingStyle = type =>
+    type === 'personal'
       ? {backgroundColor: '#00704F'}
       : {backgroundColor: '#4195B9'};
-  };
 
   const renderTimeLine = timeId => {
-    if (!timeId) return null;
-
-    const timeIdArray = timeId.split(':');
-    if (
-      +currentTimeArr[0] >= +timeIdArray[0] &&
-      +currentTimeArr[0] < +timeIdArray[0] + 1
-    ) {
-      const lineTopNumber = (+itemHeight / 60) * +currentTimeArr[1];
+    const [hour, minute] = timeId.split(':').map(Number);
+    if (+currentTimeArr[0] >= hour && +currentTimeArr[0] < hour + 1) {
+      const lineTopNumber =
+        (itemHeightRef.current / 60) * Number(currentTimeArr[1]);
       return <AgendaTimeLine lineTopNumber={lineTopNumber} />;
     }
-
     return null;
   };
+
+  const showClientName = el => {
+    if (!el.client) {
+      return el.trainingType === 'personal'
+        ? 'УТОЧНИТИ ДАНІ КЛІЄНТА'
+        : 'ГРУПОВЕ ТРЕНУВАННЯ';
+    }
+    return `${el.client?.client.name} ${el.client?.client.surname}`.toUpperCase();
+  };
+
+  const returnTrainingName = name => (name ? name : 'Gym');
 
   return (
     <View style={styles.itemContainer} onLayout={onLayout}>
@@ -67,35 +82,34 @@ const AgendaItemComponent = ({item}) => {
       {renderTimeLine(item.timeId)}
 
       <View style={styles.itemBlock}>
-        {item.trainings &&
-          item.trainings.map((el, index) => (
-            <View style={styles.item} key={index}>
-              <View style={styles.itemCommonStyles}>
-                <Text style={styles.itemFirstText}>{el.trainingName}</Text>
-                <Text
-                  style={[
-                    styles.itemSecondText,
-                    returnTypeOfTrainingStyle(el.trainingType),
-                  ]}>
-                  {el.trainingType.toUpperCase()}
-                </Text>
-              </View>
-              <View style={[styles.itemCommonStyles, styles.itemSecondBlock]}>
-                <Text style={styles.itemText}>
-                  {`${el.client.client.name} ${el.client.client.surname}`.toUpperCase()}
-                </Text>
-              </View>
-              <View style={[styles.itemCommonStyles, styles.itemThirdBlock]}>
-                <Text style={styles.itemTimeText}>
-                  {`${el.oneTimeTrainingDate.time[0]} - ${el.oneTimeTrainingDate.time[1]}`}
-                </Text>
-                <View style={styles.itemStatusBlock}>
-                  {statusIcon}
-                  <Text style={[styles.itemText, statusStyle]}>{status}</Text>
-                </View>
+        {item.trainings?.map((el, index) => (
+          <View style={styles.item} key={index}>
+            <View style={styles.itemCommonStyles}>
+              <Text style={styles.itemFirstText}>
+                {returnTrainingName(el.trainingName)}
+              </Text>
+              <Text
+                style={[
+                  styles.itemSecondText,
+                  returnTypeOfTrainingStyle(el.trainingType),
+                ]}>
+                {el.trainingType.toUpperCase()}
+              </Text>
+            </View>
+            <View style={[styles.itemCommonStyles, styles.itemSecondBlock]}>
+              <Text style={styles.itemText}>{showClientName(el)}</Text>
+            </View>
+            <View style={[styles.itemCommonStyles, styles.itemThirdBlock]}>
+              <Text style={styles.itemTimeText}>
+                {`${el.trainingDate.time[0]} - ${el.trainingDate.time[1]}`}
+              </Text>
+              <View style={styles.itemStatusBlock}>
+                {statusIcon}
+                <Text style={[styles.itemText, statusStyle]}>{status}</Text>
               </View>
             </View>
-          ))}
+          </View>
+        ))}
       </View>
     </View>
   );
@@ -108,7 +122,6 @@ const styles = StyleSheet.create({
     minHeight: 80,
   },
   itemContainerHeader: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -121,7 +134,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderTopWidth: 1,
     marginLeft: 12,
-    borderBlockColor: '#303030',
+    borderColor: '#303030',
   },
   itemBlock: {
     width: '100%',
@@ -138,7 +151,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#232929',
   },
   itemCommonStyles: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -174,9 +186,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   itemStatusBlock: {
-    display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
     gap: 2,
   },

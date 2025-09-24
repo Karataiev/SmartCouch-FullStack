@@ -43,7 +43,7 @@ export const DayAndTimeBlock = ({setConstantDate}) => {
   useEffect(() => {
     if (isChecked) {
       const result = selectedDays.map(dayId => ({
-        day: dayId,
+        date: dayId,
         time: dayTimeMap[dayId] || ['', ''],
       }));
       setConstantDate(result);

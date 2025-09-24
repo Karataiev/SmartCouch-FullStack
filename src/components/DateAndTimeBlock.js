@@ -37,10 +37,12 @@ export const DateAndTimeBlock = ({
     const fulldate = `${parseInt(day)} ${monthName} ${year} р.`;
     setFormattedDate(fulldate);
 
-    setOneTimeTrainingDate({
-      date: fulldate,
-      time: [dayTimeFrom, dayTimeTo],
-    });
+    setOneTimeTrainingDate([
+      {
+        date: fulldate,
+        time: [dayTimeFrom, dayTimeTo],
+      },
+    ]);
   }, [date, dayTimeFrom, dayTimeTo]);
 
   const formatTimeInput = text => {

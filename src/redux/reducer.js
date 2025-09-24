@@ -108,22 +108,30 @@ export const reducer = (state = defaultState, action) => {
         pinningClientId: action.payload || null,
       };
     case CREATE_WORKOUT_PLAN: {
-      const {oneTimeTrainingDate} = action.payload;
+      const {trainingDate} = action.payload;
 
       return {
         ...state,
         workoutPlanArr: state.workoutPlanArr.map(plan => {
-          const hour = plan.timeId.split(':')[0];
-          const newHour = oneTimeTrainingDate.time[0].slice(0, 2);
+          const matchingTrainings = trainingDate.filter(td => {
+            const hour = plan.timeId.split(':')[0];
+            const newHour = td.time[0].slice(0, 2);
+            return hour === newHour;
+          });
 
-          if (hour === newHour) {
-            return {
-              ...plan,
-              trainings: [...plan.trainings, action.payload],
-            };
+          if (matchingTrainings.length === 0) {
+            return plan;
           }
 
-          return plan;
+          const newTrainings = matchingTrainings.map(td => ({
+            ...action.payload,
+            trainingDate: td,
+          }));
+
+          return {
+            ...plan,
+            trainings: [...plan.trainings, ...newTrainings],
+          };
         }),
       };
     }

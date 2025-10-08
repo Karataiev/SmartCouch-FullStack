@@ -92,7 +92,9 @@ export const TrainingPlanningScreen = () => {
 
       dispatch(createWorkoutPlan(trainingPlanObject));
       showToast('Тренування заплановано успішно');
-      navigation.goBack();
+      navigation.navigate('Plan', {
+        itemData: today,
+      });
     }
   };
 

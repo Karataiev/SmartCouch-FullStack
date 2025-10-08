@@ -1,12 +1,18 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Agenda} from '../components/Agenda';
 import {PlanScreenCalendar} from '../components/PlanScreenCalendar';
 import {LayoutComponent} from '../components/LayoutComponent';
-import {useCurrentDate} from '../castomHooks/useCurrentDate';
+import {useRoute} from '@react-navigation/native';
 
 export const PlanTabScreen = () => {
-  const today = useCurrentDate();
-  const [pickedDate, setPickedDate] = useState(today);
+  const route = useRoute();
+  console.log(route);
+
+  const [pickedDate, setPickedDate] = useState(null);
+
+  useEffect(() => {
+    setPickedDate(route.params?.itemData);
+  }, [route]);
 
   return (
     <LayoutComponent>

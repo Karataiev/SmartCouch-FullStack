@@ -25,7 +25,7 @@ if (
 
 defaultLocaleConfig('uk');
 
-export const PlanScreenCalendar = ({chooseDate}) => {
+export const PlanScreenCalendar = ({date, chooseDate}) => {
   let today = new Date();
   const todayString = today.toISOString().split('T')[0];
 
@@ -46,16 +46,14 @@ export const PlanScreenCalendar = ({chooseDate}) => {
   };
 
   const updateMonthYear = dateString => {
-    const date = new Date(dateString);
-    setCurrentMonth(monthArray[date.getMonth()]);
-    setCurrentYear(date.getFullYear());
+    const newDate = new Date(dateString);
+    setCurrentMonth(monthArray[newDate.getMonth()]);
+    setCurrentYear(newDate.getFullYear());
   };
 
-  const getActualData = months => {
-    if (months && months.length > 0) {
-      setCurrentMonth(monthArray[months[0].month - 1]);
-      setCurrentYear(months[0].year);
-    }
+  const handleDayPress = day => {
+    chooseDate(day.dateString);
+    updateMonthYear(day.dateString);
   };
 
   return (
@@ -84,7 +82,7 @@ export const PlanScreenCalendar = ({chooseDate}) => {
       <CalendarProvider date={todayString}>
         {!isOpenFullCalendar ? (
           <WeekCalendar
-            firstDay={1} // понеділок першим днем
+            firstDay={1}
             theme={styles.weekCalendarTheme}
             onDayPress={day => {
               chooseDate(day.dateString);
@@ -92,7 +90,10 @@ export const PlanScreenCalendar = ({chooseDate}) => {
             }}
           />
         ) : (
-          <CustomMonthCalendar getActualData={getActualData} />
+          <CustomMonthCalendar
+            selectedDate={date}
+            handleDayPress={handleDayPress}
+          />
         )}
       </CalendarProvider>
     </SafeAreaView>

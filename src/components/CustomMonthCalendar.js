@@ -1,24 +1,10 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {StyleSheet, Dimensions} from 'react-native';
 import {CalendarList} from 'react-native-calendars';
 
 const {width} = Dimensions.get('window');
 
-export const CustomMonthCalendar = ({
-  selectedDate,
-  setSelectedDate,
-  isCheckedDayAndTimeBlock,
-}) => {
-  useEffect(() => {
-    if (isCheckedDayAndTimeBlock) {
-      setSelectedDate(null);
-    }
-  }, [isCheckedDayAndTimeBlock]);
-
-  const handleDayPress = day => {
-    setSelectedDate(day.dateString);
-  };
-
+export const CustomMonthCalendar = ({selectedDate, handleDayPress}) => {
   return (
     <CalendarList
       horizontal
@@ -29,7 +15,7 @@ export const CustomMonthCalendar = ({
       renderHeader={() => null}
       pastScrollRange={12}
       futureScrollRange={12}
-      onDayPress={handleDayPress}
+      onDayPress={day => handleDayPress(day)}
       markedDates={{
         [selectedDate]: {
           selected: true,

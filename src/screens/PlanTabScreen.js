@@ -15,7 +15,7 @@ export const PlanTabScreen = () => {
   return (
     <LayoutComponent>
       <>
-        <PlanScreenCalendar chooseDate={setPickedDate} />
+        <PlanScreenCalendar date={pickedDate} chooseDate={setPickedDate} />
         <Agenda date={pickedDate} />
       </>
     </LayoutComponent>

@@ -28,6 +28,8 @@ export const TrainingPlanningScreen = () => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isDisableBtn, setIsDisableBtn] = useState(true);
   const [isActiveConstantBlock, setIsActiveConstantBlock] = useState(false);
+  const [isCheckedDayAndTimeBlock, setIsCheckedDayAndTimeBlock] =
+    useState(false);
 
   const filterConstantDate = data => {
     const constantDateArr = data.filter(
@@ -111,9 +113,14 @@ export const TrainingPlanningScreen = () => {
           isDatePickerVisible={isDatePickerVisible}
           setDatePickerVisibility={setDatePickerVisibility}
           setOneTimeTrainingDate={setOneTimeTrainingDate}
+          isCheckedDayAndTimeBlock={isCheckedDayAndTimeBlock}
         />
 
-        <DayAndTimeBlock setConstantDate={setConstantDate} />
+        <DayAndTimeBlock
+          setConstantDate={setConstantDate}
+          isChecked={isCheckedDayAndTimeBlock}
+          setIsChecked={setIsCheckedDayAndTimeBlock}
+        />
 
         <TrainingPlanningContent
           setPlanningTrainingData={setPlanningTrainingData}

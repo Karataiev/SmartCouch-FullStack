@@ -6,8 +6,7 @@ import {TimeInputComponent} from './TimeInputComponent';
 import {HidenDayAndTimeBlock} from './HidenDayAndTimeBlock';
 import {dayTimeStyles} from '../shared/dayTimeStyles';
 
-export const DayAndTimeBlock = ({setConstantDate}) => {
-  const [isChecked, setIsChecked] = useState(false);
+export const DayAndTimeBlock = ({setConstantDate, isChecked, setIsChecked}) => {
   const [selectedDays, setSelectedDays] = useState([]);
   const [dayTimeMap, setDayTimeMap] = useState({});
 

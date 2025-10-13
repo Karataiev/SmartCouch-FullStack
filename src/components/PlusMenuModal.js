@@ -4,7 +4,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {isPlusMenuBtn} from '../redux/action';
 import {SvgClose} from '../assets/svgIcons/SvgClose';
 import {SvgCreateProgram} from '../assets/svgIcons/SvgCreateProgram';
-import {SvgTrainingRecord} from '../assets/svgIcons/SvgTrainingRecord';
 import {SvgCreateService} from '../assets/svgIcons/SvgCreateService';
 import {PlusMenuItem} from './PlusMenuItem';
 import {SvgClients} from '../assets/tabIcons/SvgClients';
@@ -43,7 +42,7 @@ export const PlusMenuModal = ({navigation}) => {
         <View style={styles.menuItemsContainer}>
           <PlusMenuItem
             title={'Запис тренування'}
-            icon={<SvgTrainingRecord />}
+            icon={<SvgCreateService />}
             onPress={() => handleCreate('TrainingPlanning')}
           />
           <PlusMenuItem
@@ -56,11 +55,11 @@ export const PlusMenuModal = ({navigation}) => {
             icon={<SvgCreateProgram />}
             onPress={() => handleCreate('CreateProgram')}
           />
-          <PlusMenuItem
+          {/* <PlusMenuItem
             title={'Послугу'}
             icon={<SvgCreateService />}
             onPress={() => handleCreate()}
-          />
+          /> */}
         </View>
 
         <TouchableOpacity
@@ -100,6 +99,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'center',
     marginTop: 12,
     width: '100%',
     gap: 15,

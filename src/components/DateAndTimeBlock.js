@@ -11,12 +11,19 @@ export const DateAndTimeBlock = ({
   isDatePickerVisible,
   setDatePickerVisibility,
   setOneTimeTrainingDate,
+  isCheckedDayAndTimeBlock,
 }) => {
   const [formattedDate, setFormattedDate] = useState(null);
   const [dayTimeFrom, setDayTimeFrom] = useState('');
   const [dayTimeTo, setDayTimeTo] = useState('');
 
   useEffect(() => {
+    if (isCheckedDayAndTimeBlock) {
+      setDayTimeFrom('');
+      setDayTimeTo('');
+      setFormattedDate(null);
+    }
+
     if (!date) return;
     const [year, month, day] = date.split('-');
     const months = [
@@ -43,7 +50,7 @@ export const DateAndTimeBlock = ({
         time: [dayTimeFrom, dayTimeTo],
       },
     ]);
-  }, [date, dayTimeFrom, dayTimeTo]);
+  }, [date, dayTimeFrom, dayTimeTo, isCheckedDayAndTimeBlock]);
 
   const formatTimeInput = text => {
     const digits = text.replace(/\D/g, '').slice(0, 4);
@@ -66,6 +73,7 @@ export const DateAndTimeBlock = ({
           pressDatePickerBtn={setDatePickerVisibility}
           date={date}
           setDate={setDate}
+          isCheckedDayAndTimeBlock={isCheckedDayAndTimeBlock}
         />
       </View>
 

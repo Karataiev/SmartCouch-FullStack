@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {SvgDoneStatus} from '../assets/calendarIcons/SvgDoneStatus';
 import {SvgWaitingStatus} from '../assets/calendarIcons/SvgWaitingStatus';
 import {SvgInProgressStatus} from '../assets/calendarIcons/SvgInProgressStatus';
@@ -7,10 +7,11 @@ import {AgendaTimeLine} from './AgendaTimeLine';
 
 const AgendaItemComponent = ({item}) => {
   const [currentTime, setCurrentTime] = useState(null);
-  const itemHeightRef = useRef(null);
+  const [itemHeight, setItemHeight] = useState(0); // ✅ стан для висоти
 
+  // ⏰ оновлення поточного часу
   useEffect(() => {
-    setInterval(function () {
+    const interval = setInterval(() => {
       const date = new Date();
       const returnTimeString = () => {
         return `${date.getHours()}:${
@@ -21,7 +22,9 @@ const AgendaItemComponent = ({item}) => {
       };
       setCurrentTime(returnTimeString());
     }, 1000);
-  }, [currentTime]);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const currentTimeArr = useMemo(
     () => currentTime?.split(':') || ['00', '00'],
@@ -33,6 +36,7 @@ const AgendaItemComponent = ({item}) => {
     [item?.timeId],
   );
 
+  // 🟢 визначення статусу
   const {status, statusIcon, statusStyle} = useMemo(() => {
     if (+currentTimeArr[0] > +timeIdArr[0]) {
       return {
@@ -55,20 +59,25 @@ const AgendaItemComponent = ({item}) => {
     };
   }, [currentTimeArr, timeIdArr]);
 
+  // 📏 вимірювання висоти після рендера
   const onLayout = event => {
-    itemHeightRef.current = event.nativeEvent.layout.height;
+    const height = event.nativeEvent.layout.height;
+    if (height !== itemHeight) {
+      setItemHeight(height);
+    }
   };
 
-  const returnTypeOfTrainingStyle = type =>
-    type === 'personal'
-      ? {backgroundColor: '#00704F'}
-      : {backgroundColor: '#4195B9'};
-
+  // 🎨 рендер лінії часу
   const renderTimeLine = timeId => {
     const [hour, minute] = timeId.split(':').map(Number);
-    if (+currentTimeArr[0] >= hour && +currentTimeArr[0] < hour + 1) {
-      const lineTopNumber =
-        (itemHeightRef.current / 60) * Number(currentTimeArr[1]);
+
+    // лише якщо поточна година збігається
+    if (
+      +currentTimeArr[0] >= hour &&
+      +currentTimeArr[0] < hour + 1 &&
+      itemHeight > 0
+    ) {
+      const lineTopNumber = (itemHeight / 60) * Number(currentTimeArr[1]);
       return (
         <AgendaTimeLine
           lineTopNumber={lineTopNumber}
@@ -78,6 +87,11 @@ const AgendaItemComponent = ({item}) => {
     }
     return null;
   };
+
+  const returnTypeOfTrainingStyle = type =>
+    type === 'personal'
+      ? {backgroundColor: '#00704F'}
+      : {backgroundColor: '#4195B9'};
 
   const showClientName = el => {
     if (!el.client) {

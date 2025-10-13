@@ -7,6 +7,7 @@ export const DatePickerComponent = ({
   pressDatePickerBtn,
   date,
   setDate,
+  isCheckedDayAndTimeBlock,
 }) => {
   const animatedHeight = useRef(new Animated.Value(0)).current;
 
@@ -31,7 +32,11 @@ export const DatePickerComponent = ({
     <Animated.View
       style={[styles.animatedContainer, {height: heightInterpolate}]}>
       <View style={styles.pickerContainer}>
-        <CustomMonthCalendar selectedDate={date} setSelectedDate={setDate} />
+        <CustomMonthCalendar
+          selectedDate={date}
+          setSelectedDate={setDate}
+          isCheckedDayAndTimeBlock={isCheckedDayAndTimeBlock}
+        />
         <TouchableOpacity onPress={handleConfirm} style={styles.button}>
           <Text style={styles.buttonText}>Готово</Text>
         </TouchableOpacity>

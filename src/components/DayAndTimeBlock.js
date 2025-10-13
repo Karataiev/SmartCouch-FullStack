@@ -6,8 +6,7 @@ import {TimeInputComponent} from './TimeInputComponent';
 import {HidenDayAndTimeBlock} from './HidenDayAndTimeBlock';
 import {dayTimeStyles} from '../shared/dayTimeStyles';
 
-export const DayAndTimeBlock = ({setConstantDate}) => {
-  const [isChecked, setIsChecked] = useState(false);
+export const DayAndTimeBlock = ({setConstantDate, isChecked, setIsChecked}) => {
   const [selectedDays, setSelectedDays] = useState([]);
   const [dayTimeMap, setDayTimeMap] = useState({});
 
@@ -43,7 +42,7 @@ export const DayAndTimeBlock = ({setConstantDate}) => {
   useEffect(() => {
     if (isChecked) {
       const result = selectedDays.map(dayId => ({
-        day: dayId,
+        date: dayId,
         time: dayTimeMap[dayId] || ['', ''],
       }));
       setConstantDate(result);

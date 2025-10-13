@@ -8,7 +8,6 @@ import {
   Platform,
 } from 'react-native';
 import {CalendarProvider, WeekCalendar} from 'react-native-calendars';
-import {agendaItems} from '../mocks/agendaItems';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {SvgBell} from '../assets/calendarIcons/SvgBell';
 import React, {useState} from 'react';
@@ -24,15 +23,17 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-defaultLocaleConfig('en');
+defaultLocaleConfig('uk');
 
-export const PlanScreenCalendar = () => {
-  const ITEMS = agendaItems;
-  let data = new Date();
+export const PlanScreenCalendar = ({date, chooseDate}) => {
+  let today = new Date();
+  const todayString = today.toISOString().split('T')[0];
 
   const [isOpenFullCalendar, setIsOpenFullCalendar] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(monthArray[data.getMonth()]);
-  const [currentYear, setCurrentYear] = useState(data.getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(
+    monthArray[today.getMonth()],
+  );
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
 
   const openCloseFullCalendar = () => {
     LayoutAnimation.configureNext({
@@ -44,9 +45,15 @@ export const PlanScreenCalendar = () => {
     setIsOpenFullCalendar(!isOpenFullCalendar);
   };
 
-  const getActualData = months => {
-    setCurrentMonth(monthArray[months[0].month - 1]);
-    setCurrentYear(months[0].year);
+  const updateMonthYear = dateString => {
+    const newDate = new Date(dateString);
+    setCurrentMonth(monthArray[newDate.getMonth()]);
+    setCurrentYear(newDate.getFullYear());
+  };
+
+  const handleDayPress = day => {
+    chooseDate(day.dateString);
+    updateMonthYear(day.dateString);
   };
 
   return (
@@ -58,7 +65,7 @@ export const PlanScreenCalendar = () => {
       <View style={styles.calendarHeader}>
         <TouchableOpacity
           style={styles.calendarButton}
-          onPress={() => openCloseFullCalendar()}>
+          onPress={openCloseFullCalendar}>
           <Text
             style={
               styles.calendarMonth
@@ -72,11 +79,21 @@ export const PlanScreenCalendar = () => {
         </TouchableOpacity>
       </View>
 
-      <CalendarProvider date={ITEMS[1]?.title}>
+      <CalendarProvider date={todayString}>
         {!isOpenFullCalendar ? (
-          <WeekCalendar firstDay={1} theme={styles.weekCalendarTheme} />
+          <WeekCalendar
+            firstDay={1}
+            theme={styles.weekCalendarTheme}
+            onDayPress={day => {
+              chooseDate(day.dateString);
+              updateMonthYear(day.dateString);
+            }}
+          />
         ) : (
-          <CustomMonthCalendar getActualData={getActualData} />
+          <CustomMonthCalendar
+            selectedDate={date}
+            handleDayPress={handleDayPress}
+          />
         )}
       </CalendarProvider>
     </SafeAreaView>

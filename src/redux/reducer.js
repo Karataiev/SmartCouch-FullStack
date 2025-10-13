@@ -1,6 +1,5 @@
 import {agendaData} from '../mocks/agendaData';
 import {
-  GET_CURRENT_TIME,
   CREATE_NEW_CLIENTS,
   TOGGLE_CREATE_CLIENT_BTN,
   REMOVE_LAST_CLIENT,
@@ -36,8 +35,6 @@ const defaultState = {
 
 export const reducer = (state = defaultState, action) => {
   switch (action.type) {
-    case GET_CURRENT_TIME:
-      return {...state, currentTime: action.payload};
     case CREATE_NEW_CLIENTS:
       return {
         ...state,
@@ -108,22 +105,30 @@ export const reducer = (state = defaultState, action) => {
         pinningClientId: action.payload || null,
       };
     case CREATE_WORKOUT_PLAN: {
-      const {oneTimeTrainingDate} = action.payload;
+      const {trainingDate} = action.payload;
 
       return {
         ...state,
         workoutPlanArr: state.workoutPlanArr.map(plan => {
-          const hour = plan.timeId.split(':')[0];
-          const newHour = oneTimeTrainingDate.time[0].slice(0, 2);
+          const matchingTrainings = trainingDate.filter(td => {
+            const hour = plan.timeId.split(':')[0];
+            const newHour = td.time[0].slice(0, 2);
+            return hour === newHour;
+          });
 
-          if (hour === newHour) {
-            return {
-              ...plan,
-              trainings: [...plan.trainings, action.payload],
-            };
+          if (matchingTrainings.length === 0) {
+            return plan;
           }
 
-          return plan;
+          const newTrainings = matchingTrainings.map(td => ({
+            ...action.payload,
+            trainingDate: td,
+          }));
+
+          return {
+            ...plan,
+            trainings: [...plan.trainings, ...newTrainings],
+          };
         }),
       };
     }

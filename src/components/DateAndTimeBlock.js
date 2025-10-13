@@ -11,13 +11,23 @@ export const DateAndTimeBlock = ({
   isDatePickerVisible,
   setDatePickerVisibility,
   setOneTimeTrainingDate,
+  isCheckedDayAndTimeBlock,
 }) => {
   const [formattedDate, setFormattedDate] = useState(null);
   const [dayTimeFrom, setDayTimeFrom] = useState('');
   const [dayTimeTo, setDayTimeTo] = useState('');
 
   useEffect(() => {
-    if (!date) return;
+    if (isCheckedDayAndTimeBlock) {
+      setDayTimeFrom('');
+      setDayTimeTo('');
+      setFormattedDate(null);
+      setDate(null);
+    }
+
+    if (!date) {
+      return;
+    }
     const [year, month, day] = date.split('-');
     const months = [
       'січня',
@@ -34,18 +44,22 @@ export const DateAndTimeBlock = ({
       'грудня',
     ];
     const monthName = months[parseInt(month, 10) - 1];
-    const fulldate = `${parseInt(day)} ${monthName} ${year} р.`;
+    const fulldate = `${parseInt(day, 10)} ${monthName} ${year} р.`;
     setFormattedDate(fulldate);
 
-    setOneTimeTrainingDate({
-      date: fulldate,
-      time: [dayTimeFrom, dayTimeTo],
-    });
-  }, [date, dayTimeFrom, dayTimeTo]);
+    setOneTimeTrainingDate([
+      {
+        date: fulldate,
+        time: [dayTimeFrom, dayTimeTo],
+      },
+    ]);
+  }, [date, dayTimeFrom, dayTimeTo, isCheckedDayAndTimeBlock]);
 
   const formatTimeInput = text => {
     const digits = text.replace(/\D/g, '').slice(0, 4);
-    if (digits.length <= 2) return digits;
+    if (digits.length <= 2) {
+      return digits;
+    }
     return `${digits.slice(0, 2)}:${digits.slice(2, 4)}`;
   };
 
@@ -64,6 +78,7 @@ export const DateAndTimeBlock = ({
           pressDatePickerBtn={setDatePickerVisibility}
           date={date}
           setDate={setDate}
+          isCheckedDayAndTimeBlock={isCheckedDayAndTimeBlock}
         />
       </View>
 

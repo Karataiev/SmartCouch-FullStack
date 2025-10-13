@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 12,
     alignItems: 'center',
+
     zIndex: 100,
     elevation: 5,
   },
@@ -57,5 +58,6 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 16,
     fontWeight: '500',
+    textAlign: 'center',
   },
 });

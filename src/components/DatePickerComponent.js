@@ -27,11 +27,18 @@ export const DatePickerComponent = ({
     pressDatePickerBtn(false);
   };
 
+  const handleDayPress = day => {
+    setDate(day?.dateString);
+  };
+
   return (
     <Animated.View
       style={[styles.animatedContainer, {height: heightInterpolate}]}>
       <View style={styles.pickerContainer}>
-        <CustomMonthCalendar selectedDate={date} setSelectedDate={setDate} />
+        <CustomMonthCalendar
+          selectedDate={date}
+          handleDayPress={handleDayPress}
+        />
         <TouchableOpacity onPress={handleConfirm} style={styles.button}>
           <Text style={styles.buttonText}>Готово</Text>
         </TouchableOpacity>

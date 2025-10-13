@@ -41,7 +41,7 @@ export const defaultLocaleConfig = locale => {
       'Субота',
       'Неділя',
     ],
-    dayNamesShort: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'],
+    dayNamesShort: ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
     today: 'Сьогодні',
   };
 

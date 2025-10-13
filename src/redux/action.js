@@ -1,4 +1,3 @@
-export const GET_CURRENT_TIME = 'GET_CURRENT_TIME';
 export const CREATE_NEW_CLIENTS = 'CREATE_NEW_CLIENTS';
 export const TOGGLE_CREATE_CLIENT_BTN = 'TOGGLE_CREATE_CLIENT_BTN';
 export const REMOVE_LAST_CLIENT = 'REMOVE_LAST_CLIENT';
@@ -11,10 +10,6 @@ export const UPDATE_CLIENT_PROGRAM = 'UPDATE_CLIENT_PROGRAM';
 export const UPDATE_CLIENT_PARAMETERS = 'UPDATE_CLIENT_PARAMETERS';
 export const GET_PINNING_CLIENT_ID = 'GET_PINNING_CLIENT_ID';
 export const CREATE_WORKOUT_PLAN = 'CREATE_WORKOUT_PLAN';
-
-export const getCurrentTime = payload => {
-  return {type: GET_CURRENT_TIME, payload: payload};
-};
 
 export const createNewClients = payload => {
   return {type: CREATE_NEW_CLIENTS, payload: payload};

@@ -6,8 +6,6 @@ import {useRoute} from '@react-navigation/native';
 
 export const PlanTabScreen = () => {
   const route = useRoute();
-  console.log(route);
-
   const [pickedDate, setPickedDate] = useState(null);
 
   useEffect(() => {

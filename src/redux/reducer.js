@@ -1,6 +1,5 @@
 import {agendaData} from '../mocks/agendaData';
 import {
-  GET_CURRENT_TIME,
   CREATE_NEW_CLIENTS,
   TOGGLE_CREATE_CLIENT_BTN,
   REMOVE_LAST_CLIENT,
@@ -36,8 +35,6 @@ const defaultState = {
 
 export const reducer = (state = defaultState, action) => {
   switch (action.type) {
-    case GET_CURRENT_TIME:
-      return {...state, currentTime: action.payload};
     case CREATE_NEW_CLIENTS:
       return {
         ...state,

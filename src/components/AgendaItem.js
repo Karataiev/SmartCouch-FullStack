@@ -1,5 +1,4 @@
-import React, {useMemo, useRef} from 'react';
-import {useSelector} from 'react-redux';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {SvgDoneStatus} from '../assets/calendarIcons/SvgDoneStatus';
 import {SvgWaitingStatus} from '../assets/calendarIcons/SvgWaitingStatus';
 import {SvgInProgressStatus} from '../assets/calendarIcons/SvgInProgressStatus';
@@ -7,8 +6,22 @@ import {StyleSheet, Text, View} from 'react-native';
 import {AgendaTimeLine} from './AgendaTimeLine';
 
 const AgendaItemComponent = ({item}) => {
-  const currentTime = useSelector(state => state.currentTime);
+  const [currentTime, setCurrentTime] = useState(null);
   const itemHeightRef = useRef(null);
+
+  useEffect(() => {
+    setInterval(function () {
+      const date = new Date();
+      const returnTimeString = () => {
+        return `${date.getHours()}:${
+          date.getMinutes().toString().length < 2
+            ? `0${date.getMinutes()}`
+            : date.getMinutes()
+        }`;
+      };
+      setCurrentTime(returnTimeString());
+    }, 1000);
+  }, [currentTime]);
 
   const currentTimeArr = useMemo(
     () => currentTime?.split(':') || ['00', '00'],
@@ -56,7 +69,12 @@ const AgendaItemComponent = ({item}) => {
     if (+currentTimeArr[0] >= hour && +currentTimeArr[0] < hour + 1) {
       const lineTopNumber =
         (itemHeightRef.current / 60) * Number(currentTimeArr[1]);
-      return <AgendaTimeLine lineTopNumber={lineTopNumber} />;
+      return (
+        <AgendaTimeLine
+          lineTopNumber={lineTopNumber}
+          currentTime={currentTime}
+        />
+      );
     }
     return null;
   };

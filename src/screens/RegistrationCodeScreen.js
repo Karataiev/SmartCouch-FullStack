@@ -5,6 +5,7 @@ import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {OTPInput} from '../components/OTPInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const mockedCode = ['1', '2', '3', '4'];
 
@@ -75,7 +76,7 @@ export const RegistrationCodeScreen = () => {
 
   return (
     <LayoutComponent>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <HeaderWithBackButton />
         <Text style={styles.headerTitle}>Введіть код з SMS</Text>
         <Text style={styles.contentTitle}>
@@ -117,7 +118,7 @@ export const RegistrationCodeScreen = () => {
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     </LayoutComponent>
   );
 };
@@ -125,7 +126,6 @@ export const RegistrationCodeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 52,
     marginHorizontal: 20,
   },
   headerTitle: {

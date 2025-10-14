@@ -1,9 +1,10 @@
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {ClientDataComponent} from '../components/ClientDataComponent';
 import {ClientEditDataComponent} from '../components/ClientEditDataComponent';
 import {LayoutComponent} from '../components/LayoutComponent';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const FullClientDataScreen = ({navigation, route}) => {
   const {itemData, from} = route.params;
@@ -23,7 +24,7 @@ export const FullClientDataScreen = ({navigation, route}) => {
 
   return (
     <LayoutComponent>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <HeaderWithBackButton
           navigation={navigation}
           editBtn={!isToggleEdit}
@@ -39,7 +40,7 @@ export const FullClientDataScreen = ({navigation, route}) => {
         ) : (
           <ClientDataComponent itemData={itemData} />
         )}
-      </View>
+      </SafeAreaView>
     </LayoutComponent>
   );
 };
@@ -48,6 +49,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 42,
   },
 });

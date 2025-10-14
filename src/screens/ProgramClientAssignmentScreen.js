@@ -14,6 +14,7 @@ import {SafeInfoButton} from '../components/SafeInfoButton';
 import {updateClientProgram} from '../redux/action';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {LayoutComponent} from '../components/LayoutComponent';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const ProgramClientAssignmentScreen = () => {
   const navigation = useNavigation();
@@ -90,7 +91,7 @@ export const ProgramClientAssignmentScreen = () => {
 
   return (
     <LayoutComponent>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <HeaderWithBackButton
           navigation={navigation}
           addBtn={programsArr.length === 0}
@@ -121,7 +122,7 @@ export const ProgramClientAssignmentScreen = () => {
             Закріпити
           </SafeInfoButton>
         )}
-      </View>
+      </SafeAreaView>
     </LayoutComponent>
   );
 };
@@ -130,7 +131,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 42,
   },
   headerContainer: {
     flexDirection: 'row',

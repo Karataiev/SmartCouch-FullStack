@@ -4,6 +4,7 @@ import {SvgBackBtn} from '../assets/svgIcons/SvgBackBtn';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {TemplateItem} from '../components/TemplateItem';
 import {LayoutComponent} from '../components/LayoutComponent';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const TemplatesChooseProgramScreen = () => {
   const navigation = useNavigation();
@@ -22,7 +23,7 @@ export const TemplatesChooseProgramScreen = () => {
 
   return (
     <LayoutComponent>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.headerContainer}>
           <TouchableOpacity style={styles.backButton} onPress={handleBackBtn}>
             <SvgBackBtn />
@@ -38,7 +39,7 @@ export const TemplatesChooseProgramScreen = () => {
             Готові програми тренувань
           </TemplateItem>
         </View>
-      </View>
+      </SafeAreaView>
     </LayoutComponent>
   );
 };
@@ -47,7 +48,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 42,
   },
   headerContainer: {
     flexDirection: 'row',

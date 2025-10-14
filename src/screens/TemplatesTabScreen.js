@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {TemplateItem} from '../components/TemplateItem';
 import {LayoutComponent} from '../components/LayoutComponent';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const TemplatesTabScreen = ({navigation}) => {
   const handleClick = screen => {
@@ -10,7 +11,7 @@ export const TemplatesTabScreen = ({navigation}) => {
 
   return (
     <LayoutComponent>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Text style={styles.headerTitle}>Програми тренувань</Text>
         <View style={styles.mainContentBlock}>
           <TemplateItem handlePress={() => handleClick('MyPrograms')}>
@@ -23,7 +24,7 @@ export const TemplatesTabScreen = ({navigation}) => {
             Вправи
           </TemplateItem>
         </View>
-      </View>
+      </SafeAreaView>
     </LayoutComponent>
   );
 };
@@ -31,7 +32,6 @@ export const TemplatesTabScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 52,
     paddingHorizontal: 20,
   },
   headerTitle: {

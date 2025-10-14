@@ -10,6 +10,7 @@ import {CreateProgramModal} from '../components/CreateProgramModal';
 import {getPinningClientId, updateClientsArray} from '../redux/action';
 import {ActionButton} from '../components/ActionButton';
 import {LayoutComponent} from '../components/LayoutComponent';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const ClientsProfileScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -74,7 +75,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
 
   return (
     <LayoutComponent>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         {(isConfigModalVisible || isProgramModalVisible) && (
           <View style={styles.shadowOverlay} />
         )}
@@ -157,7 +158,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
             })
           }
         />
-      </View>
+      </SafeAreaView>
     </LayoutComponent>
   );
 };
@@ -165,7 +166,6 @@ export const ClientsProfileScreen = ({route, navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 42,
   },
   shadowOverlay: {
     ...StyleSheet.absoluteFillObject,

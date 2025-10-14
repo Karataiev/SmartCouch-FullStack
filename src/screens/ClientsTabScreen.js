@@ -4,6 +4,7 @@ import {ClientsEmptyComponent} from '../components/ClientsEmptyComponent';
 import {ClientsListComponent} from '../components/ClientsListComponent';
 import {useSelector} from 'react-redux';
 import {LayoutComponent} from '../components/LayoutComponent';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const ClientsTabScreen = ({navigation}) => {
   const clientsState = useSelector(state => state.clients);
@@ -15,7 +16,7 @@ export const ClientsTabScreen = ({navigation}) => {
 
   return (
     <LayoutComponent>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         {clientsState.length === 0 ? (
           <ClientsEmptyComponent navigation={navigation} />
         ) : (
@@ -25,7 +26,7 @@ export const ClientsTabScreen = ({navigation}) => {
             onPressAdd={createNewClientBtn}
           />
         )}
-      </View>
+      </SafeAreaView>
     </LayoutComponent>
   );
 };
@@ -33,6 +34,5 @@ export const ClientsTabScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 42,
   },
 });

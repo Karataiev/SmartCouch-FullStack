@@ -1,19 +1,20 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {MyDataComponent} from '../components/MyDataComponent';
 import {LayoutComponent} from '../components/LayoutComponent';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const MyDataScreen = ({navigation}) => {
   return (
     <LayoutComponent>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <HeaderWithBackButton navigation={navigation}>
           Мої дані
         </HeaderWithBackButton>
 
         <MyDataComponent navigation={navigation} />
-      </View>
+      </SafeAreaView>
     </LayoutComponent>
   );
 };
@@ -21,7 +22,6 @@ export const MyDataScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 42,
     paddingHorizontal: 20,
   },
 });

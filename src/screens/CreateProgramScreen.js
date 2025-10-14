@@ -1,11 +1,12 @@
 import React, {useState, useMemo, useCallback} from 'react';
-import {SafeAreaView, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import {createNewProgram, updateClientProgram} from '../redux/action';
 import {ProgramInputsComponent} from '../components/ProgramInputsComponent';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {LayoutComponent} from '../components/LayoutComponent';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const CreateProgramScreen = () => {
   const dispatch = useDispatch();
@@ -75,7 +76,6 @@ export const CreateProgramScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 42,
     paddingHorizontal: 20,
   },
 });

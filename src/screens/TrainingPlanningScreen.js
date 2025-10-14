@@ -13,6 +13,7 @@ import {LayoutComponent} from '../components/LayoutComponent';
 import {useCurrentDate} from '../castomHooks/useCurrentDate';
 import {generateId} from '../helper/generateId';
 import {useConvertDaysToDates} from '../castomHooks/useConvertDaysToDates';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const TrainingPlanningScreen = () => {
   const dispatch = useDispatch();
@@ -102,35 +103,35 @@ export const TrainingPlanningScreen = () => {
 
   return (
     <LayoutComponent>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainerStyle}>
-        <HeaderWithBackButton>Створення запису</HeaderWithBackButton>
+      <ScrollView contentContainerStyle={styles.contentContainerStyle}>
+        <SafeAreaView style={styles.container}>
+          <HeaderWithBackButton>Створення запису</HeaderWithBackButton>
 
-        <DateAndTimeBlock
-          date={date}
-          setDate={setDate}
-          isDatePickerVisible={isDatePickerVisible}
-          setDatePickerVisibility={setDatePickerVisibility}
-          setOneTimeTrainingDate={setOneTimeTrainingDate}
-          isCheckedDayAndTimeBlock={isCheckedDayAndTimeBlock}
-        />
+          <DateAndTimeBlock
+            date={date}
+            setDate={setDate}
+            isDatePickerVisible={isDatePickerVisible}
+            setDatePickerVisibility={setDatePickerVisibility}
+            setOneTimeTrainingDate={setOneTimeTrainingDate}
+            isCheckedDayAndTimeBlock={isCheckedDayAndTimeBlock}
+          />
 
-        <DayAndTimeBlock
-          setConstantDate={setConstantDate}
-          isChecked={isCheckedDayAndTimeBlock}
-          setIsChecked={setIsCheckedDayAndTimeBlock}
-        />
+          <DayAndTimeBlock
+            setConstantDate={setConstantDate}
+            isChecked={isCheckedDayAndTimeBlock}
+            setIsChecked={setIsCheckedDayAndTimeBlock}
+          />
 
-        <TrainingPlanningContent
-          setPlanningTrainingData={setPlanningTrainingData}
-        />
+          <TrainingPlanningContent
+            setPlanningTrainingData={setPlanningTrainingData}
+          />
 
-        <SafeInfoButton
-          disabled={isDisableBtn}
-          handleSubmit={createTrainingPlan}>
-          Створити запис
-        </SafeInfoButton>
+          <SafeInfoButton
+            disabled={isDisableBtn}
+            handleSubmit={createTrainingPlan}>
+            Створити запис
+          </SafeInfoButton>
+        </SafeAreaView>
       </ScrollView>
     </LayoutComponent>
   );
@@ -139,7 +140,6 @@ export const TrainingPlanningScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 42,
     paddingHorizontal: 20,
   },
   contentContainerStyle: {

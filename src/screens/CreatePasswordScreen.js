@@ -5,6 +5,7 @@ import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {PasswordCustomInput} from '../components/PasswordCustomInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {useNavigation} from '@react-navigation/native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const CreatePasswordScreen = () => {
   const navigation = useNavigation();
@@ -32,7 +33,7 @@ export const CreatePasswordScreen = () => {
 
   return (
     <LayoutComponent>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <HeaderWithBackButton />
         <Text style={styles.header}>Створіть пароль</Text>
 
@@ -64,7 +65,7 @@ export const CreatePasswordScreen = () => {
             Створити акаунт
           </SafeInfoButton>
         </View>
-      </View>
+      </SafeAreaView>
     </LayoutComponent>
   );
 };
@@ -72,7 +73,6 @@ export const CreatePasswordScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 52,
     marginHorizontal: 20,
   },
   header: {

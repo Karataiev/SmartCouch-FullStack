@@ -1,12 +1,19 @@
-import React, {useMemo} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import {SvgDoneStatus} from '../assets/calendarIcons/SvgDoneStatus';
 import {SvgWaitingStatus} from '../assets/calendarIcons/SvgWaitingStatus';
 import {SvgInProgressStatus} from '../assets/calendarIcons/SvgInProgressStatus';
-import {useNavigation} from '@react-navigation/native';
+import {Swipeable} from 'react-native-gesture-handler';
+import {SwipeableRightButtons} from './SwipeableRightButtons';
+import {SvgCancelIcon} from '../assets/calendarIcons/SvgCancelIcon';
 
 export const AgendaItem = ({data, item, currentTime}) => {
-  const navigation = useNavigation();
+  const swipeableRef = useRef(null);
+  const [isCancelActive, setIsCancelActive] = useState(false);
+
+  useEffect(() => {
+    swipeableRef.current?.close();
+  }, [isCancelActive]);
 
   const timeIdArr = useMemo(
     () => item?.timeId?.split(':') || ['00', '00'],
@@ -56,37 +63,56 @@ export const AgendaItem = ({data, item, currentTime}) => {
     return `${el.client?.client.name} ${el.client?.client.surname}`.toUpperCase();
   };
 
-  const handleItemClick = () => {
-    // navigation.navigate('ScheduledTraining');
+  const returnDataDependsOnCencel = (item_1, item_2) => {
+    return !isCancelActive ? item_1 : item_2;
   };
 
   return (
-    <TouchableOpacity style={styles.item} onPress={handleItemClick}>
-      <View style={styles.itemCommonStyles}>
-        <Text style={styles.itemFirstText}>
-          {returnTrainingName(data.trainingName)}
-        </Text>
-        <Text
-          style={[
-            styles.itemSecondText,
-            returnTypeOfTrainingStyle(data.trainingType),
-          ]}>
-          {data.trainingType.toUpperCase()}
-        </Text>
-      </View>
-      <View style={[styles.itemCommonStyles, styles.itemSecondBlock]}>
-        <Text style={styles.itemText}>{showClientName(data)}</Text>
-      </View>
-      <View style={[styles.itemCommonStyles, styles.itemThirdBlock]}>
-        <Text style={styles.itemTimeText}>
-          {`${data.trainingDate.time[0]} - ${data.trainingDate.time[1]}`}
-        </Text>
-        <View style={styles.itemStatusBlock}>
-          {statusIcon}
-          <Text style={[styles.itemText, statusStyle]}>{status}</Text>
+    <Swipeable
+      ref={swipeableRef}
+      renderRightActions={() =>
+        SwipeableRightButtons(isCancelActive, setIsCancelActive)
+      }>
+      <View
+        style={[
+          styles.item,
+          returnDataDependsOnCencel(styles.activeItem, styles.canceledItem),
+        ]}>
+        <View style={styles.itemCommonStyles}>
+          <Text style={styles.itemFirstText}>
+            {returnTrainingName(data.trainingName)}
+          </Text>
+          <Text
+            style={[
+              styles.itemSecondText,
+              returnDataDependsOnCencel(
+                returnTypeOfTrainingStyle(data.trainingType),
+                styles.cancelBackground,
+              ),
+            ]}>
+            {data.trainingType.toUpperCase()}
+          </Text>
+        </View>
+        <View style={[styles.itemCommonStyles, styles.itemSecondBlock]}>
+          <Text style={styles.itemText}>{showClientName(data)}</Text>
+        </View>
+        <View style={[styles.itemCommonStyles, styles.itemThirdBlock]}>
+          <Text style={styles.itemTimeText}>
+            {`${data.trainingDate.time[0]} - ${data.trainingDate.time[1]}`}
+          </Text>
+          <View style={styles.itemStatusBlock}>
+            {returnDataDependsOnCencel(statusIcon, <SvgCancelIcon />)}
+            <Text
+              style={[
+                styles.itemText,
+                returnDataDependsOnCencel(statusStyle, styles.cancelTitle),
+              ]}>
+              {returnDataDependsOnCencel(status, 'Відмінено')}
+            </Text>
+          </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </Swipeable>
   );
 };
 
@@ -97,7 +123,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 13,
     borderRadius: 12,
+  },
+  activeItem: {
     backgroundColor: '#232929',
+  },
+  canceledItem: {
+    backgroundColor: 'rgb(33, 25, 25)',
   },
   itemCommonStyles: {
     flexDirection: 'row',
@@ -137,6 +168,12 @@ const styles = StyleSheet.create({
   itemStatusBlock: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 2,
+    gap: 3,
+  },
+  cancelBackground: {
+    backgroundColor: '#B95151',
+  },
+  cancelTitle: {
+    color: '#B95151',
   },
 });

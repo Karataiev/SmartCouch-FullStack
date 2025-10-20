@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
-import {AgendaItem} from './AgendaItem';
 import {useSelector} from 'react-redux';
 import {useConvertDate} from '../castomHooks/useConvertDate';
+import {AgendaItemBlock} from './AgendaItemBlock';
 
 export const Agenda = ({date}) => {
   const workoutPlanArr = useSelector(state => state.workoutPlanArr);
@@ -30,7 +30,7 @@ export const Agenda = ({date}) => {
     <View style={styles.container}>
       <FlatList
         data={filteredArr}
-        renderItem={({item}) => <AgendaItem item={item} />}
+        renderItem={({item}) => <AgendaItemBlock item={item} />}
         keyExtractor={(item, index) => `${item.timeId}-${index}`}
       />
     </View>

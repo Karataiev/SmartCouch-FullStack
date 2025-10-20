@@ -1,16 +1,10 @@
 import React from 'react';
-import {
-  FlatList,
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {useSelector} from 'react-redux';
 import {ProgramItem} from '../components/ProgramItem';
 import {LayoutComponent} from '../components/LayoutComponent';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const MyProgramsScreen = ({navigation}) => {
   const programs = useSelector(state => state.programs);
@@ -72,7 +66,6 @@ export const MyProgramsScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 42,
     paddingHorizontal: 20,
   },
   listContent: {

@@ -1,16 +1,16 @@
+import {ScrollView, StyleSheet} from 'react-native';
 import React from 'react';
-import {StyleSheet} from 'react-native';
-import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {LayoutComponent} from '../components/LayoutComponent';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 
-export const ReadyMadeProgramsScreen = ({navigation}) => {
+export const ScheduledTrainingScreen = () => {
   return (
     <LayoutComponent>
       <SafeAreaView style={styles.container}>
-        <HeaderWithBackButton navigation={navigation}>
-          Готові програми
-        </HeaderWithBackButton>
+        <ScrollView>
+          <HeaderWithBackButton>Данні запису</HeaderWithBackButton>
+        </ScrollView>
       </SafeAreaView>
     </LayoutComponent>
   );

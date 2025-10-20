@@ -1,16 +1,17 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {LayoutComponent} from '../components/LayoutComponent';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const ExercisesScreen = ({navigation}) => {
   return (
     <LayoutComponent>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <HeaderWithBackButton navigation={navigation}>
           Вправи
         </HeaderWithBackButton>
-      </View>
+      </SafeAreaView>
     </LayoutComponent>
   );
 };
@@ -18,7 +19,6 @@ export const ExercisesScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 42,
     paddingHorizontal: 20,
   },
 });

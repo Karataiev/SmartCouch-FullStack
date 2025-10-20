@@ -1,10 +1,4 @@
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
+import {ScrollView, StyleSheet, TextInput, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {ConnectionMethodModal} from '../components/ConnectionMethodModal';
@@ -17,6 +11,7 @@ import {SafeInfoButton} from '../components/SafeInfoButton';
 import {CreateConnectionMethod} from '../components/CreateConnectionMethod';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {LayoutComponent} from '../components/LayoutComponent';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const CreateClientScreen = () => {
   const navigation = useNavigation();
@@ -209,7 +204,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 42,
   },
   formsContainer: {
     paddingTop: 32,

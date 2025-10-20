@@ -20,6 +20,7 @@ import {LoginScreen} from '../screens/LoginScreen';
 import {RegistrationScreen} from '../screens/RegistrationScreen';
 import {RegistrationCodeScreen} from '../screens/RegistrationCodeScreen';
 import {CreatePasswordScreen} from '../screens/CreatePasswordScreen';
+import {ScheduledTrainingScreen} from '../screens/ScheduledTrainingScreen';
 
 export const StackNavigator = ({initialRouteName = 'Login'}) => {
   const Stack = createStackNavigator();
@@ -67,6 +68,10 @@ export const StackNavigator = ({initialRouteName = 'Login'}) => {
       <Stack.Screen
         name="TrainingPlanning"
         component={TrainingPlanningScreen}
+      />
+      <Stack.Screen
+        name="ScheduledTraining"
+        component={ScheduledTrainingScreen}
       />
     </Stack.Navigator>
   );

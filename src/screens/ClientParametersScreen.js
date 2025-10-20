@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   StyleSheet,
   View,
   ScrollView,
@@ -14,6 +13,7 @@ import {ClientParametersContent} from '../components/ClientParametersContent';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {updateClientParameters} from '../redux/action';
 import {LayoutComponent} from '../components/LayoutComponent';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const bodyMeasurements = [
   {key: 'bodyWeight', label: 'Вага тіла', unit: 'кг'},
@@ -191,7 +191,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 42,
   },
   scrollContent: {
     paddingBottom: 40,

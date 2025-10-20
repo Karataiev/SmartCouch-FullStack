@@ -1,12 +1,5 @@
 import React, {useEffect, useRef, useState, useMemo} from 'react';
-import {
-  Keyboard,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  Animated,
-  Easing,
-} from 'react-native';
+import {Keyboard, StyleSheet, Text, Animated, Easing} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {ProgramInputsComponent} from '../components/ProgramInputsComponent';
@@ -14,6 +7,7 @@ import {ConfigModal} from '../components/ConfigModal';
 import {updateClientProgram, updateProgramsArray} from '../redux/action';
 import {RemoveModal} from '../components/RemoveModal';
 import {LayoutComponent} from '../components/LayoutComponent';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const CurrentProgramScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -156,7 +150,6 @@ export const CurrentProgramScreen = ({navigation, route}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 42,
     paddingHorizontal: 20,
   },
   toastContainer: {

@@ -1,12 +1,12 @@
 import React from 'react';
 import {Modal, View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
-export const RemoveModal = ({visible, handleRemove, hideModal}) => {
-  const handleConfirmPress = () => {
-    hideModal();
-    handleRemove();
-  };
-
+export const RemoveModal = ({
+  visible,
+  handleRemove,
+  hideModal,
+  headerTitle,
+}) => {
   return (
     <Modal
       visible={visible}
@@ -21,13 +21,11 @@ export const RemoveModal = ({visible, handleRemove, hideModal}) => {
           activeOpacity={1}
           style={styles.modalContainer}
           onPress={() => {}}>
-          <Text style={styles.title}>
-            Видалити програму для обраного клієнта?
-          </Text>
+          <Text style={styles.title}>{headerTitle}</Text>
           <View style={styles.buttonRow}>
             <TouchableOpacity
               style={[styles.button, styles.confirmButton]}
-              onPress={handleConfirmPress}>
+              onPress={handleRemove}>
               <Text style={styles.buttonText}>Так</Text>
             </TouchableOpacity>
             <TouchableOpacity

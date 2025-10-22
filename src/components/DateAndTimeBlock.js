@@ -23,6 +23,7 @@ export const DateAndTimeBlock = ({
       setDayTimeTo('');
       setFormattedDate(null);
       setDate(null);
+      setOneTimeTrainingDate([]);
     }
 
     if (!date) {

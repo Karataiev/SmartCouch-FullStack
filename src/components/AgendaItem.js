@@ -6,10 +6,15 @@ import {SvgInProgressStatus} from '../assets/calendarIcons/SvgInProgressStatus';
 import {Swipeable} from 'react-native-gesture-handler';
 import {SwipeableRightButtons} from './SwipeableRightButtons';
 import {SvgCancelIcon} from '../assets/calendarIcons/SvgCancelIcon';
+import {RemoveModal} from './RemoveModal';
+import {useDispatch} from 'react-redux';
+import {removeWorkoutPlanItem} from '../redux/action';
 
-export const AgendaItem = ({data, item, currentTime}) => {
+export const AgendaItem = ({item, currentTime, training}) => {
   const swipeableRef = useRef(null);
+  const dispatch = useDispatch();
   const [isCancelActive, setIsCancelActive] = useState(false);
+  const [removeModalVisible, setRemoveModalVisible] = useState(false);
 
   useEffect(() => {
     swipeableRef.current?.close();
@@ -67,52 +72,81 @@ export const AgendaItem = ({data, item, currentTime}) => {
     return !isCancelActive ? item_1 : item_2;
   };
 
+  const handleCancelBtn = () => {
+    setIsCancelActive(!isCancelActive);
+  };
+
+  const handleDeleteBtn = () => {
+    setRemoveModalVisible(true);
+  };
+
+  const handleConfirmRemovePress = () => {
+    const selectedDate = item.trainings[0].trainingDate.date;
+    const itemId = training.id;
+
+    dispatch(removeWorkoutPlanItem([itemId, selectedDate]));
+    setRemoveModalVisible(false);
+  };
+
   return (
-    <Swipeable
-      ref={swipeableRef}
-      renderRightActions={() =>
-        SwipeableRightButtons(isCancelActive, setIsCancelActive)
-      }>
-      <View
-        style={[
-          styles.item,
-          returnDataDependsOnCencel(styles.activeItem, styles.canceledItem),
-        ]}>
-        <View style={styles.itemCommonStyles}>
-          <Text style={styles.itemFirstText}>
-            {returnTrainingName(data.trainingName)}
-          </Text>
-          <Text
-            style={[
-              styles.itemSecondText,
-              returnDataDependsOnCencel(
-                returnTypeOfTrainingStyle(data.trainingType),
-                styles.cancelBackground,
-              ),
-            ]}>
-            {data.trainingType.toUpperCase()}
-          </Text>
-        </View>
-        <View style={[styles.itemCommonStyles, styles.itemSecondBlock]}>
-          <Text style={styles.itemText}>{showClientName(data)}</Text>
-        </View>
-        <View style={[styles.itemCommonStyles, styles.itemThirdBlock]}>
-          <Text style={styles.itemTimeText}>
-            {`${data.trainingDate.time[0]} - ${data.trainingDate.time[1]}`}
-          </Text>
-          <View style={styles.itemStatusBlock}>
-            {returnDataDependsOnCencel(statusIcon, <SvgCancelIcon />)}
+    <>
+      <Swipeable
+        ref={swipeableRef}
+        renderRightActions={() =>
+          SwipeableRightButtons(
+            isCancelActive,
+            handleCancelBtn,
+            handleDeleteBtn,
+          )
+        }>
+        <View
+          style={[
+            styles.item,
+            returnDataDependsOnCencel(styles.activeItem, styles.canceledItem),
+          ]}>
+          <View style={styles.itemCommonStyles}>
+            <Text style={styles.itemFirstText}>
+              {returnTrainingName(training.trainingName)}
+            </Text>
             <Text
               style={[
-                styles.itemText,
-                returnDataDependsOnCencel(statusStyle, styles.cancelTitle),
+                styles.itemSecondText,
+                returnDataDependsOnCencel(
+                  returnTypeOfTrainingStyle(training.trainingType),
+                  styles.cancelBackground,
+                ),
               ]}>
-              {returnDataDependsOnCencel(status, 'Відмінено')}
+              {training.trainingType.toUpperCase()}
             </Text>
           </View>
+          <View style={[styles.itemCommonStyles, styles.itemSecondBlock]}>
+            <Text style={styles.itemText}>{showClientName(training)}</Text>
+          </View>
+          <View style={[styles.itemCommonStyles, styles.itemThirdBlock]}>
+            <Text style={styles.itemTimeText}>
+              {`${training.trainingDate.time[0]} - ${training.trainingDate.time[1]}`}
+            </Text>
+            <View style={styles.itemStatusBlock}>
+              {returnDataDependsOnCencel(statusIcon, <SvgCancelIcon />)}
+              <Text
+                style={[
+                  styles.itemText,
+                  returnDataDependsOnCencel(statusStyle, styles.cancelTitle),
+                ]}>
+                {returnDataDependsOnCencel(status, 'Відмінено')}
+              </Text>
+            </View>
+          </View>
         </View>
-      </View>
-    </Swipeable>
+      </Swipeable>
+
+      <RemoveModal
+        visible={removeModalVisible}
+        hideModal={() => setRemoveModalVisible(false)}
+        handleRemove={handleConfirmRemovePress}
+        headerTitle={'Видалити заплановане тренування?'}
+      />
+    </>
   );
 };
 

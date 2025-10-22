@@ -10,6 +10,7 @@ export const UPDATE_CLIENT_PROGRAM = 'UPDATE_CLIENT_PROGRAM';
 export const UPDATE_CLIENT_PARAMETERS = 'UPDATE_CLIENT_PARAMETERS';
 export const GET_PINNING_CLIENT_ID = 'GET_PINNING_CLIENT_ID';
 export const CREATE_WORKOUT_PLAN = 'CREATE_WORKOUT_PLAN';
+export const REMOVE_WORKOUT_PLAN_ITEM = 'REMOVE_WORKOUT_PLAN_ITEM';
 
 export const createNewClients = payload => {
   return {type: CREATE_NEW_CLIENTS, payload: payload};
@@ -57,4 +58,8 @@ export const getPinningClientId = payload => {
 
 export const createWorkoutPlan = payload => {
   return {type: CREATE_WORKOUT_PLAN, payload: payload};
+};
+
+export const removeWorkoutPlanItem = payload => {
+  return {type: REMOVE_WORKOUT_PLAN_ITEM, payload: payload};
 };

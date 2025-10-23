@@ -13,6 +13,7 @@ import {
   GET_PINNING_CLIENT_ID,
   CREATE_WORKOUT_PLAN,
   REMOVE_WORKOUT_PLAN_ITEM,
+  REMOVE_CLIENT_WORKOUT_PLAN_ITEM,
 } from './action';
 
 const defaultState = {
@@ -182,6 +183,15 @@ export const reducer = (state = defaultState, action) => {
               },
             ];
           }),
+        })),
+      };
+    }
+    case REMOVE_CLIENT_WORKOUT_PLAN_ITEM: {
+      return {
+        ...state,
+        workoutPlanArr: state.workoutPlanArr.map(plan => ({
+          ...plan,
+          trainings: plan.trainings.filter(tr => tr.id !== action.payload),
         })),
       };
     }

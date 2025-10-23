@@ -44,14 +44,12 @@ export const useConvertDaysToDates = () => {
       let currentDate = new Date(today);
       const currentDay = currentDate.getDay();
 
-      // якщо сьогодні збігається з targetDay → стартуємо з сьогодні
       let diff = targetDay - currentDay;
       if (diff < 0) {
         diff += 7;
       }
       currentDate.setDate(currentDate.getDate() + diff);
 
-      // створюємо масив дат з кроком 7 днів
       for (let i = 0; i < weeksCount; i++) {
         const dateCopy = new Date(currentDate);
         dateCopy.setDate(currentDate.getDate() + i * 7);
@@ -67,4 +65,54 @@ export const useConvertDaysToDates = () => {
   }, []);
 
   return {convertConstantDates};
+};
+
+export const useConvertDatesToDays = () => {
+  const daysOfWeek = [
+    'Неділя',
+    'Понеділок',
+    'Вівторок',
+    'Середа',
+    'Четвер',
+    'П’ятниця',
+    'Субота',
+  ];
+
+  const monthNames = [
+    'січня',
+    'лютого',
+    'березня',
+    'квітня',
+    'травня',
+    'червня',
+    'липня',
+    'серпня',
+    'вересня',
+    'жовтня',
+    'листопада',
+    'грудня',
+  ];
+
+  const convertToDayOfWeek = useCallback(formattedDate => {
+    if (!formattedDate) return '';
+
+    // Очікуваний формат: "24 листопада 2025 р."
+    const [dayStr, monthStr, yearStr] = formattedDate
+      .replace('р.', '')
+      .trim()
+      .split(' ');
+
+    const day = parseInt(dayStr, 10);
+    const monthIndex = monthNames.indexOf(monthStr);
+    const year = parseInt(yearStr, 10);
+
+    if (isNaN(day) || monthIndex === -1 || isNaN(year)) return '';
+
+    const dateObj = new Date(year, monthIndex, day);
+    const dayOfWeek = dateObj.getDay();
+
+    return daysOfWeek[dayOfWeek];
+  }, []);
+
+  return {convertToDayOfWeek};
 };

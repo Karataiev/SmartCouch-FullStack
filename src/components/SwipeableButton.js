@@ -1,13 +1,18 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 
-export const SwipeableButton = ({icon, handleClick, children}) => {
+export const SwipeableButton = ({
+  icon,
+  handleClick,
+  children,
+  singleButton,
+}) => {
   const changeStyle =
     children === 'Видалити' ? styles.deleteBtn : styles.cancelBtn;
 
   return (
     <TouchableOpacity
-      style={[styles.button, changeStyle]}
+      style={[styles.button, changeStyle, singleButton && styles.cancelBtn]}
       onPress={handleClick}>
       {icon}
       <Text style={styles.title}>{children}</Text>

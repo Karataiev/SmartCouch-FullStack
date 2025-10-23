@@ -103,6 +103,11 @@ export const CurrentProgramScreen = ({navigation, route}) => {
     }
   };
 
+  const handleConfirmRemovePress = () => {
+    setRemoveModalVisible(false);
+    handleRemoveFromClient();
+  };
+
   return (
     <LayoutComponent>
       <SafeAreaView style={styles.container}>
@@ -140,7 +145,8 @@ export const CurrentProgramScreen = ({navigation, route}) => {
         <RemoveModal
           visible={removeModalVisible}
           hideModal={() => setRemoveModalVisible(false)}
-          handleRemove={handleRemoveFromClient}
+          handleRemove={handleConfirmRemovePress}
+          headerTitle={'Видалити програму для обраного клієнта?'}
         />
       </SafeAreaView>
     </LayoutComponent>

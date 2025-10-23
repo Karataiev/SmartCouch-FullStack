@@ -11,6 +11,7 @@ import {getPinningClientId, updateClientsArray} from '../redux/action';
 import {ActionButton} from '../components/ActionButton';
 import {LayoutComponent} from '../components/LayoutComponent';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {ClientTrainingList} from '../components/ClientTrainingList';
 
 export const ClientsProfileScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -75,71 +76,71 @@ export const ClientsProfileScreen = ({route, navigation}) => {
 
   return (
     <LayoutComponent>
-      <SafeAreaView style={styles.container}>
-        {(isConfigModalVisible || isProgramModalVisible) && (
-          <View style={styles.shadowOverlay} />
-        )}
+      <>
+        <SafeAreaView style={styles.container}>
+          {(isConfigModalVisible || isProgramModalVisible) && (
+            <View style={styles.shadowOverlay} />
+          )}
 
-        <View style={styles.mainInfoContainer}>
-          <HeaderWithBackButton
-            configBtn
-            goHome
-            onPressConfig={toggleModal(setConfigModalVisible)}
-          />
+          <View style={styles.mainInfoContainer}>
+            <HeaderWithBackButton
+              configBtn
+              goHome
+              onPressConfig={toggleModal(setConfigModalVisible)}
+            />
 
-          <View style={styles.mainInfoBlock}>
-            <Text style={styles.clientName}>
-              {name} {surname}
-            </Text>
-            <Text style={styles.clientNumber}>{number}</Text>
-
-            {!!link.length && (
-              <View style={styles.connectionTypesContainer}>
-                {link.map((el, idx) =>
-                  el.link?.length ? (
-                    <TouchableOpacity
-                      key={idx + 1}
-                      style={styles.connectionType}>
-                      {el.icon}
-                    </TouchableOpacity>
-                  ) : null,
-                )}
-              </View>
-            )}
-
-            <TouchableOpacity
-              style={styles.createNotesBtn}
-              onPress={() =>
-                handlePlaningBtn('TrainingPlanning', 'clientProfile')
-              }>
-              <Text style={styles.createNotesTitle}>
-                Запланувати тренування
+            <View style={styles.mainInfoBlock}>
+              <Text style={styles.clientName}>
+                {name} {surname}
               </Text>
-            </TouchableOpacity>
+              <Text style={styles.clientNumber}>{number}</Text>
+
+              {!!link.length && (
+                <View style={styles.connectionTypesContainer}>
+                  {link.map((el, idx) =>
+                    el.link?.length ? (
+                      <TouchableOpacity
+                        key={idx + 1}
+                        style={styles.connectionType}>
+                        {el.icon}
+                      </TouchableOpacity>
+                    ) : null,
+                  )}
+                </View>
+              )}
+
+              <TouchableOpacity
+                style={styles.createNotesBtn}
+                onPress={() =>
+                  handlePlaningBtn('TrainingPlanning', 'clientProfile')
+                }>
+                <Text style={styles.createNotesTitle}>
+                  Запланувати тренування
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.additionalInfoBlock}>
+              <ActionButton
+                onPress={() => navigateToScreen('FullClientData')}
+                icon={<SvgProfile color="white" />}
+                title="Про клієнта"
+              />
+              <ActionButton
+                onPress={handleProgramPress}
+                icon={<SvgCreateService />}
+                title="Програма"
+              />
+              <ActionButton
+                onPress={handleClientParamsPress}
+                icon={<SvgClientsParameters />}
+                title="Заміри"
+              />
+            </View>
           </View>
 
-          <View style={styles.additionalInfoBlock}>
-            <ActionButton
-              onPress={() => navigateToScreen('FullClientData')}
-              icon={<SvgProfile color="white" />}
-              title="Про клієнта"
-            />
-            <ActionButton
-              onPress={handleProgramPress}
-              icon={<SvgCreateService />}
-              title="Програма"
-            />
-            <ActionButton
-              onPress={handleClientParamsPress}
-              icon={<SvgClientsParameters />}
-              title="Заміри"
-            />
-          </View>
-        </View>
-
-        <Text style={styles.listOfNotesTitle}>
-          У клієнта ще не було записів
-        </Text>
+          <ClientTrainingList clientId={currentClient.id} />
+        </SafeAreaView>
 
         <ConfigModal
           visible={isConfigModalVisible}
@@ -158,7 +159,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
             })
           }
         />
-      </SafeAreaView>
+      </>
     </LayoutComponent>
   );
 };
@@ -224,14 +225,6 @@ const styles = StyleSheet.create({
   additionalInfoBlock: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  listOfNotesTitle: {
-    marginTop: 24,
-    fontSize: 15,
-    lineHeight: 22,
-    fontWeight: '400',
-    color: '#D1D1D1',
-    textAlign: 'center',
   },
   emptyContainer: {
     flex: 1,

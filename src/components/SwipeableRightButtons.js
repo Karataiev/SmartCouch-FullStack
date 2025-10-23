@@ -1,16 +1,14 @@
-import {StyleSheet, View} from 'react-native';
 import React from 'react';
+import {StyleSheet, View} from 'react-native';
 import {SvgRemoveBtn} from '../assets/svgIcons/SvgRemoveBtn';
 import {SvgEditBtn} from '../assets/svgIcons/SvgEditBtn';
 import {SwipeableButton} from './SwipeableButton';
 
-export const SwipeableRightButtons = (isCancelActive, setIsCancelActive) => {
-  const handleDeleteBtn = () => {};
-
-  const handleCancelBtn = () => {
-    setIsCancelActive(!isCancelActive);
-  };
-
+export const SwipeableRightButtons = (
+  isCancelActive,
+  handleCancelBtn,
+  handleDeleteBtn,
+) => {
   return (
     <View style={styles.constainer}>
       <SwipeableButton icon={<SvgRemoveBtn />} handleClick={handleDeleteBtn}>

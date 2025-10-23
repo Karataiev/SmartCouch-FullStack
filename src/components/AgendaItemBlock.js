@@ -66,10 +66,10 @@ const AgendaItemBlockComponent = ({item}) => {
       <View style={styles.itemBlock}>
         {item.trainings?.map(el => (
           <AgendaItem
-            data={el}
+            key={el.id}
             item={item}
             currentTime={currentTime}
-            key={el.id}
+            training={el}
           />
         ))}
       </View>

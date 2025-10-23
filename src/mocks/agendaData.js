@@ -64,3 +64,26 @@ export const agendaData = [
     trainings: [],
   },
 ];
+
+// Приклад структури
+// const example = [
+//   {
+//     timeId: '11:00',
+//     trainings: [
+//       {
+//         client: {
+//           client: [Object],
+//           clientsCharacteristics: [Object],
+//           id: 'id-mh1wgc6v-b46fvpe2et',
+//           params: [Array],
+//           program: [Object],
+//         },
+//         id: 'mh1wgqp2ew3kd',
+//         location: '',
+//         trainingDate: {date: '22 жовтня 2025 р.', time: [Array]},
+//         trainingName: '',
+//         trainingType: 'personal',
+//       },
+//     ],
+//   },
+// ];

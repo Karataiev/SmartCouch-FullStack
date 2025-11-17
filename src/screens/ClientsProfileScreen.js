@@ -15,7 +15,7 @@ import {ClientTrainingList} from '../components/ClientTrainingList';
 
 export const ClientsProfileScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const clients = useSelector(state => state.clients);
+  const clients = useSelector(state => state.app.clients);
   const {itemData} = route?.params;
 
   const [isConfigModalVisible, setConfigModalVisible] = useState(false);

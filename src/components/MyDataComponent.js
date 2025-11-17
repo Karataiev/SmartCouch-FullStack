@@ -7,7 +7,7 @@ import {safeUserData} from '../redux/action';
 import {useDispatch, useSelector} from 'react-redux';
 
 export const MyDataComponent = ({navigation}) => {
-  const userData = useSelector(state => state.userData);
+  const userData = useSelector(state => state.app.userData);
   const [name, setName] = useState(userData.name);
   const [surname, setSurname] = useState(userData.surname);
   const [number, setNumber] = useState(userData.number);

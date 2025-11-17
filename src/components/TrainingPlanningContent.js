@@ -19,8 +19,8 @@ const COLORS = {
 };
 
 export const TrainingPlanningContent = ({setPlanningTrainingData}) => {
-  const clientId = useSelector(state => state.pinningClientId);
-  const clientsArr = useSelector(state => state.clients);
+  const clientId = useSelector(state => state.app.pinningClientId);
+  const clientsArr = useSelector(state => state.app.clients);
 
   const navigation = useNavigation();
 

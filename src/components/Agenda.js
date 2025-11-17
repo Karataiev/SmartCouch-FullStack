@@ -5,7 +5,7 @@ import {useConvertDate} from '../castomHooks/useConvertDate';
 import {AgendaItemBlock} from './AgendaItemBlock';
 
 export const Agenda = ({date}) => {
-  const workoutPlanArr = useSelector(state => state.workoutPlanArr);
+  const workoutPlanArr = useSelector(state => state.app.workoutPlanArr);
   const [filteredArr, setFilteredArr] = useState(workoutPlanArr);
   const {convertUkrDateToISO} = useConvertDate();
 

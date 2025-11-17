@@ -11,7 +11,7 @@ export const ClientList = ({items, pinningClient}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
-  const clients = useSelector(state => state.clients);
+  const clients = useSelector(state => state.app.clients);
 
   const [pinnedClientIds, setPinnedClientIds] = useState([]);
 

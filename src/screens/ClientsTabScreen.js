@@ -7,7 +7,7 @@ import {LayoutComponent} from '../components/LayoutComponent';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const ClientsTabScreen = ({navigation}) => {
-  const clientsState = useSelector(state => state.clients);
+  const clientsState = useSelector(state => state.app.clients);
   const createNewClientBtn = () => {
     navigation.navigate('CreateClient', {
       data: {},

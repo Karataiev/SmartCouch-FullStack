@@ -11,7 +11,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const CurrentProgramScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
-  const programs = useSelector(state => state.programs);
+  const programs = useSelector(state => state.app.programs);
   const {itemData, origin, clientId} = route.params;
 
   const [title, setTitle] = useState(itemData.title);

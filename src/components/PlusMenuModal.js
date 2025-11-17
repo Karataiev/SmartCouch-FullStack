@@ -9,7 +9,7 @@ import {PlusMenuItem} from './PlusMenuItem';
 import {SvgClients} from '../assets/tabIcons/SvgClients';
 
 export const PlusMenuModal = ({navigation}) => {
-  const isBtnClick = useSelector(state => state.isPlusMenuBtn);
+  const isBtnClick = useSelector(state => state.app.isPlusMenuBtn);
   const dispatch = useDispatch();
 
   const handleCreate = way => {

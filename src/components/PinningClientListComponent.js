@@ -7,7 +7,7 @@ import {HeaderWithBackButton} from './HeaderWithBackButton';
 
 export const PinningClientsListComponent = ({isForPinning}) => {
   const [searchValue, setSearchValue] = useState('');
-  const clients = useSelector(state => state.clients);
+  const clients = useSelector(state => state.app.clients);
 
   const sortByAlphabet = clients.sort((a, b) => {
     if (a.client.surname < b.client.surname) {

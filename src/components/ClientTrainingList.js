@@ -4,7 +4,7 @@ import {useSelector} from 'react-redux';
 import {ClientTrainingItem} from './ClientTrainingItem';
 
 export const ClientTrainingList = ({clientId}) => {
-  const workoutPlanArr = useSelector(state => state.workoutPlanArr);
+  const workoutPlanArr = useSelector(state => state.app.workoutPlanArr);
   const [clientTrainingsArr, setClientTrainingsArr] = useState([]);
 
   const splitTrainingsById = trainings => {

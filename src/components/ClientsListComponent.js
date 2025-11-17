@@ -11,7 +11,7 @@ export const ClientsListComponent = ({
   onPressAdd,
 }) => {
   const [searchValue, setSearchValue] = useState('');
-  const clients = useSelector(state => state.clients);
+  const clients = useSelector(state => state.app.clients);
 
   const filteredClients = useMemo(() => {
     const sorted = [...clients].sort((a, b) => {

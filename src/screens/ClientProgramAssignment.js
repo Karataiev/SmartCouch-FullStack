@@ -7,7 +7,7 @@ import {LayoutComponent} from '../components/LayoutComponent';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const ClientProgramAssignmentScreen = () => {
-  const clientsState = useSelector(state => state.clients);
+  const clientsState = useSelector(state => state.app.clients);
   return (
     <LayoutComponent>
       <SafeAreaView style={styles.container}>

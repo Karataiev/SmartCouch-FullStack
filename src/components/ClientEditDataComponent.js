@@ -12,7 +12,7 @@ import {updateClientsArray} from '../redux/action';
 export const ClientEditDataComponent = ({itemData, navigation}) => {
   const client = itemData.client;
   const clientsCharacteristics = itemData.clientsCharacteristics;
-  const clientArray = useSelector(state => state.clients);
+  const clientArray = useSelector(state => state.app.clients);
   const dispatch = useDispatch();
 
   const [isModalVisible, setIsModalVisible] = useState(false);

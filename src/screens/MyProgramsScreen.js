@@ -7,7 +7,7 @@ import {LayoutComponent} from '../components/LayoutComponent';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const MyProgramsScreen = ({navigation}) => {
-  const programs = useSelector(state => state.programs);
+  const programs = useSelector(state => state.app.programs);
 
   const onPressAdd = () => {
     navigation.navigate('CreateProgram');

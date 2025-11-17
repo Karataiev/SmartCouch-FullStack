@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {isPlusMenuBtn} from '../redux/action';
 
 export const TabPlusButton = () => {
-  const isBtnClick = useSelector(state => state.isPlusMenuBtn);
+  const isBtnClick = useSelector(state => state.app.isPlusMenuBtn);
   const dispatch = useDispatch();
 
   const handlePress = () => {

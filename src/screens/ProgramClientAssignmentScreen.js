@@ -22,8 +22,8 @@ export const ProgramClientAssignmentScreen = () => {
   const originWay = route.params?.origin || 'MyPrograms';
 
   const dispatch = useDispatch();
-  const myProgramList = useSelector(state => state.programs);
-  const readyMadeProgramsList = useSelector(state => state.programs);
+  const myProgramList = useSelector(state => state.app.programs);
+  const readyMadeProgramsList = useSelector(state => state.app.programs);
 
   const [programsArr, setProgramsArr] = useState([]);
   const [selectedProgramId, setSelectedProgramId] = useState(null);

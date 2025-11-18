@@ -1,60 +1,13 @@
 import {FlatList, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {useSelector} from 'react-redux';
 import {ClientTrainingItem} from './ClientTrainingItem';
+import {selectClientTrainingCards} from '../redux/selectors/workoutPlanSelectors';
 
 export const ClientTrainingList = ({clientId}) => {
-  const workoutPlanArr = useSelector(state => state.app.workoutPlanArr);
-  const [clientTrainingsArr, setClientTrainingsArr] = useState([]);
-
-  const splitTrainingsById = trainings => {
-    const idCount = {};
-
-    trainings.forEach(item => {
-      idCount[item.id] = (idCount[item.id] || 0) + 1;
-    });
-
-    const uniqueTrainings = [];
-    const duplicateTrainings = [];
-
-    Object.keys(idCount).forEach(id => {
-      const group = trainings.filter(t => t.id === id);
-      if (idCount[id] === 1) {
-        uniqueTrainings.push(group[0]);
-      } else {
-        duplicateTrainings.push(group);
-      }
-    });
-
-    return {uniqueTrainings, duplicateTrainings};
-  };
-
-  useEffect(() => {
-    if (!workoutPlanArr?.length) {
-      setClientTrainingsArr([]);
-      return;
-    }
-
-    const filteredTrainings = workoutPlanArr.flatMap(plan =>
-      plan.trainings.filter(item => item.client.id === clientId),
-    );
-
-    const {uniqueTrainings, duplicateTrainings} =
-      splitTrainingsById(filteredTrainings);
-
-    const finalCards = [
-      ...uniqueTrainings.map(t => ({
-        key: t.id,
-        trainings: [t],
-      })),
-      ...duplicateTrainings.map(group => ({
-        key: group[0].id,
-        trainings: group,
-      })),
-    ];
-
-    setClientTrainingsArr(finalCards);
-  }, [workoutPlanArr, clientId]);
+  const clientTrainingsArr = useSelector(state =>
+    selectClientTrainingCards(state, clientId),
+  );
 
   return (
     <View style={styles.container}>

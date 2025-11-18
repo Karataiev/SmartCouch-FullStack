@@ -1,17 +1,22 @@
-import React from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SvgPhone} from '../assets/svgIcons/SvgPhone';
 import {SvgArrowRight} from '../assets/svgIcons/SvgArrowRight';
 
-export const ClientListItem = ({item, handlePress}) => {
+const ClientListItemComponent = ({item, handlePress}) => {
+  const clientFullName = useMemo(
+    () => `${item.client.name} ${item.client.surname}`,
+    [item.client.name, item.client.surname],
+  );
+
+  const handlePressItem = useCallback(() => {
+    handlePress(item);
+  }, [handlePress, item]);
+
   return (
-    <TouchableOpacity
-      style={styles.openItemBtn}
-      onPress={() => handlePress(item)}>
+    <TouchableOpacity style={styles.openItemBtn} onPress={handlePressItem}>
       <View>
-        <Text style={styles.name}>
-          {`${item.client.name} ${item.client.surname}`}
-        </Text>
+        <Text style={styles.name}>{clientFullName}</Text>
 
         <View style={styles.phoneContainer}>
           <SvgPhone />
@@ -55,3 +60,5 @@ const styles = StyleSheet.create({
     color: '#A1A1A1',
   },
 });
+
+export const ClientListItem = React.memo(ClientListItemComponent);

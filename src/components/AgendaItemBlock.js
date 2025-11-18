@@ -1,27 +1,13 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
+import {useSelector} from 'react-redux';
 import {AgendaTimeLine} from './AgendaTimeLine';
 import {AgendaItem} from './AgendaItem';
+import {selectCurrentTime} from '../redux/selectors/workoutPlanSelectors';
 
 const AgendaItemBlockComponent = ({item}) => {
-  const [currentTime, setCurrentTime] = useState(null);
+  const currentTime = useSelector(selectCurrentTime);
   const [itemHeight, setItemHeight] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const date = new Date();
-      const returnTimeString = () => {
-        return `${date.getHours()}:${
-          date.getMinutes().toString().length < 2
-            ? `0${date.getMinutes()}`
-            : date.getMinutes()
-        }`;
-      };
-      setCurrentTime(returnTimeString());
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const currentTimeArr = useMemo(
     () => currentTime?.split(':') || ['00', '00'],
@@ -64,14 +50,19 @@ const AgendaItemBlockComponent = ({item}) => {
       {renderTimeLine(item.timeId)}
 
       <View style={styles.itemBlock}>
-        {item.trainings?.map(el => (
-          <AgendaItem
-            key={el.id}
-            item={item}
-            currentTime={currentTime}
-            training={el}
-          />
-        ))}
+        {item.trainings?.map(el => {
+          const trainingKey = `${el.id}-${el.trainingDate?.date ?? ''}-${
+            el.trainingDate?.time?.[0] ?? ''
+          }`;
+          return (
+            <AgendaItem
+              key={trainingKey}
+              item={item}
+              currentTime={currentTime}
+              training={el}
+            />
+          );
+        })}
       </View>
     </View>
   );

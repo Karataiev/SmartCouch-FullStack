@@ -2,14 +2,14 @@ import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {SvgPlus} from '../assets/tabIcons/SvgPlus';
 import {useDispatch, useSelector} from 'react-redux';
-import {isPlusMenuBtn} from '../redux/action';
+import {setPlusMenuBtn} from '../redux/action';
 
 export const TabPlusButton = () => {
   const isBtnClick = useSelector(state => state.app.isPlusMenuBtn);
   const dispatch = useDispatch();
 
   const handlePress = () => {
-    dispatch(isPlusMenuBtn(!isBtnClick));
+    dispatch(setPlusMenuBtn(!isBtnClick));
   };
 
   return (

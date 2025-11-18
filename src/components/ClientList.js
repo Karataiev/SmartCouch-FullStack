@@ -1,17 +1,18 @@
-import React, {useState, useMemo} from 'react';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import React, {useMemo, useState} from 'react';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {ClientListItem} from './ClientListItem';
 import {ClientListPinningItem} from './ClientListPinningItem';
 import {SafeInfoButton} from './SafeInfoButton';
-import {getPinningClientId, updateClientProgram} from '../redux/action';
+import {setPinningClientId, updateClientProgram} from '../redux/action';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import {selectClientsList} from '../redux/selectors/clientSelectors';
 
 export const ClientList = ({items, pinningClient}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
-  const clients = useSelector(state => state.app.clients);
+  const clients = useSelector(selectClientsList);
 
   const [pinnedClientIds, setPinnedClientIds] = useState([]);
 
@@ -37,7 +38,7 @@ export const ClientList = ({items, pinningClient}) => {
     const routeData = route.params;
 
     if (routeData?.origin === 'TrainingPlanningContent') {
-      dispatch(getPinningClientId(...pinnedClientIds));
+      dispatch(setPinningClientId(...pinnedClientIds));
     } else {
       clients.map(client => {
         if (pinnedClientIds.includes(client.id)) {

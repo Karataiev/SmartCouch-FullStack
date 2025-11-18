@@ -5,13 +5,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {TrainingPlanningItemLayout} from './TrainingPlanningItemLayout';
 import {TrainingTypeCheckbox} from './TrainingTypeCheckbox';
 import {SvgArrowRight} from '../assets/svgIcons/SvgArrowRight';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {ClientListItem} from './ClientListItem';
+import {selectPinnedClient} from '../redux/selectors/clientSelectors';
 
 const COLORS = {
   personal: '#00704F',
@@ -19,48 +20,42 @@ const COLORS = {
 };
 
 export const TrainingPlanningContent = ({setPlanningTrainingData}) => {
-  const clientId = useSelector(state => state.app.pinningClientId);
-  const clientsArr = useSelector(state => state.app.clients);
+  const pinnedClient = useSelector(selectPinnedClient);
 
   const navigation = useNavigation();
 
   const [selectedType, setSelectedType] = useState('personal');
   const [trainingName, setTrainingName] = useState('');
   const [location, setLocation] = useState('');
-  const [pinnedClient, setPinnedClient] = useState(null);
 
   const placeholderName = 'Split/Trx/Functional etc.';
   const placeholderLocation = 'Вкажіть локацію';
-  const uniqueID = `id-${Date.now().toString(36)}-${Math.random()
-    .toString(36)
-    .slice(2)}`;
+  const uniqueID = useMemo(
+    () => `id-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`,
+    [],
+  );
 
   useEffect(() => {
     setPlanningTrainingData({
-      trainingName: trainingName,
+      trainingName,
       trainingType: selectedType,
       client: pinnedClient,
-      location: location,
+      location,
     });
-  }, [selectedType, trainingName, location, pinnedClient]);
+  }, [selectedType, trainingName, location, pinnedClient, setPlanningTrainingData]);
 
-  useEffect(() => {
-    if (clientId.length !== 0) {
-      const foundClient = clientsArr.find(item => item.id === clientId);
-      setPinnedClient(foundClient);
-    }
-  }, [clientId, clientsArr]);
-
-  const handleGetClient = () => {
+  const handleGetClient = useCallback(() => {
     navigation.navigate('ClientProgramAssignment', {
       id: uniqueID,
       origin: 'TrainingPlanningContent',
     });
-  };
+  }, [navigation, uniqueID]);
 
-  const handlePressClientItem = item => {
-    navigation.navigate('ClientsProfile', {itemData: pinnedClient});
-  };
+  const handlePressClientItem = useCallback(() => {
+    if (pinnedClient) {
+      navigation.navigate('ClientsProfile', {itemData: pinnedClient});
+    }
+  }, [navigation, pinnedClient]);
 
   return (
     <View style={styles.container}>

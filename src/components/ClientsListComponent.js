@@ -1,9 +1,10 @@
-import React, {useMemo, useState} from 'react';
+import React, {useCallback, useDeferredValue, useMemo, useState} from 'react';
 import {StyleSheet, TextInput, View} from 'react-native';
 import {SvgSearch} from '../assets/svgIcons/SvgSearch';
 import {useSelector} from 'react-redux';
 import {ClientList} from './ClientList';
 import {HeaderForScreens} from './HeaderForScreens';
+import {selectClientsList} from '../redux/selectors/clientSelectors';
 
 export const ClientsListComponent = ({
   navigation,
@@ -11,31 +12,39 @@ export const ClientsListComponent = ({
   onPressAdd,
 }) => {
   const [searchValue, setSearchValue] = useState('');
-  const clients = useSelector(state => state.app.clients);
+  const clients = useSelector(selectClientsList);
 
-  const filteredClients = useMemo(() => {
-    const sorted = [...clients].sort((a, b) => {
-      if (a.client.surname < b.client.surname) {
-        return -1;
-      }
-      if (a.client.surname > b.client.surname) {
-        return 1;
-      }
-      return 0;
-    });
+  const deferredSearch = useDeferredValue(searchValue);
 
-    if (!searchValue) {
-      return sorted;
+  const sortedClients = useMemo(() => {
+    if (!clients?.length) {
+      return [];
     }
 
-    const lowerSearch = searchValue.toLowerCase();
+    return [...clients].sort((a, b) =>
+      a.client.surname.localeCompare(b.client.surname, 'uk', {
+        sensitivity: 'base',
+      }),
+    );
+  }, [clients]);
 
-    return sorted.filter(
+  const filteredClients = useMemo(() => {
+    if (!deferredSearch) {
+      return sortedClients;
+    }
+
+    const lowerSearch = deferredSearch.toLowerCase();
+
+    return sortedClients.filter(
       el =>
         el.client.surname.toLowerCase().includes(lowerSearch) ||
         el.client.name.toLowerCase().includes(lowerSearch),
     );
-  }, [clients, searchValue]);
+  }, [sortedClients, deferredSearch]);
+
+  const handleSearchChange = useCallback(text => {
+    setSearchValue(text);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -51,7 +60,7 @@ export const ClientsListComponent = ({
         <TextInput
           style={styles.searchInput}
           value={searchValue}
-          onChangeText={setSearchValue}
+          onChangeText={handleSearchChange}
           placeholder="Пошук за ПІБ"
           placeholderTextColor={'#A1A1A1'}
         />

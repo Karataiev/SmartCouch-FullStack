@@ -4,7 +4,11 @@ import {CalendarList} from 'react-native-calendars';
 
 const {width} = Dimensions.get('window');
 
-export const CustomMonthCalendar = ({selectedDate, handleDayPress}) => {
+export const CustomMonthCalendar = ({
+  selectedDate,
+  handleDayPress,
+  handleMonthChange,
+}) => {
   return (
     <CalendarList
       horizontal
@@ -16,12 +20,21 @@ export const CustomMonthCalendar = ({selectedDate, handleDayPress}) => {
       pastScrollRange={12}
       futureScrollRange={12}
       onDayPress={day => handleDayPress(day)}
-      markedDates={{
-        [selectedDate]: {
-          selected: true,
-          selectedColor: 'white',
-          selectedTextColor: 'black',
-        },
+      markedDates={
+        selectedDate
+          ? {
+              [selectedDate]: {
+                selected: true,
+                selectedColor: 'white',
+                selectedTextColor: 'black',
+              },
+            }
+          : undefined
+      }
+      onVisibleMonthsChange={months => {
+        if (months?.length && handleMonthChange) {
+          handleMonthChange(months[0]);
+        }
       }}
       style={styles.calendarCustomStyles}
       theme={styles.theme}

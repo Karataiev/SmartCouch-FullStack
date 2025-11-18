@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {SvgDoneStatus} from '../assets/calendarIcons/SvgDoneStatus';
 import {SvgWaitingStatus} from '../assets/calendarIcons/SvgWaitingStatus';
@@ -10,7 +10,7 @@ import {RemoveModal} from './RemoveModal';
 import {useDispatch} from 'react-redux';
 import {removeWorkoutPlanItem} from '../redux/action';
 
-export const AgendaItem = ({item, currentTime, training}) => {
+const AgendaItemComponent = ({item, currentTime, training}) => {
   const swipeableRef = useRef(null);
   const dispatch = useDispatch();
   const [isCancelActive, setIsCancelActive] = useState(false);
@@ -52,88 +52,101 @@ export const AgendaItem = ({item, currentTime, training}) => {
     };
   }, [currentTimeArr, timeIdArr]);
 
-  const returnTrainingName = name => (name ? name : 'Gym');
+  const trainingName = training?.trainingName || 'Gym';
+  const trainingTypeLabel = training?.trainingType?.toUpperCase() || 'TRAINING';
+  const isPersonalTraining = training?.trainingType === 'personal';
+  const trainingTimes = training?.trainingDate?.time ?? [];
 
-  const returnTypeOfTrainingStyle = type =>
-    type === 'personal'
-      ? {backgroundColor: '#00704F'}
-      : {backgroundColor: '#4195B9'};
-
-  const showClientName = el => {
-    if (!el.client) {
-      return el.trainingType === 'personal'
+  const clientTitle = useMemo(() => {
+    if (!training?.client) {
+      return isPersonalTraining
         ? 'УТОЧНИТИ ДАНІ КЛІЄНТА'
         : 'ГРУПОВЕ ТРЕНУВАННЯ';
     }
-    return `${el.client?.client.name} ${el.client?.client.surname}`.toUpperCase();
-  };
+    return `${training.client?.client.name} ${
+      training.client?.client.surname
+    }`.toUpperCase();
+  }, [training, isPersonalTraining]);
 
-  const returnDataDependsOnCencel = (item_1, item_2) => {
-    return !isCancelActive ? item_1 : item_2;
-  };
+  const trainingTimeRange = useMemo(() => {
+    const [start = '--:--', end = '--:--'] = trainingTimes;
+    return `${start} - ${end}`;
+  }, [trainingTimes]);
 
-  const handleCancelBtn = () => {
-    setIsCancelActive(!isCancelActive);
-  };
+  const firstTrainingDate = useMemo(
+    () => item.trainings?.[0]?.trainingDate?.date,
+    [item.trainings],
+  );
 
-  const handleDeleteBtn = () => {
+  const handleCancelBtn = useCallback(() => {
+    setIsCancelActive(prev => !prev);
+  }, []);
+
+  const handleDeleteBtn = useCallback(() => {
     setRemoveModalVisible(true);
-  };
+  }, []);
 
-  const handleConfirmRemovePress = () => {
-    const selectedDate = item.trainings[0].trainingDate.date;
-    const itemId = training.id;
-
-    dispatch(removeWorkoutPlanItem([itemId, selectedDate]));
+  const hideRemoveModal = useCallback(() => {
     setRemoveModalVisible(false);
-  };
+  }, []);
+
+  const handleConfirmRemovePress = useCallback(() => {
+    if (!firstTrainingDate) {
+      return;
+    }
+    dispatch(removeWorkoutPlanItem([training.id, firstTrainingDate]));
+    setRemoveModalVisible(false);
+  }, [dispatch, training.id, firstTrainingDate]);
+
+  const renderRightActions = useCallback(
+    () =>
+      SwipeableRightButtons(isCancelActive, handleCancelBtn, handleDeleteBtn),
+    [isCancelActive, handleCancelBtn, handleDeleteBtn],
+  );
+
+  const trainingStatusIcon = isCancelActive ? <SvgCancelIcon /> : statusIcon;
+  const trainingStatusText = isCancelActive ? 'Відмінено' : status;
+  const trainingStatusStyle = isCancelActive ? styles.cancelTitle : statusStyle;
+  const trainingTypeStyle = isCancelActive
+    ? styles.cancelBackground
+    : isPersonalTraining
+    ? styles.personalTrainingType
+    : styles.groupTrainingType;
+  const itemContainerStyle = isCancelActive
+    ? styles.canceledItem
+    : styles.activeItem;
 
   return (
     <>
       <Swipeable
         ref={swipeableRef}
-        renderRightActions={() =>
-          SwipeableRightButtons(
-            isCancelActive,
-            handleCancelBtn,
-            handleDeleteBtn,
-          )
-        }>
+        renderRightActions={renderRightActions}>
         <View
           style={[
             styles.item,
-            returnDataDependsOnCencel(styles.activeItem, styles.canceledItem),
+            itemContainerStyle,
           ]}>
           <View style={styles.itemCommonStyles}>
-            <Text style={styles.itemFirstText}>
-              {returnTrainingName(training.trainingName)}
-            </Text>
+            <Text style={styles.itemFirstText}>{trainingName}</Text>
             <Text
               style={[
                 styles.itemSecondText,
-                returnDataDependsOnCencel(
-                  returnTypeOfTrainingStyle(training.trainingType),
-                  styles.cancelBackground,
-                ),
+                trainingTypeStyle,
               ]}>
-              {training.trainingType.toUpperCase()}
+              {trainingTypeLabel}
             </Text>
           </View>
           <View style={[styles.itemCommonStyles, styles.itemSecondBlock]}>
-            <Text style={styles.itemText}>{showClientName(training)}</Text>
+            <Text style={styles.itemText}>{clientTitle}</Text>
           </View>
           <View style={[styles.itemCommonStyles, styles.itemThirdBlock]}>
             <Text style={styles.itemTimeText}>
-              {`${training.trainingDate.time[0]} - ${training.trainingDate.time[1]}`}
+              {trainingTimeRange}
             </Text>
             <View style={styles.itemStatusBlock}>
-              {returnDataDependsOnCencel(statusIcon, <SvgCancelIcon />)}
-              <Text
-                style={[
-                  styles.itemText,
-                  returnDataDependsOnCencel(statusStyle, styles.cancelTitle),
-                ]}>
-                {returnDataDependsOnCencel(status, 'Відмінено')}
+              {trainingStatusIcon}
+              <Text style={[styles.itemText, trainingStatusStyle]}>
+                {trainingStatusText}
               </Text>
             </View>
           </View>
@@ -142,7 +155,7 @@ export const AgendaItem = ({item, currentTime, training}) => {
 
       <RemoveModal
         visible={removeModalVisible}
-        hideModal={() => setRemoveModalVisible(false)}
+        hideModal={hideRemoveModal}
         handleRemove={handleConfirmRemovePress}
         headerTitle={'Видалити заплановане тренування?'}
       />
@@ -183,6 +196,12 @@ const styles = StyleSheet.create({
     lineHeight: 10,
     borderRadius: 30,
   },
+  personalTrainingType: {
+    backgroundColor: '#00704F',
+  },
+  groupTrainingType: {
+    backgroundColor: '#4195B9',
+  },
   itemText: {
     color: 'white',
     lineHeight: 13,
@@ -211,3 +230,5 @@ const styles = StyleSheet.create({
     color: '#B95151',
   },
 });
+
+export const AgendaItem = React.memo(AgendaItemComponent);

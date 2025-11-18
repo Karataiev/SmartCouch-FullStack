@@ -3,7 +3,7 @@ import {CustomInput} from './CustomInput';
 import {CustomPhoneInput} from './CustomPhoneInput';
 import React, {useEffect, useState} from 'react';
 import {SafeInfoButton} from './SafeInfoButton';
-import {safeUserData} from '../redux/action';
+import {saveUserData} from '../redux/action';
 import {useDispatch, useSelector} from 'react-redux';
 
 export const MyDataComponent = ({navigation}) => {
@@ -42,7 +42,7 @@ export const MyDataComponent = ({navigation}) => {
   const handleSubmit = () => {
     if (isActiveSubmitBtn) {
       dispatch(
-        safeUserData({
+        saveUserData({
           name: name,
           surname: surname,
           number: number,

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Modal, StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {isPlusMenuBtn} from '../redux/action';
+import {setPlusMenuBtn} from '../redux/action';
 import {SvgClose} from '../assets/svgIcons/SvgClose';
 import {SvgCreateProgram} from '../assets/svgIcons/SvgCreateProgram';
 import {SvgCreateService} from '../assets/svgIcons/SvgCreateService';
@@ -13,14 +13,14 @@ export const PlusMenuModal = ({navigation}) => {
   const dispatch = useDispatch();
 
   const handleCreate = way => {
-    dispatch(isPlusMenuBtn(!isBtnClick));
+    dispatch(setPlusMenuBtn(!isBtnClick));
     navigation.navigate(way, {
       data: {},
     });
   };
 
   const handleClose = () => {
-    dispatch(isPlusMenuBtn(!isBtnClick));
+    dispatch(setPlusMenuBtn(!isBtnClick));
   };
 
   return (

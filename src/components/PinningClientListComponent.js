@@ -1,34 +1,38 @@
 import {StyleSheet, TextInput, View} from 'react-native';
 import {SvgSearch} from '../assets/svgIcons/SvgSearch';
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {ClientList} from './ClientList';
 import {HeaderWithBackButton} from './HeaderWithBackButton';
+import {selectClientsList} from '../redux/selectors/clientSelectors';
 
 export const PinningClientsListComponent = ({isForPinning}) => {
   const [searchValue, setSearchValue] = useState('');
-  const clients = useSelector(state => state.app.clients);
+  const clients = useSelector(selectClientsList);
 
-  const sortByAlphabet = clients.sort((a, b) => {
-    if (a.client.surname < b.client.surname) {
-      return -1;
+  const sortedClients = useMemo(() => {
+    if (!clients?.length) {
+      return [];
     }
-    if (a.client.surname > b.client.surname) {
-      return 1;
-    }
-    return 0;
-  });
+    return [...clients].sort((a, b) =>
+      a.client.surname.localeCompare(b.client.surname, 'uk', {
+        sensitivity: 'base',
+      }),
+    );
+  }, [clients]);
 
-  const searchClient = sortByAlphabet.filter(el => {
+  const searchClient = useMemo(() => {
     if (!searchValue) {
-      return el;
-    } else {
-      return (
-        el.client.surname.toLowerCase().includes(searchValue.toLowerCase()) ||
-        el.client.name.toLowerCase().includes(searchValue.toLowerCase())
-      );
+      return sortedClients;
     }
-  });
+    const lowerSearch = searchValue.toLowerCase();
+
+    return sortedClients.filter(
+      el =>
+        el.client.surname.toLowerCase().includes(lowerSearch) ||
+        el.client.name.toLowerCase().includes(lowerSearch),
+    );
+  }, [sortedClients, searchValue]);
 
   return (
     <View style={styles.container}>

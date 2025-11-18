@@ -8,11 +8,12 @@ import {SafeInfoButton} from './SafeInfoButton';
 import {ClientEditConnectionMethod} from './ClientEditConnectionMethod';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateClientsArray} from '../redux/action';
+import {selectClientsList} from '../redux/selectors/clientSelectors';
 
 export const ClientEditDataComponent = ({itemData, navigation}) => {
   const client = itemData.client;
   const clientsCharacteristics = itemData.clientsCharacteristics;
-  const clientArray = useSelector(state => state.app.clients);
+  const clientArray = useSelector(selectClientsList);
   const dispatch = useDispatch();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -123,10 +124,11 @@ export const ClientEditDataComponent = ({itemData, navigation}) => {
       },
     };
 
-    const clientIndex = clientArray.findIndex(el => el.id === itemData.id);
-    clientArray.splice(clientIndex, 1, clientDataObject);
+    const updatedClients = clientArray.map(clientItem =>
+      clientItem.id === itemData.id ? clientDataObject : clientItem,
+    );
 
-    dispatch(updateClientsArray(clientArray));
+    dispatch(updateClientsArray(updatedClients));
 
     navigation.navigate('ClientsProfile', {
       itemData: clientDataObject,

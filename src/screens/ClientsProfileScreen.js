@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
@@ -7,25 +7,24 @@ import {SvgClientsParameters} from '../assets/svgIcons/SvgClientsParameters';
 import {SvgProfile} from '../assets/tabIcons/SvgProfile';
 import {ConfigModal} from '../components/ConfigModal';
 import {CreateProgramModal} from '../components/CreateProgramModal';
-import {getPinningClientId, updateClientsArray} from '../redux/action';
+import {setPinningClientId, updateClientsArray} from '../redux/action';
 import {ActionButton} from '../components/ActionButton';
 import {LayoutComponent} from '../components/LayoutComponent';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ClientTrainingList} from '../components/ClientTrainingList';
+import {
+  selectClientById,
+  selectClientsList,
+} from '../redux/selectors/clientSelectors';
 
 export const ClientsProfileScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const clients = useSelector(state => state.app.clients);
   const {itemData} = route?.params;
+  const clients = useSelector(selectClientsList);
+  const currentClient = useSelector(state => selectClientById(state, itemData.id));
 
   const [isConfigModalVisible, setConfigModalVisible] = useState(false);
   const [isProgramModalVisible, setProgramModalVisible] = useState(false);
-  const [currentClient, setCurrentClient] = useState(null);
-
-  useEffect(() => {
-    const client = clients.find(item => item.id === itemData.id);
-    setCurrentClient(client || null);
-  }, [clients, itemData]);
 
   const toggleModal = setter => () => setter(prev => !prev);
 
@@ -60,7 +59,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
   };
 
   const handlePlaningBtn = (screen, origin) => {
-    dispatch(getPinningClientId(itemData.id));
+    dispatch(setPinningClientId(itemData.id));
     navigateToScreen(screen, origin);
   };
 

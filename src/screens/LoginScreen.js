@@ -47,8 +47,9 @@ export const LoginScreen = () => {
 
     try {
       const normalizedPhone = normalizePhone(number);
+      const url = `${API_BASE_URL}/api/v1/auth/login`;
 
-      const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -59,9 +60,42 @@ export const LoginScreen = () => {
         }),
       });
 
-      const data = await response.json();
+      // Перевіряємо Content-Type перед парсингом JSON
+      const contentType = response.headers.get('content-type');
+      let data;
 
-      if (!response.ok || !data.success) {
+      if (contentType && contentType.includes('application/json')) {
+        try {
+          const text = await response.text();
+          data = JSON.parse(text);
+        } catch (parseError) {
+          console.error('JSON parse error:', parseError);
+          throw new Error(
+            'Сервер повернув некоректну відповідь. Перевірте, чи сервер запущений.',
+          );
+        }
+      } else {
+        // Якщо відповідь не JSON, читаємо як текст
+        const text = await response.text();
+        console.error('Non-JSON response:', text);
+        throw new Error(
+          `Сервер повернув некоректну відповідь (статус: ${response.status}). Перевірте налаштування API.`,
+        );
+      }
+
+      if (!response.ok) {
+        // Спеціальна обробка помилки rate limiting (429)
+        if (response.status === 429) {
+          const retryAfter = response.headers.get('Retry-After');
+          const message = retryAfter
+            ? `Забагато спроб входу. Спробуйте через ${retryAfter} секунд.`
+            : data.message || 'Забагато спроб входу. Спробуйте пізніше.';
+          throw new Error(message);
+        }
+        throw new Error(data.message || 'Невірний номер телефону або пароль');
+      }
+
+      if (!data.success) {
         throw new Error(data.message || 'Невірний номер телефону або пароль');
       }
 
@@ -91,9 +125,18 @@ export const LoginScreen = () => {
         });
       }
     } catch (err) {
-      setAuthError(
-        err.message || 'Невірні дані користувача. Перевірте правильність логіну та паролю',
-      );
+      console.error('Login error:', err);
+      if (err.message.includes('JSON')) {
+        setAuthError(
+          'Помилка підключення до сервера. Перевірте, чи сервер запущений на ' +
+            API_BASE_URL,
+        );
+      } else {
+        setAuthError(
+          err.message ||
+            'Невірні дані користувача. Перевірте правильність логіну та паролю',
+        );
+      }
     } finally {
       setIsLoading(false);
     }

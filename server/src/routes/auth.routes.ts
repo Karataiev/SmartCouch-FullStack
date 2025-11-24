@@ -26,10 +26,11 @@ const router = Router();
 /**
  * Rate limiting для auth endpoints
  * Більш строгий, ніж загальний rate limiter
+ * В development режимі ліміти збільшені для зручності тестування
  */
 const authRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 хвилин
-  max: 5, // Максимум 5 запитів з одного IP за 15 хвилин
+  max: env.NODE_ENV === 'development' ? 50 : 5, // В development: 50 спроб, в production: 5
   message: 'Забагато спроб. Спробуйте пізніше.',
   standardHeaders: true,
   legacyHeaders: false,

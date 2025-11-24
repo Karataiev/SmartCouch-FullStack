@@ -12,13 +12,10 @@ import {CustomPhoneInput} from '../components/CustomPhoneInput';
 import {PasswordCustomInput} from '../components/PasswordCustomInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {useNavigation} from '@react-navigation/native';
+import {API_BASE_URL} from '../config/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const {width, height} = Dimensions.get('window');
-
-const authenticationData = [
-  {login: '+38 098 628 69 74', password: '10Karat10'},
-  {login: '+38 050 230 40 21', password: '10Karat10'},
-];
 
 export const LoginScreen = () => {
   const navigation = useNavigation();
@@ -28,27 +25,77 @@ export const LoginScreen = () => {
   const [passwordError, setPasswordError] = useState('');
   const [showErrors, setShowErrors] = useState(false);
   const [authError, setAuthError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const goToScreen = screen => {
     navigation.navigate(screen);
   };
 
-  const handleLogin = () => {
+  const normalizePhone = phone => {
+    return phone.replace(/[\s-]/g, '');
+  };
+
+  const handleLogin = async () => {
     setShowErrors(true);
     setAuthError('');
 
-    if (!passwordError && number.length === 17 && password) {
-      const userExists = authenticationData.some(
-        user => user.login === number && user.password === password,
-      );
+    if (passwordError || number.length !== 17 || !password) {
+      return;
+    }
 
-      if (userExists) {
-        goToScreen('TabBar');
-      } else {
-        setAuthError(
-          'Невірні дані користувача. Перевірте правильність логіну та паролю',
-        );
+    setIsLoading(true);
+
+    try {
+      const normalizedPhone = normalizePhone(number);
+
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone: normalizedPhone,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Невірний номер телефону або пароль');
       }
+
+      // Зберігаємо токени
+      if (data.tokens) {
+        await AsyncStorage.setItem('accessToken', data.tokens.access);
+        await AsyncStorage.setItem('refreshToken', data.tokens.refresh);
+      }
+
+      // Перевіряємо, чи користувач вже бачив онбординг
+      const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+      
+      // Якщо не бачив (null або не 'true') - показуємо онбординг, інакше - головний екран
+      // Для нового користувача hasSeenOnboarding буде null, тому показуємо онбординг
+      console.log('hasSeenOnboarding:', hasSeenOnboarding);
+      
+      if (hasSeenOnboarding === 'true') {
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'TabBar'}],
+        });
+      } else {
+        // Новий користувач або не бачив онбординг - показуємо онбординг
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Onboarding'}],
+        });
+      }
+    } catch (err) {
+      setAuthError(
+        err.message || 'Невірні дані користувача. Перевірте правильність логіну та паролю',
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -92,12 +139,16 @@ export const LoginScreen = () => {
             <Text style={styles.errorText}>{authError}</Text>
           ) : null}
 
-          <TouchableOpacity style={styles.forgotPassword}>
+          <TouchableOpacity
+            style={styles.forgotPassword}
+            onPress={() => goToScreen('ForgotPassword')}>
             <Text style={styles.forgotPasswordTitle}>Забули пароль?</Text>
           </TouchableOpacity>
 
-          <SafeInfoButton disabled={isDisabled} handleSubmit={handleLogin}>
-            Увійти
+          <SafeInfoButton
+            disabled={isDisabled || isLoading}
+            handleSubmit={handleLogin}>
+            {isLoading ? 'Вхід...' : 'Увійти'}
           </SafeInfoButton>
 
           <View style={styles.privacyPolicyBlock}>

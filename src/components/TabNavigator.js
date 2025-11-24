@@ -41,7 +41,9 @@ export const TabNavigator = ({navigation}) => {
   return (
     <>
       <PlusMenuModal navigation={navigation} />
-      <Tab.Navigator screenOptions={screenOptions}>
+      <Tab.Navigator
+        screenOptions={screenOptions}
+        initialRouteName="Plan">
         <Tab.Screen
           name="Plan"
           component={PlanTabScreen}

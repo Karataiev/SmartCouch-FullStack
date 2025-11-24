@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Platform} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {LayoutComponent} from '../components/LayoutComponent';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
@@ -6,9 +6,10 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {OTPInput} from '../components/OTPInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {SafeAreaView} from 'react-native-safe-area-context';
+
 import {API_BASE_URL} from '../config/api';
 
-export const RegistrationCodeScreen = () => {
+export const ForgotPasswordCodeScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const timerRef = useRef(null);
@@ -17,21 +18,19 @@ export const RegistrationCodeScreen = () => {
   const [seconds, setSeconds] = useState(30);
   const [timerActive, setTimerActive] = useState(true);
   const [sendBtnDisabled, setSendBtnDisabled] = useState(true);
-  const [code, setCode] = useState(['', '', '', '', '', '']); // 6 цифр
+  const [code, setCode] = useState(['', '', '', '', '', '']); // 6-значний код
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isResending, setIsResending] = useState(false);
 
   useEffect(() => {
-    // Перевіряємо, чи всі 6 цифр введені
-    const isCodeComplete =
-      code.length === 6 &&
-      code.every(digit => digit !== '' && digit.trim() !== '');
-    setIsDisabled(!isCodeComplete);
-
-    if (errorMessage && isCodeComplete) {
-      setErrorMessage('');
+    // Перевірка, чи всі 6 полів заповнені
+    if (code.includes('')) {
+      setIsDisabled(true);
+    } else {
+      setIsDisabled(false);
     }
-  }, [code, errorMessage]);
+  }, [code]);
 
   useEffect(() => {
     if (timerActive) {
@@ -94,30 +93,35 @@ export const RegistrationCodeScreen = () => {
         throw new Error(data.message || 'Невірний код верифікації');
       }
 
-      // Код валідний - перехід на екран створення паролю
-      navigation.navigate('CreatePassword', {
-        number: route.params?.number,
-      });
+      if (data.verified) {
+        // Перехід на екран створення нового паролю
+        navigation.navigate('ResetPassword', {
+          number: route.params?.number,
+        });
+      } else {
+        setErrorMessage('Помилка верифікації коду');
+      }
     } catch (err) {
-      setErrorMessage(err.message || 'Невірний код верифікації');
+      setErrorMessage(
+        err.message || 'Помилка підключення до сервера. Перевірте інтернет-з\'єднання.',
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   const sendCode = async () => {
-    if (sendBtnDisabled) {
+    if (sendBtnDisabled || isResending) {
       return;
     }
 
-    restartTimer();
-    setIsLoading(true);
+    setIsResending(true);
     setErrorMessage('');
 
     try {
       const normalizedPhone = normalizePhone(route.params?.number || '');
 
-      const response = await fetch(`${API_BASE_URL}/api/v1/auth/register`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/forgot-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -129,16 +133,17 @@ export const RegistrationCodeScreen = () => {
 
       const data = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Помилка відправки SMS коду');
       }
 
-      // Код відправлено успішно
-      // В development режимі код буде в консолі сервера
+      restartTimer();
     } catch (err) {
-      setErrorMessage(err.message || 'Помилка відправки SMS коду');
+      setErrorMessage(
+        err.message || 'Помилка відправки SMS. Спробуйте пізніше.',
+      );
     } finally {
-      setIsLoading(false);
+      setIsResending(false);
     }
   };
 
@@ -148,7 +153,7 @@ export const RegistrationCodeScreen = () => {
         <HeaderWithBackButton />
         <Text style={styles.headerTitle}>Введіть код з SMS</Text>
         <Text style={styles.contentTitle}>
-          За номером <Text>{route.params.number}</Text> відправлено SMS з кодом
+          За номером <Text style={styles.phoneNumber}>{route.params?.number}</Text> відправлено SMS з кодом
         </Text>
 
         <OTPInput code={code} setCode={setCode} length={6} />
@@ -157,9 +162,7 @@ export const RegistrationCodeScreen = () => {
           <Text style={styles.errorText}>{errorMessage}</Text>
         ) : null}
 
-        <SafeInfoButton
-          disabled={isDisabled || isLoading}
-          handleSubmit={handlePress}>
+        <SafeInfoButton disabled={isDisabled || isLoading} handleSubmit={handlePress}>
           {isLoading ? 'Перевірка...' : 'Далі'}
         </SafeInfoButton>
 
@@ -176,15 +179,15 @@ export const RegistrationCodeScreen = () => {
 
           <TouchableOpacity
             style={styles.sendMessageBtn}
-            disabled={sendBtnDisabled}
+            disabled={sendBtnDisabled || isResending}
             onPress={sendCode}>
             <Text
               style={[
                 styles.title,
                 styles.btnTitle,
-                sendBtnDisabled && styles.btnDisabled,
+                (sendBtnDisabled || isResending) && styles.btnDisabled,
               ]}>
-              Надіслати SMS з кодом
+              {isResending ? 'Відправка...' : 'Надіслати SMS з кодом'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -214,6 +217,10 @@ const styles = StyleSheet.create({
     color: '#D1D1D1',
     textAlign: 'center',
     marginTop: 20,
+  },
+  phoneNumber: {
+    fontWeight: '700',
+    color: 'white',
   },
   errorText: {
     color: '#FF5C5C',
@@ -248,3 +255,4 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
 });
+

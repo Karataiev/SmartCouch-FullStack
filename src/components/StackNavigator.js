@@ -20,6 +20,9 @@ import {LoginScreen} from '../screens/LoginScreen';
 import {RegistrationScreen} from '../screens/RegistrationScreen';
 import {RegistrationCodeScreen} from '../screens/RegistrationCodeScreen';
 import {CreatePasswordScreen} from '../screens/CreatePasswordScreen';
+import {ForgotPasswordScreen} from '../screens/ForgotPasswordScreen';
+import {ForgotPasswordCodeScreen} from '../screens/ForgotPasswordCodeScreen';
+import {ResetPasswordScreen} from '../screens/ResetPasswordScreen';
 import {ScheduledTrainingScreen} from '../screens/ScheduledTrainingScreen';
 
 export const StackNavigator = ({initialRouteName = 'Login'}) => {
@@ -36,6 +39,12 @@ export const StackNavigator = ({initialRouteName = 'Login'}) => {
         component={RegistrationCodeScreen}
       />
       <Stack.Screen name="CreatePassword" component={CreatePasswordScreen} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+      <Stack.Screen
+        name="ForgotPasswordCode"
+        component={ForgotPasswordCodeScreen}
+      />
+      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
       <Stack.Screen name="TabBar" component={TabNavigator} />
       <Stack.Screen name="MyData" component={MyDataScreen} />
       <Stack.Screen name="FullClientData" component={FullClientDataScreen} />

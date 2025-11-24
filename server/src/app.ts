@@ -9,6 +9,7 @@ import {
   bodySizeLimiter,
 } from './middleware/security.middleware';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
+import { authRoutes } from './routes';
 
 // Створюємо Express app
 const app: Express = express();
@@ -32,8 +33,8 @@ app.get('/health', (_req, res) => {
   });
 });
 
-// API routes (будуть додані пізніше)
-// app.use('/api/v1/auth', authRoutes);
+// API routes
+app.use('/api/v1/auth', authRoutes);
 // app.use('/api/v1/users', userRoutes);
 // app.use('/api/v1/clients', clientsRoutes);
 // app.use('/api/v1/programs', programsRoutes);

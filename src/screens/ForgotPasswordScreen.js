@@ -4,9 +4,10 @@ import {LayoutComponent} from '../components/LayoutComponent';
 import {CustomPhoneInput} from '../components/CustomPhoneInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {useNavigation} from '@react-navigation/native';
+
 import {API_BASE_URL} from '../config/api';
 
-export const RegistrationScreen = () => {
+export const ForgotPasswordScreen = () => {
   const navigation = useNavigation();
   const [number, setNumber] = useState('');
   const [isActiveSubmitBtn, setIsActiveSubmitBtn] = useState(false);
@@ -40,83 +41,39 @@ export const RegistrationScreen = () => {
 
     try {
       const normalizedPhone = normalizePhone(number);
-      const url = `${API_BASE_URL}/api/v1/auth/register`;
 
-      console.log('Registration request to:', url);
-      console.log('Phone:', normalizedPhone);
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${API_BASE_URL}/api/v1/auth/forgot-password`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            phone: normalizedPhone,
+          }),
         },
-        body: JSON.stringify({
-          phone: normalizedPhone,
-        }),
-      });
+      );
 
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
-
-      // Перевіряємо Content-Type перед парсингом JSON
-      const contentType = response.headers.get('content-type');
-      let data;
-
-      if (contentType && contentType.includes('application/json')) {
-        try {
-          const text = await response.text();
-          console.log('Response text:', text);
-          data = JSON.parse(text);
-        } catch (parseError) {
-          console.error('JSON parse error:', parseError);
-          throw new Error(
-            'Сервер повернув некоректну відповідь. Перевірте, чи сервер запущений.',
-          );
-        }
-      } else {
-        // Якщо відповідь не JSON, читаємо як текст
-        const text = await response.text();
-        console.error('Non-JSON response:', text);
-        throw new Error(
-          `Сервер повернув некоректну відповідь (статус: ${response.status}). Перевірте налаштування API.`,
-        );
-      }
+      const data = await response.json();
 
       if (!response.ok) {
-        // Спеціальна обробка помилки rate limiting (429)
-        if (response.status === 429) {
-          const retryAfter = response.headers.get('Retry-After');
-          const message = retryAfter
-            ? `Забагато спроб реєстрації. Спробуйте через ${retryAfter} секунд.`
-            : data.message ||
-              'Забагато спроб реєстрації. Спробуйте через годину.';
-          throw new Error(message);
-        }
         throw new Error(data.message || 'Помилка відправки SMS коду');
       }
 
       if (data.success) {
         // Перехід на екран введення коду
-        navigation.navigate('RegistrationCode', {
+        navigation.navigate('ForgotPasswordCode', {
           number: number,
-          code: data.code, // Код для тестування (тільки в development)
         });
       } else {
         setError(data.message || 'Помилка відправки SMS коду');
       }
     } catch (err) {
-      console.error('Registration error:', err);
-      if (err.message.includes('JSON')) {
-        setError(
-          'Помилка підключення до сервера. Перевірте, чи сервер запущений на ' +
-            API_BASE_URL,
-        );
-      } else {
-        setError(
-          err.message ||
-            "Помилка підключення до сервера. Перевірте інтернет-з'єднання.",
-        );
-      }
+      setError(
+        err.message ||
+          "Помилка підключення до сервера. Перевірте інтернет-з'єднання.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -125,9 +82,10 @@ export const RegistrationScreen = () => {
   return (
     <LayoutComponent>
       <View style={styles.container}>
-        <Text style={styles.headerTitle}>Вітаємо у SmartCoach</Text>
+        <Text style={styles.headerTitle}>Відновлення паролю</Text>
         <Text style={styles.contentTitle}>
-          Введіть ваш номер телефону та ми відравимо вам SMS з кодом
+          Введіть ваш номер телефону та ми відправимо вам SMS з кодом для
+          відновлення паролю
         </Text>
         <View style={styles.contentBlock}>
           <CustomPhoneInput
@@ -140,12 +98,12 @@ export const RegistrationScreen = () => {
           <SafeInfoButton
             handleSubmit={handleSubmit}
             disabled={!isActiveSubmitBtn || isLoading}>
-            {isLoading ? 'Відправка...' : 'Отримати SMS'}
+            {isLoading ? 'Відправка...' : 'Надіслати SMS'}
           </SafeInfoButton>
 
           <View style={styles.privacyPolicyBlock}>
             <Text style={styles.title}>
-              Натискаючи кнопку «Увійти», ви приймаєте умови
+              Натискаючи кнопку «Надіслати SMS», ви приймаєте умови
             </Text>
             <TouchableOpacity style={styles.privacyPolicyBtn}>
               <Text style={[styles.title, styles.btnTitle]}>
@@ -155,8 +113,8 @@ export const RegistrationScreen = () => {
           </View>
         </View>
 
-        <View style={styles.goToRegistrationBlock}>
-          <Text style={styles.title}>Зареєстровані?</Text>
+        <View style={styles.goToLoginBlock}>
+          <Text style={styles.title}>Згадали пароль?</Text>
           <TouchableOpacity
             style={styles.privacyPolicyBtn}
             onPress={() => goToScreen('Login')}>
@@ -210,7 +168,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 6,
   },
-  goToRegistrationBlock: {
+  goToLoginBlock: {
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',

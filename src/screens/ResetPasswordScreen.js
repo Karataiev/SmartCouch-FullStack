@@ -6,10 +6,10 @@ import {PasswordCustomInput} from '../components/PasswordCustomInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {API_BASE_URL} from '../config/api';
 
-export const CreatePasswordScreen = () => {
+export const ResetPasswordScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const [password, setPassword] = useState('');
@@ -44,7 +44,7 @@ export const CreatePasswordScreen = () => {
       return;
     }
 
-    // Якщо валідація пройдена - відправляємо на сервер
+    // Якщо валідація пройшла, відправляємо на сервер
     setIsLoading(true);
 
     try {
@@ -67,12 +67,7 @@ export const CreatePasswordScreen = () => {
         throw new Error(data.message || 'Помилка створення паролю');
       }
 
-      // Пароль успішно створено - очищаємо hasSeenOnboarding для нового користувача
-      // щоб після входу він побачив онбординг
-      await AsyncStorage.removeItem('hasSeenOnboarding');
-      
-      // Перехід на екран входу
-      setShowError(false);
+      // Пароль успішно оновлено - перехід на екран входу
       navigation.navigate('Login');
     } catch (err) {
       setApiError(
@@ -87,7 +82,7 @@ export const CreatePasswordScreen = () => {
     <LayoutComponent>
       <SafeAreaView style={styles.container}>
         <HeaderWithBackButton />
-        <Text style={styles.header}>Створіть пароль</Text>
+        <Text style={styles.header}>Створіть новий пароль</Text>
 
         <View style={styles.content}>
           <PasswordCustomInput
@@ -114,10 +109,8 @@ export const CreatePasswordScreen = () => {
         </View>
 
         <View style={styles.btnBlock}>
-          <SafeInfoButton
-            handleSubmit={handlePress}
-            disabled={isLoading}>
-            {isLoading ? 'Створення...' : 'Створити акаунт'}
+          <SafeInfoButton handleSubmit={handlePress} disabled={isLoading}>
+            {isLoading ? 'Збереження...' : 'Зберегти пароль'}
           </SafeInfoButton>
         </View>
       </SafeAreaView>
@@ -147,9 +140,10 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   errorText: {
-    color: 'red',
+    color: '#FF5C5C',
     fontSize: 13,
     marginTop: 4,
     marginBottom: 8,
   },
 });
+

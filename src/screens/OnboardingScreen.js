@@ -50,7 +50,7 @@ export const OnboardingScreen = () => {
 
   const finishOnboarding = async () => {
     await AsyncStorage.setItem('hasSeenOnboarding', 'true');
-    navigation.replace('Login');
+    navigation.replace('TabBar');
   };
 
   const renderItem = ({item}) => (

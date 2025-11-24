@@ -6,8 +6,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {OTPInput} from '../components/OTPInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {SafeAreaView} from 'react-native-safe-area-context';
-
-const mockedCode = ['1', '2', '3', '4'];
+import {API_BASE_URL} from '../config/api';
 
 export const RegistrationCodeScreen = () => {
   const route = useRoute();
@@ -18,19 +17,21 @@ export const RegistrationCodeScreen = () => {
   const [seconds, setSeconds] = useState(30);
   const [timerActive, setTimerActive] = useState(true);
   const [sendBtnDisabled, setSendBtnDisabled] = useState(true);
-  const [code, setCode] = useState(['', '', '', '']);
+  const [code, setCode] = useState(['', '', '', '', '', '']); // 6 цифр
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (code.includes('')) {
-      setIsDisabled(true);
-    } else {
-      setIsDisabled(false);
-    }
-    if (code.join('') === mockedCode.join('')) {
+    // Перевіряємо, чи всі 6 цифр введені
+    const isCodeComplete =
+      code.length === 6 &&
+      code.every(digit => digit !== '' && digit.trim() !== '');
+    setIsDisabled(!isCodeComplete);
+
+    if (errorMessage && isCodeComplete) {
       setErrorMessage('');
     }
-  }, [code]);
+  }, [code, errorMessage]);
 
   useEffect(() => {
     if (timerActive) {
@@ -60,18 +61,85 @@ export const RegistrationCodeScreen = () => {
     setSendBtnDisabled(true);
   };
 
-  const handlePress = () => {
-    if (code.join('') === mockedCode.join('')) {
-      setErrorMessage('');
-      navigation.navigate('CreatePassword');
-    } else {
-      setErrorMessage('Введено невірний код');
+  const normalizePhone = phone => {
+    return phone.replace(/[\s-]/g, '');
+  };
+
+  const handlePress = async () => {
+    if (isDisabled || isLoading) {
+      return;
+    }
+
+    setErrorMessage('');
+    setIsLoading(true);
+
+    try {
+      const normalizedPhone = normalizePhone(route.params?.number || '');
+      const codeString = code.join('');
+
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/verify-code`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone: normalizedPhone,
+          code: codeString,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Невірний код верифікації');
+      }
+
+      // Код валідний - перехід на екран створення паролю
+      navigation.navigate('CreatePassword', {
+        number: route.params?.number,
+      });
+    } catch (err) {
+      setErrorMessage(err.message || 'Невірний код верифікації');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const sendCode = () => {
+  const sendCode = async () => {
+    if (sendBtnDisabled) {
+      return;
+    }
+
     restartTimer();
-    // API виклик надсилання коду
+    setIsLoading(true);
+    setErrorMessage('');
+
+    try {
+      const normalizedPhone = normalizePhone(route.params?.number || '');
+
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone: normalizedPhone,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Помилка відправки SMS коду');
+      }
+
+      // Код відправлено успішно
+      // В development режимі код буде в консолі сервера
+    } catch (err) {
+      setErrorMessage(err.message || 'Помилка відправки SMS коду');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -83,14 +151,16 @@ export const RegistrationCodeScreen = () => {
           За номером <Text>{route.params.number}</Text> відправлено SMS з кодом
         </Text>
 
-        <OTPInput code={code} setCode={setCode} />
+        <OTPInput code={code} setCode={setCode} length={6} />
 
         {errorMessage ? (
           <Text style={styles.errorText}>{errorMessage}</Text>
         ) : null}
 
-        <SafeInfoButton disabled={isDisabled} handleSubmit={handlePress}>
-          Далі
+        <SafeInfoButton
+          disabled={isDisabled || isLoading}
+          handleSubmit={handlePress}>
+          {isLoading ? 'Перевірка...' : 'Далі'}
         </SafeInfoButton>
 
         <View style={styles.sendMessageBlock}>

@@ -1,0 +1,186 @@
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {LayoutComponent} from '../components/LayoutComponent';
+import {CustomPhoneInput} from '../components/CustomPhoneInput';
+import {SafeInfoButton} from '../components/SafeInfoButton';
+import {useNavigation} from '@react-navigation/native';
+
+import {API_BASE_URL} from '../config/api';
+
+export const ForgotPasswordScreen = () => {
+  const navigation = useNavigation();
+  const [number, setNumber] = useState('');
+  const [isActiveSubmitBtn, setIsActiveSubmitBtn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (number.length !== 17) {
+      setIsActiveSubmitBtn(false);
+    } else {
+      setIsActiveSubmitBtn(true);
+    }
+  }, [number]);
+
+  const goToScreen = screen => {
+    navigation.navigate(screen);
+  };
+
+  const normalizePhone = phone => {
+    // Видаляємо пробіли та дефіси для відправки на сервер
+    return phone.replace(/[\s-]/g, '');
+  };
+
+  const handleSubmit = async () => {
+    if (!isActiveSubmitBtn || isLoading) {
+      return;
+    }
+
+    setError('');
+    setIsLoading(true);
+
+    try {
+      const normalizedPhone = normalizePhone(number);
+
+      const response = await fetch(
+        `${API_BASE_URL}/api/v1/auth/forgot-password`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            phone: normalizedPhone,
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Помилка відправки SMS коду');
+      }
+
+      if (data.success) {
+        // Перехід на екран введення коду
+        navigation.navigate('ForgotPasswordCode', {
+          number: number,
+        });
+      } else {
+        setError(data.message || 'Помилка відправки SMS коду');
+      }
+    } catch (err) {
+      setError(
+        err.message ||
+          "Помилка підключення до сервера. Перевірте інтернет-з'єднання.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <LayoutComponent>
+      <View style={styles.container}>
+        <Text style={styles.headerTitle}>Відновлення паролю</Text>
+        <Text style={styles.contentTitle}>
+          Введіть ваш номер телефону та ми відправимо вам SMS з кодом для
+          відновлення паролю
+        </Text>
+        <View style={styles.contentBlock}>
+          <CustomPhoneInput
+            inputHeader={true}
+            placeholderTextColor={'white'}
+            number={number}
+            setNumber={setNumber}
+          />
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          <SafeInfoButton
+            handleSubmit={handleSubmit}
+            disabled={!isActiveSubmitBtn || isLoading}>
+            {isLoading ? 'Відправка...' : 'Надіслати SMS'}
+          </SafeInfoButton>
+
+          <View style={styles.privacyPolicyBlock}>
+            <Text style={styles.title}>
+              Натискаючи кнопку «Надіслати SMS», ви приймаєте умови
+            </Text>
+            <TouchableOpacity style={styles.privacyPolicyBtn}>
+              <Text style={[styles.title, styles.btnTitle]}>
+                Політики конфіденційності
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.goToLoginBlock}>
+          <Text style={styles.title}>Згадали пароль?</Text>
+          <TouchableOpacity
+            style={styles.privacyPolicyBtn}
+            onPress={() => goToScreen('Login')}>
+            <Text style={[styles.title, styles.btnTitle]}>Увійти</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </LayoutComponent>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 84,
+    marginHorizontal: 20,
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    lineHeight: 34,
+    color: 'white',
+  },
+  contentTitle: {
+    fontSize: 15,
+    fontWeight: '400',
+    lineHeight: 22,
+    color: '#D1D1D1',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  contentBlock: {
+    width: '100%',
+    marginTop: 40,
+  },
+  privacyPolicyBlock: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 15,
+    fontWeight: '400',
+    lineHeight: 22,
+    color: '#D1D1D1',
+  },
+  btnTitle: {color: '#3EB1CC', fontWeight: '700'},
+  privacyPolicyBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 6,
+  },
+  goToLoginBlock: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginTop: 'auto',
+    paddingBottom: 30,
+  },
+  errorText: {
+    color: '#FF5C5C',
+    fontSize: 14,
+    fontWeight: '500',
+    textAlign: 'center',
+    marginTop: 8,
+    marginBottom: 8,
+  },
+});

@@ -9,11 +9,15 @@ function App() {
   const [initialRoute, setInitialRoute] = useState(null);
 
   useEffect(() => {
-    const checkOnboarding = async () => {
-      const seen = await AsyncStorage.getItem('hasSeenOnboarding');
-      setInitialRoute(seen ? 'TabBar' : 'Onboarding');
+    const checkAuth = async () => {
+      const accessToken = await AsyncStorage.getItem('accessToken');
+      if (accessToken) {
+        setInitialRoute('TabBar');
+      } else {
+        setInitialRoute('Login');
+      }
     };
-    checkOnboarding();
+    checkAuth();
   }, []);
 
   if (!initialRoute) return null;

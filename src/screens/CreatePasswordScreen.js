@@ -4,30 +4,82 @@ import {LayoutComponent} from '../components/LayoutComponent';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {PasswordCustomInput} from '../components/PasswordCustomInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {API_BASE_URL} from '../config/api';
 
 export const CreatePasswordScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [repeatPasswordError, setRepeatPasswordError] = useState('');
   const [differentPasswordError, setDifferentPasswordError] = useState('');
   const [showError, setShowError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState('');
 
-  const handlePress = () => {
+  const normalizePhone = phone => {
+    return phone.replace(/[\s-]/g, '');
+  };
+
+  const handlePress = async () => {
+    setShowError(true);
+    setApiError('');
+
+    // Валідація на клієнті
     if (passwordError.length > 0) {
-      setShowError(true);
-    } else if (password !== repeatPassword) {
-      setShowError(true);
+      return;
+    }
+
+    if (password !== repeatPassword) {
       setDifferentPasswordError('Паролі не співпадають.');
-    } else if (password.length === 0 && repeatPassword.length === 0) {
-      setShowError(true);
+      return;
+    }
+
+    if (password.length === 0 && repeatPassword.length === 0) {
       setPasswordError('Придумайте пароль. Поля не можуть бути пустими.');
-    } else {
+      return;
+    }
+
+    // Якщо валідація пройдена - відправляємо на сервер
+    setIsLoading(true);
+
+    try {
+      const normalizedPhone = normalizePhone(route.params?.number || '');
+
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/create-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone: normalizedPhone,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Помилка створення паролю');
+      }
+
+      // Пароль успішно створено - очищаємо hasSeenOnboarding для нового користувача
+      // щоб після входу він побачив онбординг
+      await AsyncStorage.removeItem('hasSeenOnboarding');
+      
+      // Перехід на екран входу
       setShowError(false);
       navigation.navigate('Login');
+    } catch (err) {
+      setApiError(
+        err.message || 'Помилка підключення до сервера. Перевірте інтернет-з\'єднання.',
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -58,11 +110,14 @@ export const CreatePasswordScreen = () => {
           {showError && differentPasswordError ? (
             <Text style={styles.errorText}>{differentPasswordError}</Text>
           ) : null}
+          {apiError ? <Text style={styles.errorText}>{apiError}</Text> : null}
         </View>
 
         <View style={styles.btnBlock}>
-          <SafeInfoButton handleSubmit={handlePress}>
-            Створити акаунт
+          <SafeInfoButton
+            handleSubmit={handlePress}
+            disabled={isLoading}>
+            {isLoading ? 'Створення...' : 'Створити акаунт'}
           </SafeInfoButton>
         </View>
       </SafeAreaView>

@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TouchableOpacity, View, Platform} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {LayoutComponent} from '../components/LayoutComponent';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
@@ -103,7 +103,8 @@ export const ForgotPasswordCodeScreen = () => {
       }
     } catch (err) {
       setErrorMessage(
-        err.message || 'Помилка підключення до сервера. Перевірте інтернет-з\'єднання.',
+        err.message ||
+          "Помилка підключення до сервера. Перевірте інтернет-з'єднання.",
       );
     } finally {
       setIsLoading(false);
@@ -121,15 +122,18 @@ export const ForgotPasswordCodeScreen = () => {
     try {
       const normalizedPhone = normalizePhone(route.params?.number || '');
 
-      const response = await fetch(`${API_BASE_URL}/api/v1/auth/forgot-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${API_BASE_URL}/api/v1/auth/forgot-password`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            phone: normalizedPhone,
+          }),
         },
-        body: JSON.stringify({
-          phone: normalizedPhone,
-        }),
-      });
+      );
 
       const data = await response.json();
 
@@ -153,7 +157,9 @@ export const ForgotPasswordCodeScreen = () => {
         <HeaderWithBackButton />
         <Text style={styles.headerTitle}>Введіть код з SMS</Text>
         <Text style={styles.contentTitle}>
-          За номером <Text style={styles.phoneNumber}>{route.params?.number}</Text> відправлено SMS з кодом
+          За номером{' '}
+          <Text style={styles.phoneNumber}>{route.params?.number}</Text>{' '}
+          відправлено SMS з кодом
         </Text>
 
         <OTPInput code={code} setCode={setCode} length={6} />
@@ -162,7 +168,9 @@ export const ForgotPasswordCodeScreen = () => {
           <Text style={styles.errorText}>{errorMessage}</Text>
         ) : null}
 
-        <SafeInfoButton disabled={isDisabled || isLoading} handleSubmit={handlePress}>
+        <SafeInfoButton
+          disabled={isDisabled || isLoading}
+          handleSubmit={handlePress}>
           {isLoading ? 'Перевірка...' : 'Далі'}
         </SafeInfoButton>
 
@@ -255,4 +263,3 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
 });
-

@@ -6,17 +6,18 @@ import {createAsyncThunk} from '@reduxjs/toolkit';
 export const fetchClients = createAsyncThunk(
   'clients/fetchClients',
   async (_, {rejectWithValue}) => {
-    try {
-      // TODO: Замінити на реальний API запит
-      // const response = await fetch('/api/clients');
-      // if (!response.ok) throw new Error('Failed to fetch clients');
-      // return await response.json();
-      
-      // Заглушка для розробки
-      return [];
-    } catch (error) {
-      return rejectWithValue(error.message || 'Помилка завантаження клієнтів');
-    }
+    // TODO: Замінити на реальний API запит
+    // try {
+    //   const response = await fetch('/api/clients');
+    //   if (!response.ok) throw new Error('Failed to fetch clients');
+    //   return await response.json();
+    // } catch (error) {
+    //   return rejectWithValue(error.message || 'Помилка завантаження клієнтів');
+    // }
+
+    // Заглушка для розробки
+    // TODO: Замінити на реальний API запит
+    return [];
   },
 );
 
@@ -39,7 +40,7 @@ export const saveClient = createAsyncThunk(
       // });
       // if (!response.ok) throw new Error('Failed to save client');
       // return await response.json();
-      
+
       // Заглушка для розробки
       return clientData;
     } catch (error) {
@@ -67,7 +68,7 @@ export const updateClient = createAsyncThunk(
       // });
       // if (!response.ok) throw new Error('Failed to update client');
       // return await response.json();
-      
+
       // Заглушка для розробки
       return {id: clientId, ...clientData};
     } catch (error) {
@@ -93,7 +94,7 @@ export const deleteClient = createAsyncThunk(
       // });
       // if (!response.ok) throw new Error('Failed to delete client');
       // return clientId;
-      
+
       // Заглушка для розробки
       return clientId;
     } catch (error) {
@@ -101,7 +102,3 @@ export const deleteClient = createAsyncThunk(
     }
   },
 );
-
-
-
-

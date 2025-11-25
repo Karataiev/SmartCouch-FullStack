@@ -6,17 +6,20 @@ import {createAsyncThunk} from '@reduxjs/toolkit';
 export const fetchWorkoutPlans = createAsyncThunk(
   'workoutPlans/fetchWorkoutPlans',
   async (_, {rejectWithValue}) => {
-    try {
-      // TODO: Замінити на реальний API запит
-      // const response = await fetch('/api/workout-plans');
-      // if (!response.ok) throw new Error('Failed to fetch workout plans');
-      // return await response.json();
-      
-      // Заглушка для розробки
-      return [];
-    } catch (error) {
-      return rejectWithValue(error.message || 'Помилка завантаження планів тренувань');
-    }
+    // TODO: Замінити на реальний API запит
+    // try {
+    //   const response = await fetch('/api/workout-plans');
+    //   if (!response.ok) throw new Error('Failed to fetch workout plans');
+    //   return await response.json();
+    // } catch (error) {
+    //   return rejectWithValue(
+    //     error.message || 'Помилка завантаження планів тренувань',
+    //   );
+    // }
+
+    // Заглушка для розробки
+    // TODO: Замінити на реальний API запит
+    return [];
   },
 );
 
@@ -35,11 +38,13 @@ export const fetchWorkoutPlansByDate = createAsyncThunk(
       // const response = await fetch(`/api/workout-plans?date=${date}`);
       // if (!response.ok) throw new Error('Failed to fetch workout plans by date');
       // return await response.json();
-      
+
       // Заглушка для розробки
       return [];
     } catch (error) {
-      return rejectWithValue(error.message || 'Помилка завантаження планів тренувань');
+      return rejectWithValue(
+        error.message || 'Помилка завантаження планів тренувань',
+      );
     }
   },
 );
@@ -66,11 +71,13 @@ export const saveWorkoutPlan = createAsyncThunk(
       // });
       // if (!response.ok) throw new Error('Failed to save workout plan');
       // return await response.json();
-      
+
       // Заглушка для розробки
       return planData;
     } catch (error) {
-      return rejectWithValue(error.message || 'Помилка збереження плану тренування');
+      return rejectWithValue(
+        error.message || 'Помилка збереження плану тренування',
+      );
     }
   },
 );
@@ -94,11 +101,13 @@ export const updateWorkoutPlan = createAsyncThunk(
       // });
       // if (!response.ok) throw new Error('Failed to update workout plan');
       // return await response.json();
-      
+
       // Заглушка для розробки
       return {id: planId, ...planData};
     } catch (error) {
-      return rejectWithValue(error.message || 'Помилка оновлення плану тренування');
+      return rejectWithValue(
+        error.message || 'Помилка оновлення плану тренування',
+      );
     }
   },
 );
@@ -120,15 +129,13 @@ export const deleteWorkoutPlan = createAsyncThunk(
       // });
       // if (!response.ok) throw new Error('Failed to delete workout plan');
       // return planId;
-      
+
       // Заглушка для розробки
       return planId;
     } catch (error) {
-      return rejectWithValue(error.message || 'Помилка видалення плану тренування');
+      return rejectWithValue(
+        error.message || 'Помилка видалення плану тренування',
+      );
     }
   },
 );
-
-
-
-

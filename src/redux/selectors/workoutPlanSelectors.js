@@ -4,7 +4,8 @@ import {convertUkrDateToISO} from '../utils/dateUtils';
 
 const selectTrainingsEntities = trainingsSelectors.selectEntities;
 
-const selectAgendaState = state => state.app.agenda ?? {slotIds: [], slotsById: {}};
+const selectAgendaState = state =>
+  state.app.agenda ?? {slotIds: [], slotsById: {}};
 const selectIsoDate = (_, date) => date;
 
 export const selectAgendaByDate = createSelector(
@@ -44,7 +45,9 @@ export const selectAgendaByDate = createSelector(
               return trainingInstance;
             }
 
-            const isoDate = convertUkrDateToISO(trainingInstance.trainingDate?.date);
+            const isoDate = convertUkrDateToISO(
+              trainingInstance.trainingDate?.date,
+            );
             return isoDate === selectedDate ? trainingInstance : null;
           })
           .filter(Boolean);

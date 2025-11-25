@@ -105,13 +105,18 @@ export const LoginScreen = () => {
         await AsyncStorage.setItem('refreshToken', data.tokens.refresh);
       }
 
+      // Зберігаємо дані користувача в AsyncStorage для подальшого використання
+      if (data.user && data.user.phone) {
+        await AsyncStorage.setItem('userPhone', data.user.phone);
+      }
+
       // Перевіряємо, чи користувач вже бачив онбординг
       const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
-      
+
       // Якщо не бачив (null або не 'true') - показуємо онбординг, інакше - головний екран
       // Для нового користувача hasSeenOnboarding буде null, тому показуємо онбординг
       console.log('hasSeenOnboarding:', hasSeenOnboarding);
-      
+
       if (hasSeenOnboarding === 'true') {
         navigation.reset({
           index: 0,

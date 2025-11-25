@@ -9,7 +9,7 @@ import {
   bodySizeLimiter,
 } from './middleware/security.middleware';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
-import { authRoutes } from './routes';
+import { authRoutes, userRoutes, clientsRoutes, workoutPlansRoutes, programsRoutes } from './routes';
 
 // Створюємо Express app
 const app: Express = express();
@@ -35,10 +35,10 @@ app.get('/health', (_req, res) => {
 
 // API routes
 app.use('/api/v1/auth', authRoutes);
-// app.use('/api/v1/users', userRoutes);
-// app.use('/api/v1/clients', clientsRoutes);
-// app.use('/api/v1/programs', programsRoutes);
-// app.use('/api/v1/workout-plans', workoutPlansRoutes);
+app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/clients', clientsRoutes);
+app.use('/api/v1/workout-plans', workoutPlansRoutes);
+app.use('/api/v1/programs', programsRoutes);
 
 // Обробка 404
 app.use(notFoundHandler);

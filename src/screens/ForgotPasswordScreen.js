@@ -4,8 +4,7 @@ import {LayoutComponent} from '../components/LayoutComponent';
 import {CustomPhoneInput} from '../components/CustomPhoneInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {useNavigation} from '@react-navigation/native';
-
-import {API_BASE_URL} from '../config/api';
+import {authService} from '../services/api';
 
 export const ForgotPasswordScreen = () => {
   const navigation = useNavigation();
@@ -42,32 +41,15 @@ export const ForgotPasswordScreen = () => {
     try {
       const normalizedPhone = normalizePhone(number);
 
-      const response = await fetch(
-        `${API_BASE_URL}/api/v1/auth/forgot-password`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            phone: normalizedPhone,
-          }),
-        },
-      );
+      const response = await authService.forgotPassword(normalizedPhone);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Помилка відправки SMS коду');
-      }
-
-      if (data.success) {
+      if (response.success) {
         // Перехід на екран введення коду
         navigation.navigate('ForgotPasswordCode', {
           number: number,
         });
       } else {
-        setError(data.message || 'Помилка відправки SMS коду');
+        setError(response.message || 'Помилка відправки SMS коду');
       }
     } catch (err) {
       setError(

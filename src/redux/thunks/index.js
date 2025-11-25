@@ -13,7 +13,4 @@ export {
   deleteWorkoutPlan,
 } from './workoutPlansThunk';
 
-
-
-
-
+export {login, logout, fetchUserProfile, updateUserProfile} from './authThunk';

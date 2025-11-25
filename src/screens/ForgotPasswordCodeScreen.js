@@ -6,8 +6,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {OTPInput} from '../components/OTPInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {SafeAreaView} from 'react-native-safe-area-context';
-
-import {API_BASE_URL} from '../config/api';
+import {authService} from '../services/api';
 
 export const ForgotPasswordCodeScreen = () => {
   const route = useRoute();
@@ -76,30 +75,18 @@ export const ForgotPasswordCodeScreen = () => {
       const normalizedPhone = normalizePhone(route.params?.number || '');
       const codeString = code.join('');
 
-      const response = await fetch(`${API_BASE_URL}/api/v1/auth/verify-code`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          phone: normalizedPhone,
-          code: codeString,
-        }),
-      });
+      const response = await authService.verifyCode(
+        normalizedPhone,
+        codeString,
+      );
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Невірний код верифікації');
-      }
-
-      if (data.verified) {
+      if (response.success && response.verified) {
         // Перехід на екран створення нового паролю
         navigation.navigate('ResetPassword', {
           number: route.params?.number,
         });
       } else {
-        setErrorMessage('Помилка верифікації коду');
+        throw new Error(response.message || 'Невірний код верифікації');
       }
     } catch (err) {
       setErrorMessage(
@@ -122,24 +109,7 @@ export const ForgotPasswordCodeScreen = () => {
     try {
       const normalizedPhone = normalizePhone(route.params?.number || '');
 
-      const response = await fetch(
-        `${API_BASE_URL}/api/v1/auth/forgot-password`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            phone: normalizedPhone,
-          }),
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Помилка відправки SMS коду');
-      }
+      await authService.forgotPassword(normalizedPhone);
 
       restartTimer();
     } catch (err) {

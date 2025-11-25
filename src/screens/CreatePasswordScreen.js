@@ -7,7 +7,7 @@ import {SafeInfoButton} from '../components/SafeInfoButton';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API_BASE_URL} from '../config/api';
+import {authService} from '../services/api';
 
 export const CreatePasswordScreen = () => {
   const navigation = useNavigation();
@@ -50,33 +50,26 @@ export const CreatePasswordScreen = () => {
     try {
       const normalizedPhone = normalizePhone(route.params?.number || '');
 
-      const response = await fetch(`${API_BASE_URL}/api/v1/auth/create-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          phone: normalizedPhone,
-          password: password,
-        }),
-      });
+      const response = await authService.createPassword(
+        normalizedPhone,
+        password,
+      );
 
-      const data = await response.json();
+      if (response.success) {
+        // Пароль успішно створено - очищаємо hasSeenOnboarding для нового користувача
+        // щоб після входу він побачив онбординг
+        await AsyncStorage.removeItem('hasSeenOnboarding');
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Помилка створення паролю');
+        // Перехід на екран входу
+        setShowError(false);
+        navigation.navigate('Login');
+      } else {
+        throw new Error(response.message || 'Помилка створення паролю');
       }
-
-      // Пароль успішно створено - очищаємо hasSeenOnboarding для нового користувача
-      // щоб після входу він побачив онбординг
-      await AsyncStorage.removeItem('hasSeenOnboarding');
-      
-      // Перехід на екран входу
-      setShowError(false);
-      navigation.navigate('Login');
     } catch (err) {
       setApiError(
-        err.message || 'Помилка підключення до сервера. Перевірте інтернет-з\'єднання.',
+        err.message ||
+          "Помилка підключення до сервера. Перевірте інтернет-з'єднання.",
       );
     } finally {
       setIsLoading(false);
@@ -114,9 +107,7 @@ export const CreatePasswordScreen = () => {
         </View>
 
         <View style={styles.btnBlock}>
-          <SafeInfoButton
-            handleSubmit={handlePress}
-            disabled={isLoading}>
+          <SafeInfoButton handleSubmit={handlePress} disabled={isLoading}>
             {isLoading ? 'Створення...' : 'Створити акаунт'}
           </SafeInfoButton>
         </View>

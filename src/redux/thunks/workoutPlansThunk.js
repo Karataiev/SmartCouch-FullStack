@@ -1,25 +1,24 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
+import {workoutPlansService} from '../../services/api';
+import {transformIdsDeep} from '../../utils/dataTransform';
 
 /**
  * Завантажує список планів тренувань з бекенду
  */
 export const fetchWorkoutPlans = createAsyncThunk(
   'workoutPlans/fetchWorkoutPlans',
-  async (_, {rejectWithValue}) => {
-    // TODO: Замінити на реальний API запит
-    // try {
-    //   const response = await fetch('/api/workout-plans');
-    //   if (!response.ok) throw new Error('Failed to fetch workout plans');
-    //   return await response.json();
-    // } catch (error) {
-    //   return rejectWithValue(
-    //     error.message || 'Помилка завантаження планів тренувань',
-    //   );
-    // }
-
-    // Заглушка для розробки
-    // TODO: Замінити на реальний API запит
-    return [];
+  async (params = {}, {rejectWithValue}) => {
+    try {
+      const response = await workoutPlansService.getWorkoutPlans(params);
+      // Бекенд повертає { success: true, data: { workoutPlans: [...], pagination: {...} } }
+      const workoutPlans = response.data?.workoutPlans || [];
+      // Трансформуємо _id в id
+      return transformIdsDeep(workoutPlans);
+    } catch (error) {
+      return rejectWithValue(
+        error.message || 'Помилка завантаження планів тренувань',
+      );
+    }
   },
 );
 
@@ -34,13 +33,9 @@ export const fetchWorkoutPlansByDate = createAsyncThunk(
         throw new Error('Невалідна дата');
       }
 
-      // TODO: Замінити на реальний API запит
-      // const response = await fetch(`/api/workout-plans?date=${date}`);
-      // if (!response.ok) throw new Error('Failed to fetch workout plans by date');
-      // return await response.json();
-
-      // Заглушка для розробки
-      return [];
+      const response = await workoutPlansService.getWorkoutPlans({date});
+      // Бекенд повертає { success: true, data: { workoutPlans: [...], pagination: {...} } }
+      return response.data?.workoutPlans || [];
     } catch (error) {
       return rejectWithValue(
         error.message || 'Помилка завантаження планів тренувань',
@@ -63,17 +58,10 @@ export const saveWorkoutPlan = createAsyncThunk(
         throw new Error('Відсутня дата тренування');
       }
 
-      // TODO: Замінити на реальний API запит
-      // const response = await fetch('/api/workout-plans', {
-      //   method: 'POST',
-      //   headers: {'Content-Type': 'application/json'},
-      //   body: JSON.stringify(planData),
-      // });
-      // if (!response.ok) throw new Error('Failed to save workout plan');
-      // return await response.json();
-
-      // Заглушка для розробки
-      return planData;
+      const response = await workoutPlansService.createWorkoutPlan(planData);
+      // Бекенд повертає { success: true, message: '...', data: workoutPlan }
+      // Трансформуємо _id в id
+      return transformIdsDeep(response.data);
     } catch (error) {
       return rejectWithValue(
         error.message || 'Помилка збереження плану тренування',
@@ -93,17 +81,13 @@ export const updateWorkoutPlan = createAsyncThunk(
         throw new Error('Невалідні дані для оновлення');
       }
 
-      // TODO: Замінити на реальний API запит
-      // const response = await fetch(`/api/workout-plans/${planId}`, {
-      //   method: 'PUT',
-      //   headers: {'Content-Type': 'application/json'},
-      //   body: JSON.stringify(planData),
-      // });
-      // if (!response.ok) throw new Error('Failed to update workout plan');
-      // return await response.json();
-
-      // Заглушка для розробки
-      return {id: planId, ...planData};
+      const response = await workoutPlansService.updateWorkoutPlan(
+        planId,
+        planData,
+      );
+      // Бекенд повертає { success: true, message: '...', data: workoutPlan }
+      // Трансформуємо _id в id
+      return transformIdsDeep(response.data);
     } catch (error) {
       return rejectWithValue(
         error.message || 'Помилка оновлення плану тренування',
@@ -123,14 +107,8 @@ export const deleteWorkoutPlan = createAsyncThunk(
         throw new Error('Невалідний ID плану тренування');
       }
 
-      // TODO: Замінити на реальний API запит
-      // const response = await fetch(`/api/workout-plans/${planId}`, {
-      //   method: 'DELETE',
-      // });
-      // if (!response.ok) throw new Error('Failed to delete workout plan');
-      // return planId;
-
-      // Заглушка для розробки
+      await workoutPlansService.deleteWorkoutPlan(planId);
+      // Бекенд повертає { success: true, message: '...' }
       return planId;
     } catch (error) {
       return rejectWithValue(

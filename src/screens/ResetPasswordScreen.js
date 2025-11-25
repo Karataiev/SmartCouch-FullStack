@@ -6,8 +6,7 @@ import {PasswordCustomInput} from '../components/PasswordCustomInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-
-import {API_BASE_URL} from '../config/api';
+import {authService} from '../services/api';
 
 export const ResetPasswordScreen = () => {
   const navigation = useNavigation();
@@ -50,28 +49,21 @@ export const ResetPasswordScreen = () => {
     try {
       const normalizedPhone = normalizePhone(route.params?.number || '');
 
-      const response = await fetch(`${API_BASE_URL}/api/v1/auth/create-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          phone: normalizedPhone,
-          password: password,
-        }),
-      });
+      const response = await authService.createPassword(
+        normalizedPhone,
+        password,
+      );
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Помилка створення паролю');
+      if (response.success) {
+        // Пароль успішно оновлено - перехід на екран входу
+        navigation.navigate('Login');
+      } else {
+        throw new Error(response.message || 'Помилка створення паролю');
       }
-
-      // Пароль успішно оновлено - перехід на екран входу
-      navigation.navigate('Login');
     } catch (err) {
       setApiError(
-        err.message || 'Помилка підключення до сервера. Перевірте інтернет-з\'єднання.',
+        err.message ||
+          "Помилка підключення до сервера. Перевірте інтернет-з'єднання.",
       );
     } finally {
       setIsLoading(false);
@@ -146,4 +138,3 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 });
-

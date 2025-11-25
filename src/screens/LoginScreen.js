@@ -12,13 +12,17 @@ import {CustomPhoneInput} from '../components/CustomPhoneInput';
 import {PasswordCustomInput} from '../components/PasswordCustomInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {useNavigation} from '@react-navigation/native';
-import {API_BASE_URL} from '../config/api';
+import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {login, fetchUserProfile} from '../redux/thunks/authThunk';
+import {fetchClients} from '../redux/thunks/clientsThunk';
+import {fetchWorkoutPlans} from '../redux/thunks/workoutPlansThunk';
 
 const {width, height} = Dimensions.get('window');
 
 export const LoginScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [number, setNumber] = useState('');
   const [password, setPassword] = useState('');
   const [isDisabled, setIsDisabled] = useState(true);
@@ -47,75 +51,27 @@ export const LoginScreen = () => {
 
     try {
       const normalizedPhone = normalizePhone(number);
-      const url = `${API_BASE_URL}/api/v1/auth/login`;
 
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          phone: normalizedPhone,
-          password: password,
-        }),
-      });
+      // Використовуємо Redux thunk для логіну
+      await dispatch(login({phone: normalizedPhone, password})).unwrap();
 
-      // Перевіряємо Content-Type перед парсингом JSON
-      const contentType = response.headers.get('content-type');
-      let data;
+      // Після успішного логіну синхронізуємо дані з сервера
+      try {
+        // Завантажуємо профіль користувача
+        await dispatch(fetchUserProfile()).unwrap();
 
-      if (contentType && contentType.includes('application/json')) {
-        try {
-          const text = await response.text();
-          data = JSON.parse(text);
-        } catch (parseError) {
-          console.error('JSON parse error:', parseError);
-          throw new Error(
-            'Сервер повернув некоректну відповідь. Перевірте, чи сервер запущений.',
-          );
-        }
-      } else {
-        // Якщо відповідь не JSON, читаємо як текст
-        const text = await response.text();
-        console.error('Non-JSON response:', text);
-        throw new Error(
-          `Сервер повернув некоректну відповідь (статус: ${response.status}). Перевірте налаштування API.`,
-        );
-      }
+        // Завантажуємо клієнтів
+        await dispatch(fetchClients()).unwrap();
 
-      if (!response.ok) {
-        // Спеціальна обробка помилки rate limiting (429)
-        if (response.status === 429) {
-          const retryAfter = response.headers.get('Retry-After');
-          const message = retryAfter
-            ? `Забагато спроб входу. Спробуйте через ${retryAfter} секунд.`
-            : data.message || 'Забагато спроб входу. Спробуйте пізніше.';
-          throw new Error(message);
-        }
-        throw new Error(data.message || 'Невірний номер телефону або пароль');
-      }
-
-      if (!data.success) {
-        throw new Error(data.message || 'Невірний номер телефону або пароль');
-      }
-
-      // Зберігаємо токени
-      if (data.tokens) {
-        await AsyncStorage.setItem('accessToken', data.tokens.access);
-        await AsyncStorage.setItem('refreshToken', data.tokens.refresh);
-      }
-
-      // Зберігаємо дані користувача в AsyncStorage для подальшого використання
-      if (data.user && data.user.phone) {
-        await AsyncStorage.setItem('userPhone', data.user.phone);
+        // Завантажуємо плани тренувань
+        await dispatch(fetchWorkoutPlans()).unwrap();
+      } catch (syncError) {
+        console.error('Помилка синхронізації даних:', syncError);
+        // Продовжуємо навіть якщо синхронізація не вдалася
       }
 
       // Перевіряємо, чи користувач вже бачив онбординг
       const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
-
-      // Якщо не бачив (null або не 'true') - показуємо онбординг, інакше - головний екран
-      // Для нового користувача hasSeenOnboarding буде null, тому показуємо онбординг
-      console.log('hasSeenOnboarding:', hasSeenOnboarding);
 
       if (hasSeenOnboarding === 'true') {
         navigation.reset({
@@ -131,17 +87,10 @@ export const LoginScreen = () => {
       }
     } catch (err) {
       console.error('Login error:', err);
-      if (err.message.includes('JSON')) {
-        setAuthError(
-          'Помилка підключення до сервера. Перевірте, чи сервер запущений на ' +
-            API_BASE_URL,
-        );
-      } else {
-        setAuthError(
-          err.message ||
-            'Невірні дані користувача. Перевірте правильність логіну та паролю',
-        );
-      }
+      setAuthError(
+        err.message ||
+          'Невірні дані користувача. Перевірте правильність логіну та паролю',
+      );
     } finally {
       setIsLoading(false);
     }

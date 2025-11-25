@@ -1,23 +1,22 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
+import {clientsService} from '../../services/api';
+import {transformIdsDeep} from '../../utils/dataTransform';
 
 /**
  * Завантажує список клієнтів з бекенду
  */
 export const fetchClients = createAsyncThunk(
   'clients/fetchClients',
-  async (_, {rejectWithValue}) => {
-    // TODO: Замінити на реальний API запит
-    // try {
-    //   const response = await fetch('/api/clients');
-    //   if (!response.ok) throw new Error('Failed to fetch clients');
-    //   return await response.json();
-    // } catch (error) {
-    //   return rejectWithValue(error.message || 'Помилка завантаження клієнтів');
-    // }
-
-    // Заглушка для розробки
-    // TODO: Замінити на реальний API запит
-    return [];
+  async (params = {}, {rejectWithValue}) => {
+    try {
+      const response = await clientsService.getClients(params);
+      // Бекенд повертає { success: true, data: { clients: [...], pagination: {...} } }
+      const clients = response.data?.clients || [];
+      // Трансформуємо _id в id
+      return transformIdsDeep(clients);
+    } catch (error) {
+      return rejectWithValue(error.message || 'Помилка завантаження клієнтів');
+    }
   },
 );
 
@@ -32,17 +31,10 @@ export const saveClient = createAsyncThunk(
         throw new Error('Невалідні дані клієнта');
       }
 
-      // TODO: Замінити на реальний API запит
-      // const response = await fetch('/api/clients', {
-      //   method: 'POST',
-      //   headers: {'Content-Type': 'application/json'},
-      //   body: JSON.stringify(clientData),
-      // });
-      // if (!response.ok) throw new Error('Failed to save client');
-      // return await response.json();
-
-      // Заглушка для розробки
-      return clientData;
+      const response = await clientsService.createClient(clientData);
+      // Бекенд повертає { success: true, message: '...', data: client }
+      // Трансформуємо _id в id
+      return transformIdsDeep(response.data);
     } catch (error) {
       return rejectWithValue(error.message || 'Помилка збереження клієнта');
     }
@@ -60,17 +52,10 @@ export const updateClient = createAsyncThunk(
         throw new Error('Невалідні дані для оновлення');
       }
 
-      // TODO: Замінити на реальний API запит
-      // const response = await fetch(`/api/clients/${clientId}`, {
-      //   method: 'PUT',
-      //   headers: {'Content-Type': 'application/json'},
-      //   body: JSON.stringify(clientData),
-      // });
-      // if (!response.ok) throw new Error('Failed to update client');
-      // return await response.json();
-
-      // Заглушка для розробки
-      return {id: clientId, ...clientData};
+      const response = await clientsService.updateClient(clientId, clientData);
+      // Бекенд повертає { success: true, message: '...', data: client }
+      // Трансформуємо _id в id
+      return transformIdsDeep(response.data);
     } catch (error) {
       return rejectWithValue(error.message || 'Помилка оновлення клієнта');
     }
@@ -88,14 +73,8 @@ export const deleteClient = createAsyncThunk(
         throw new Error('Невалідний ID клієнта');
       }
 
-      // TODO: Замінити на реальний API запит
-      // const response = await fetch(`/api/clients/${clientId}`, {
-      //   method: 'DELETE',
-      // });
-      // if (!response.ok) throw new Error('Failed to delete client');
-      // return clientId;
-
-      // Заглушка для розробки
+      await clientsService.deleteClient(clientId);
+      // Бекенд повертає { success: true, message: '...' }
       return clientId;
     } catch (error) {
       return rejectWithValue(error.message || 'Помилка видалення клієнта');

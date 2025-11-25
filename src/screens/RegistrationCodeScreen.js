@@ -6,7 +6,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {OTPInput} from '../components/OTPInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {API_BASE_URL} from '../config/api';
+import {authService} from '../services/api';
 
 export const RegistrationCodeScreen = () => {
   const route = useRoute();
@@ -77,27 +77,19 @@ export const RegistrationCodeScreen = () => {
       const normalizedPhone = normalizePhone(route.params?.number || '');
       const codeString = code.join('');
 
-      const response = await fetch(`${API_BASE_URL}/api/v1/auth/verify-code`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          phone: normalizedPhone,
-          code: codeString,
-        }),
-      });
+      const response = await authService.verifyCode(
+        normalizedPhone,
+        codeString,
+      );
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Невірний код верифікації');
+      if (response.success) {
+        // Код валідний - перехід на екран створення паролю
+        navigation.navigate('CreatePassword', {
+          number: route.params?.number,
+        });
+      } else {
+        throw new Error(response.message || 'Невірний код верифікації');
       }
-
-      // Код валідний - перехід на екран створення паролю
-      navigation.navigate('CreatePassword', {
-        number: route.params?.number,
-      });
     } catch (err) {
       setErrorMessage(err.message || 'Невірний код верифікації');
     } finally {
@@ -117,21 +109,7 @@ export const RegistrationCodeScreen = () => {
     try {
       const normalizedPhone = normalizePhone(route.params?.number || '');
 
-      const response = await fetch(`${API_BASE_URL}/api/v1/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          phone: normalizedPhone,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Помилка відправки SMS коду');
-      }
+      await authService.register(normalizedPhone);
 
       // Код відправлено успішно
       // В development режимі код буде в консолі сервера

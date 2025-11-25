@@ -6,7 +6,7 @@ import {SafeInfoButton} from './SafeInfoButton';
 import {saveUserData} from '../redux/action';
 import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API_BASE_URL} from '../config/api';
+import {fetchUserProfile, updateUserProfile} from '../redux/thunks/authThunk';
 
 export const MyDataComponent = ({navigation}) => {
   const userData = useSelector(state => state.app.userData);
@@ -43,52 +43,31 @@ export const MyDataComponent = ({navigation}) => {
           return;
         }
 
-        const response = await fetch(`${API_BASE_URL}/api/v1/user/profile`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        // Використовуємо Redux thunk для завантаження профілю
+        const userProfile = await dispatch(fetchUserProfile()).unwrap();
 
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success && data.data) {
-            const userProfile = data.data;
-            // Оновлюємо локальний стан з даними з сервера
-            setName(userProfile.name || '');
-            setSurname(userProfile.surname || '');
-            setNumber(userProfile.phone || ''); // Номер телефону з сервера
-            setEmail(userProfile.email || '');
-            setBirthday(userProfile.birthday || '');
-            setExperience(userProfile.experience || '');
-            setCity(userProfile.city || '');
+        if (userProfile) {
+          // Оновлюємо локальний стан з даними з сервера
+          setName(userProfile.name || '');
+          setSurname(userProfile.surname || '');
+          setNumber(userProfile.phone || ''); // Номер телефону з сервера
+          setEmail(userProfile.email || '');
+          setBirthday(userProfile.birthday || '');
+          setExperience(userProfile.experience || '');
+          setCity(userProfile.city || '');
 
-            // Зберігаємо дані в Redux store
-            dispatch(
-              saveUserData({
-                name: userProfile.name || '',
-                surname: userProfile.surname || '',
-                number: userProfile.phone || '', // Номер телефону з сервера
-                email: userProfile.email || '',
-                birthday: userProfile.birthday || '',
-                experience: userProfile.experience || '',
-                city: userProfile.city || '',
-              }),
-            );
-          }
-        } else {
-          // Якщо запит не вдався, спробуємо завантажити номер телефону з AsyncStorage
-          const savedPhone = await AsyncStorage.getItem('userPhone');
-          if (savedPhone && !number) {
-            setNumber(savedPhone);
-            dispatch(
-              saveUserData({
-                ...userData,
-                number: savedPhone,
-              }),
-            );
-          }
+          // Зберігаємо дані в Redux store
+          dispatch(
+            saveUserData({
+              name: userProfile.name || '',
+              surname: userProfile.surname || '',
+              number: userProfile.phone || '', // Номер телефону з сервера
+              email: userProfile.email || '',
+              birthday: userProfile.birthday || '',
+              experience: userProfile.experience || '',
+              city: userProfile.city || '',
+            }),
+          );
         }
       } catch (error) {
         console.error('Помилка завантаження даних користувача:', error);
@@ -139,12 +118,6 @@ export const MyDataComponent = ({navigation}) => {
   const handleSubmit = async () => {
     if (isActiveSubmitBtn) {
       try {
-        const accessToken = await AsyncStorage.getItem('accessToken');
-        if (!accessToken) {
-          console.error('Токен доступу не знайдено');
-          return;
-        }
-
         // Форматування дати для сервера (якщо потрібно)
         let formattedBirthday = birthday;
         if (birthday) {
@@ -152,13 +125,9 @@ export const MyDataComponent = ({navigation}) => {
           // Якщо потрібно конвертувати, додайте логіку тут
         }
 
-        const response = await fetch(`${API_BASE_URL}/api/v1/user/profile`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({
+        // Використовуємо Redux thunk для оновлення профілю
+        const updatedProfile = await dispatch(
+          updateUserProfile({
             name: name || '',
             surname: surname || '',
             email: email || '',
@@ -166,29 +135,23 @@ export const MyDataComponent = ({navigation}) => {
             experience: experience || '',
             city: city || '',
           }),
-        });
+        ).unwrap();
 
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success) {
-            // Зберігаємо дані в Redux store (номер телефону не змінюється через API)
-            dispatch(
-              saveUserData({
-                name: name,
-                surname: surname,
-                number: number, // Номер телефону залишається незмінним
-                email: email,
-                birthday: birthday,
-                experience: experience,
-                city: city,
-              }),
-            );
+        if (updatedProfile) {
+          // Зберігаємо дані в Redux store (номер телефону не змінюється через API)
+          dispatch(
+            saveUserData({
+              name: name,
+              surname: surname,
+              number: number, // Номер телефону залишається незмінним
+              email: email,
+              birthday: birthday,
+              experience: experience,
+              city: city,
+            }),
+          );
 
-            navigation.goBack();
-          }
-        } else {
-          const errorData = await response.json();
-          console.error('Помилка оновлення профілю:', errorData.message);
+          navigation.goBack();
         }
       } catch (error) {
         console.error('Помилка збереження даних:', error);

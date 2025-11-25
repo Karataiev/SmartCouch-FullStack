@@ -21,6 +21,12 @@ import {
   updateWorkoutPlan,
   deleteWorkoutPlan,
 } from '../thunks/workoutPlansThunk';
+import {
+  login,
+  logout,
+  fetchUserProfile,
+  updateUserProfile,
+} from '../thunks/authThunk';
 
 const clientsAdapter = createEntityAdapter();
 const trainingsAdapter = createEntityAdapter();
@@ -157,7 +163,11 @@ const appSlice = createSlice({
         return;
       }
 
-      detachOccurrencesFromAgenda(state.agenda, trainingId, removedOccurrenceIds);
+      detachOccurrencesFromAgenda(
+        state.agenda,
+        trainingId,
+        removedOccurrenceIds,
+      );
 
       if (!updatedTraining?.occurrences?.length) {
         trainingsAdapter.removeOne(state.trainings, trainingId);
@@ -177,6 +187,34 @@ const appSlice = createSlice({
       }
       detachTrainingFromAgenda(state.agenda, training);
       trainingsAdapter.removeOne(state.trainings, trainingId);
+    },
+    /**
+     * Очищає всі дані користувача при логауті
+     */
+    clearAllUserData: state => {
+      // Очищаємо клієнтів
+      clientsAdapter.removeAll(state.clients);
+      // Очищаємо тренування
+      trainingsAdapter.removeAll(state.trainings);
+      // Очищаємо agenda
+      state.agenda = buildAgendaState(agendaData);
+      // Очищаємо дані користувача
+      state.userData = {
+        name: '',
+        surname: '',
+        number: '',
+        email: '',
+        birthday: '',
+        experience: '',
+        city: '',
+      };
+      // Очищаємо програми
+      state.programs = [];
+      // Очищаємо помилки та завантаження
+      state.loading.clients = false;
+      state.loading.workoutPlans = false;
+      state.error.clients = null;
+      state.error.workoutPlans = null;
     },
   },
   extraReducers: builder => {
@@ -348,6 +386,74 @@ const appSlice = createSlice({
         state.error.workoutPlans =
           action.payload || 'Помилка видалення плану тренування';
       });
+
+    // Auth thunks
+    builder
+      .addCase(login.fulfilled, (state, action) => {
+        // Після успішного логіну зберігаємо дані користувача
+        if (action.payload?.user) {
+          const user = action.payload.user;
+          state.userData = {
+            name: user.name || '',
+            surname: user.surname || '',
+            number: user.phone || '',
+            email: user.email || '',
+            birthday: user.birthday || '',
+            experience: user.experience || '',
+            city: user.city || '',
+          };
+        }
+      })
+      .addCase(logout.fulfilled, state => {
+        // Очищаємо всі дані користувача при логауті
+        clientsAdapter.removeAll(state.clients);
+        trainingsAdapter.removeAll(state.trainings);
+        state.agenda = buildAgendaState(agendaData);
+        state.userData = {
+          name: '',
+          surname: '',
+          number: '',
+          email: '',
+          birthday: '',
+          experience: '',
+          city: '',
+        };
+        state.programs = [];
+        state.loading.clients = false;
+        state.loading.workoutPlans = false;
+        state.error.clients = null;
+        state.error.workoutPlans = null;
+      })
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        // Оновлюємо дані користувача після завантаження профілю
+        if (action.payload) {
+          const user = action.payload;
+          state.userData = {
+            name: user.name || '',
+            surname: user.surname || '',
+            number: user.phone || '',
+            email: user.email || '',
+            birthday: user.birthday || '',
+            experience: user.experience || '',
+            city: user.city || '',
+          };
+        }
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        // Оновлюємо дані користувача після оновлення профілю
+        if (action.payload) {
+          const user = action.payload;
+          state.userData = {
+            name: user.name || '',
+            surname: user.surname || '',
+            number: user.phone || '',
+            email: user.email || '',
+            birthday: user.birthday || '',
+            experience: user.experience || '',
+            city: user.city || '',
+          };
+        }
+      });
   },
 });
 
@@ -358,5 +464,5 @@ const selectClientsState = state => state.app.clients;
 const selectTrainingsState = state => state.app.trainings;
 
 export const clientsSelectors = clientsAdapter.getSelectors(selectClientsState);
-export const trainingsSelectors = trainingsAdapter.getSelectors(selectTrainingsState);
-
+export const trainingsSelectors =
+  trainingsAdapter.getSelectors(selectTrainingsState);

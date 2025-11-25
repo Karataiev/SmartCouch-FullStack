@@ -3,19 +3,26 @@ import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 import {ProfileHeaderComponent} from '../components/ProfileHeaderComponent';
 import {ProfileMenuComponent} from '../components/ProfileMenuComponent';
 import {LayoutComponent} from '../components/LayoutComponent';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch} from 'react-redux';
+import {logout} from '../redux/thunks/authThunk';
 
 export const ProfileTabScreen = ({navigation}) => {
+  const dispatch = useDispatch();
+
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem('accessToken');
-      await AsyncStorage.removeItem('refreshToken');
+      await dispatch(logout()).unwrap();
       navigation.reset({
         index: 0,
         routes: [{name: 'Login'}],
       });
     } catch (error) {
       console.error('Помилка при виході:', error);
+      // Навіть якщо помилка, перенаправляємо на логін
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Login'}],
+      });
     }
   };
 

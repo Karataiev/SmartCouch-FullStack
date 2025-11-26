@@ -86,7 +86,6 @@ export const LoginScreen = () => {
         });
       }
     } catch (err) {
-      console.error('Login error:', err);
       setAuthError(
         err.message ||
           'Невірні дані користувача. Перевірте правильність логіну та паролю',

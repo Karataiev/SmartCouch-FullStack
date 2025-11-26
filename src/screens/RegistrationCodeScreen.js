@@ -20,6 +20,8 @@ export const RegistrationCodeScreen = () => {
   const [code, setCode] = useState(['', '', '', '', '', '']); // 6 цифр
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [oldCode, setOldCode] = useState(null); // Зберігаємо старий код після повторного відправлення
+  const previousCodeRef = useRef(''); // Відстежуємо попередній код для виявлення змін
 
   useEffect(() => {
     // Перевіряємо, чи всі 6 цифр введені
@@ -28,10 +30,25 @@ export const RegistrationCodeScreen = () => {
       code.every(digit => digit !== '' && digit.trim() !== '');
     setIsDisabled(!isCodeComplete);
 
-    if (errorMessage && isCodeComplete) {
+    const codeString = code.join('');
+
+    // Очищаємо помилку тільки коли користувач починає вводити новий код після помилки
+    // (коли код змінюється від порожнього до не порожнього після помилки)
+    if (
+      errorMessage &&
+      previousCodeRef.current === '' &&
+      codeString.length > 0
+    ) {
       setErrorMessage('');
     }
-  }, [code, errorMessage]);
+
+    previousCodeRef.current = codeString;
+
+    // Очищаємо oldCode, якщо користувач вводить новий код (не співпадає зі старим)
+    if (oldCode && codeString !== oldCode && codeString.length > 0) {
+      setOldCode(null);
+    }
+  }, [code, errorMessage, oldCode]);
 
   useEffect(() => {
     if (timerActive) {
@@ -77,6 +94,13 @@ export const RegistrationCodeScreen = () => {
       const normalizedPhone = normalizePhone(route.params?.number || '');
       const codeString = code.join('');
 
+      // Перевіряємо, чи користувач не використовує старий код
+      if (oldCode && codeString === oldCode) {
+        throw new Error(
+          'Цей код вже не дійсний. Будь ласка, використайте новий код або отримайте новий.',
+        );
+      }
+
       const response = await authService.verifyCode(
         normalizedPhone,
         codeString,
@@ -88,10 +112,24 @@ export const RegistrationCodeScreen = () => {
           number: route.params?.number,
         });
       } else {
-        throw new Error(response.message || 'Невірний код верифікації');
+        // Очищаємо код при помилці верифікації
+        setCode(['', '', '', '', '', '']);
+        previousCodeRef.current = ''; // Оновлюємо ref при очищенні коду
+        throw new Error(
+          response.message ||
+            'Невірний код з SMS. Перевірте правильність введення або отримайте новий код.',
+        );
       }
     } catch (err) {
-      setErrorMessage(err.message || 'Невірний код верифікації');
+      // Якщо помилка не про старий код, показуємо повідомлення про неправильний код
+      if (!err.message.includes('вже не дійсний')) {
+        setErrorMessage(
+          err.message ||
+            'Невірний код з SMS. Перевірте правильність введення або отримайте новий код.',
+        );
+      } else {
+        setErrorMessage(err.message);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -100,6 +138,12 @@ export const RegistrationCodeScreen = () => {
   const sendCode = async () => {
     if (sendBtnDisabled) {
       return;
+    }
+
+    // Зберігаємо поточний введений код перед відправкою нового
+    const currentCode = code.join('');
+    if (currentCode && currentCode.length === 6) {
+      setOldCode(currentCode);
     }
 
     restartTimer();

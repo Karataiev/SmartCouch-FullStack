@@ -11,7 +11,7 @@ import {LayoutComponent} from '../components/LayoutComponent';
 import {CustomPhoneInput} from '../components/CustomPhoneInput';
 import {PasswordCustomInput} from '../components/PasswordCustomInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {login, fetchUserProfile} from '../redux/thunks/authThunk';
@@ -94,6 +94,17 @@ export const LoginScreen = () => {
       setIsLoading(false);
     }
   };
+
+  // Очищаємо поля при поверненні на екран
+  useFocusEffect(
+    React.useCallback(() => {
+      setNumber('');
+      setPassword('');
+      setPasswordError('');
+      setShowErrors(false);
+      setAuthError('');
+    }, []),
+  );
 
   useEffect(() => {
     if (number.length === 17 && password.length > 0) {

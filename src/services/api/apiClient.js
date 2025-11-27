@@ -200,13 +200,44 @@ class ApiClient {
 
       return data;
     } catch (error) {
-      // Якщо це помилка мережі, додаємо більше інформації
-      if (error.message === 'Network request failed') {
+      // Обробка різних типів мережевих помилок
+      const errorMessage = error.message || '';
+      
+      // Перевірка на відсутність інтернет-з'єднання
+      if (
+        errorMessage === 'Network request failed' ||
+        errorMessage.includes('NetworkError') ||
+        errorMessage.includes('Failed to fetch') ||
+        errorMessage.includes('NetworkError') ||
+        errorMessage.includes('ERR_NETWORK') ||
+        errorMessage.includes('ERR_INTERNET_DISCONNECTED')
+      ) {
         throw new Error(
-          'Помилка підключення до сервера. Перевірте, чи сервер запущений.',
+          'Відсутнє підключення до інтернету. Перевірте налаштування мережі та спробуйте ще раз.',
         );
       }
-      throw error;
+      
+      // Перевірка на timeout
+      if (
+        errorMessage.includes('timeout') ||
+        errorMessage.includes('TIMEOUT') ||
+        errorMessage.includes('Request timeout')
+      ) {
+        throw new Error(
+          'Час очікування відповіді вичерпано. Перевірте підключення до інтернету та спробуйте ще раз.',
+        );
+      }
+      
+      // Якщо помилка вже має зрозуміле повідомлення, залишаємо його
+      if (error.message && error.message !== 'Network request failed') {
+        throw error;
+      }
+      
+      // Для інших невідомих помилок
+      throw new Error(
+        error.message ||
+          'Помилка підключення до сервера. Перевірте інтернет-з\'єднання та спробуйте ще раз.',
+      );
     }
   }
 

@@ -1,12 +1,12 @@
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View, Text} from 'react-native';
 import {CustomInput} from './CustomInput';
-import {CustomPhoneInput} from './CustomPhoneInput';
 import React, {useEffect, useState} from 'react';
 import {SafeInfoButton} from './SafeInfoButton';
 import {saveUserData} from '../redux/action';
 import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {fetchUserProfile, updateUserProfile} from '../redux/thunks/authThunk';
+import {parseDateToISO, formatISOToDisplay} from '../redux/utils/dateUtils';
 
 export const MyDataComponent = ({navigation}) => {
   const userData = useSelector(state => state.app.userData);
@@ -19,6 +19,8 @@ export const MyDataComponent = ({navigation}) => {
   const [city, setCity] = useState(userData.city || '');
   const [isActiveSubmitBtn, setIsActiveSubmitBtn] = useState(false);
   const [isLoadingUserData, setIsLoadingUserData] = useState(true);
+  const [emailError, setEmailError] = useState('');
+  const [birthdayError, setBirthdayError] = useState('');
 
   const dispatch = useDispatch();
 
@@ -52,7 +54,11 @@ export const MyDataComponent = ({navigation}) => {
           setSurname(userProfile.surname || '');
           setNumber(userProfile.phone || ''); // Номер телефону з сервера
           setEmail(userProfile.email || '');
-          setBirthday(userProfile.birthday || '');
+          // Конвертуємо ISO дату в зручний формат для відображення
+          const displayBirthday = userProfile.birthday
+            ? formatISOToDisplay(userProfile.birthday)
+            : '';
+          setBirthday(displayBirthday);
           setExperience(userProfile.experience || '');
           setCity(userProfile.city || '');
 
@@ -113,16 +119,148 @@ export const MyDataComponent = ({navigation}) => {
 
   useEffect(() => {
     checkChanges();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name, surname, number, email, birthday, experience, city]);
+
+  // Валідація email
+  const validateEmail = emailValue => {
+    if (!emailValue || emailValue.trim() === '') {
+      setEmailError('');
+      return true;
+    }
+
+    const trimmedEmail = emailValue.trim();
+
+    // Покращена валідація email:
+    // - Локальна частина (до @): літери, цифри, крапки, дефіси, підкреслення, плюси
+    // - Доменна частина: літери, цифри, дефіси, крапки
+    // - TLD (домен верхнього рівня): 2-6 символів, тільки літери
+    const emailRegex = /^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+    if (!emailRegex.test(trimmedEmail)) {
+      setEmailError('Введено невірний формат email. Приклад: test@gmail.com');
+      return false;
+    }
+
+    // Додаткова перевірка: доменна частина не може починатися або закінчуватися крапкою або дефісом
+    const parts = trimmedEmail.split('@');
+    if (parts.length !== 2) {
+      setEmailError('Введено невірний формат email. Приклад: test@gmail.com');
+      return false;
+    }
+
+    const domain = parts[1];
+    if (
+      domain.startsWith('.') ||
+      domain.startsWith('-') ||
+      domain.endsWith('.') ||
+      domain.endsWith('-')
+    ) {
+      setEmailError('Введено невірний формат email. Приклад: test@gmail.com');
+      return false;
+    }
+
+    // Перевірка, що TLD (після останньої крапки) містить тільки літери
+    const tld = domain.split('.').pop();
+    if (!tld || !/^[a-zA-Z]{2,6}$/.test(tld)) {
+      setEmailError('Введено невірний формат email. Приклад: test@gmail.com');
+      return false;
+    }
+
+    setEmailError('');
+    return true;
+  };
+
+  // Валідація дати народження
+  const validateBirthday = birthdayValue => {
+    if (!birthdayValue || birthdayValue.trim() === '') {
+      setBirthdayError('');
+      return true;
+    }
+
+    const trimmed = birthdayValue.trim();
+
+    // Перевірка формату: дозволяємо dd.MM.yyyy, dd.MM.yy, dd/MM/yyyy, dd/MM/yy, dd-MM-yyyy, dd-MM-yy
+    const dateFormats = [
+      /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/, // dd.MM.yyyy
+      /^(\d{1,2})\.(\d{1,2})\.(\d{2})$/, // dd.MM.yy
+      /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/, // dd/MM/yyyy
+      /^(\d{1,2})\/(\d{1,2})\/(\d{2})$/, // dd/MM/yy
+      /^(\d{1,2})-(\d{1,2})-(\d{4})$/, // dd-MM-yyyy
+      /^(\d{1,2})-(\d{1,2})-(\d{2})$/, // dd-MM-yy
+    ];
+
+    let isValidFormat = false;
+    let day, month, year;
+
+    for (const format of dateFormats) {
+      const match = trimmed.match(format);
+      if (match) {
+        isValidFormat = true;
+        day = parseInt(match[1], 10);
+        month = parseInt(match[2], 10);
+        year = parseInt(match[3], 10);
+
+        // Якщо рік у форматі yy, конвертуємо в yyyy
+        if (year < 100) {
+          year = year < 50 ? 2000 + year : 1900 + year;
+        }
+
+        // Валідація днів та місяців
+        if (day < 1 || day > 31 || month < 1 || month > 12) {
+          isValidFormat = false;
+          continue;
+        }
+
+        // Створюємо дату та перевіряємо валідність
+        const date = new Date(year, month - 1, day);
+        if (
+          date.getFullYear() === year &&
+          date.getMonth() === month - 1 &&
+          date.getDate() === day
+        ) {
+          setBirthdayError('');
+          return true;
+        } else {
+          isValidFormat = false;
+        }
+      }
+    }
+
+    // Якщо не знайдено жодного валідного формату
+    if (!isValidFormat) {
+      setBirthdayError('Дата введена у невірному форматі. Приклад: дд.мм.рррр');
+      return false;
+    }
+
+    setBirthdayError('');
+    return true;
+  };
 
   const handleSubmit = async () => {
     if (isActiveSubmitBtn) {
+      // Валідація email перед відправкою
+      if (!validateEmail(email)) {
+        return;
+      }
+
+      // Валідація дати народження перед відправкою
+      if (birthday && birthday.trim() && !validateBirthday(birthday)) {
+        return;
+      }
+
       try {
-        // Форматування дати для сервера (якщо потрібно)
+        // Форматування дати для сервера - парсимо різні формати та конвертуємо в ISO
         let formattedBirthday = birthday;
-        if (birthday) {
-          // Якщо дата вже в правильному форматі, залишаємо як є
-          // Якщо потрібно конвертувати, додайте логіку тут
+        if (birthday && birthday.trim()) {
+          const parsedDate = parseDateToISO(birthday);
+          if (parsedDate) {
+            // Конвертуємо в ISO datetime формат для сервера
+            formattedBirthday = `${parsedDate}T00:00:00.000Z`;
+          } else {
+            // Якщо не вдалося розпарсити, залишаємо як є (сервер спробує розпарсити)
+            formattedBirthday = birthday.trim();
+          }
         }
 
         // Використовуємо Redux thunk для оновлення профілю
@@ -154,7 +292,20 @@ export const MyDataComponent = ({navigation}) => {
           navigation.goBack();
         }
       } catch (error) {
-        console.error('Помилка збереження даних:', error);
+        // Обробка помилок валідації з сервера
+        const errorMessage =
+          error.message || (error.data && error.data.message) || '';
+        if (
+          errorMessage.toLowerCase().includes('email') ||
+          errorMessage.toLowerCase().includes('невірний формат email')
+        ) {
+          setEmailError(
+            'Введено невірний формат email. Приклад: test@gmail.com',
+          );
+        } else {
+          // Якщо помилка не пов'язана з email, все одно перевіряємо email на клієнті
+          validateEmail(email);
+        }
       }
     }
   };
@@ -170,12 +321,10 @@ export const MyDataComponent = ({navigation}) => {
           value={surname}
           setValue={setSurname}
         />
-        <CustomPhoneInput
-          inputHeader={true}
-          placeholderTextColor={'#A1A1A1'}
-          number={number}
-          setNumber={setNumber}
-        />
+        <View style={styles.phoneContainer}>
+          <Text style={styles.phoneHeader}>Телефон</Text>
+          <Text style={styles.phoneValue}>{number || 'Не вказано'}</Text>
+        </View>
         <CustomInput
           placeholder="Email"
           value={email}
@@ -183,7 +332,7 @@ export const MyDataComponent = ({navigation}) => {
           inputType="email"
         />
         <CustomInput
-          placeholder="Дата народження"
+          placeholder="Дата народження (дд.мм.рррр)"
           value={birthday}
           setValue={setBirthday}
           inputType="numeric"
@@ -196,6 +345,12 @@ export const MyDataComponent = ({navigation}) => {
         />
         <CustomInput placeholder="Місто" value={city} setValue={setCity} />
       </ScrollView>
+
+      {emailError || birthdayError ? (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{emailError || birthdayError}</Text>
+        </View>
+      ) : null}
 
       <SafeInfoButton handleSubmit={handleSubmit} disabled={!isActiveSubmitBtn}>
         Зберегти
@@ -213,5 +368,35 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
+    paddingBottom: 8,
+  },
+  errorContainer: {
+    paddingHorizontal: 20,
+  },
+  errorText: {
+    color: '#FF6B6B',
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: 'center',
+  },
+  phoneContainer: {
+    marginBottom: 20,
+  },
+  phoneHeader: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '400',
+    color: 'white',
+    marginBottom: 4,
+  },
+  phoneValue: {
+    height: 50,
+    paddingHorizontal: 8,
+    borderBottomColor: '#303030',
+    borderBottomWidth: 1,
+    color: '#A1A1A1',
+    fontSize: 17,
+    lineHeight: 22,
+    paddingTop: 14,
   },
 });

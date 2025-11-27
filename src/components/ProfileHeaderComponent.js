@@ -1,11 +1,16 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useSelector} from 'react-redux';
 import {SvgProfileOptions} from '../assets/svgIcons/SvgProfileOptions';
 import {SvgCreateService} from '../assets/svgIcons/SvgCreateService';
 import {SvgLocation} from '../assets/svgIcons/SvgLocation';
 import {SvgSchedule} from '../assets/svgIcons/SvgSchedule';
 
 export const ProfileHeaderComponent = () => {
+  const userName = useSelector(state => state.app.userData.name);
+
+  const displayName = userName && userName.trim() ? userName : 'тренере';
+
   return (
     <View style={styles.profileHeaderContainer}>
       <View style={styles.profileHeader}>
@@ -14,7 +19,7 @@ export const ProfileHeaderComponent = () => {
           <SvgProfileOptions />
         </TouchableOpacity>
       </View>
-      <Text style={styles.profileName}>Ігор</Text>
+      <Text style={styles.profileName}>{displayName}</Text>
 
       <View style={styles.addedInfoBtns}>
         <TouchableOpacity style={styles.addedInfoItem}>

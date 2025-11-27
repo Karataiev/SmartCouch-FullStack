@@ -7,6 +7,9 @@ export const CustomInput = ({
   setValue,
   inputType = 'default',
   style,
+  onBlur,
+  autoCapitalize = 'sentences',
+  autoCorrect = true,
 }) => {
   return (
     <View style={[styles.container, style]}>
@@ -14,10 +17,13 @@ export const CustomInput = ({
       <TextInput
         value={value}
         onChangeText={setValue}
+        onBlur={onBlur}
         style={[styles.input]}
         placeholder={placeholder}
         placeholderTextColor="#A1A1A1"
         keyboardType={inputType}
+        autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
       />
     </View>
   );

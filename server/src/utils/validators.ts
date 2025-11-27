@@ -61,12 +61,83 @@ export const createPasswordSchema = z.object({
     .or(z.literal('')), // Дозволяємо порожній рядок
   birthday: z
     .string()
-    .datetime()
     .optional()
     .or(z.literal(''))
     .transform((val) => {
       if (!val || val === '') return undefined;
-      return new Date(val);
+      
+      const trimmed = val.trim();
+      if (!trimmed) return undefined;
+
+      // Функція для парсингу різних форматів дат
+      const parseDate = (dateString: string): Date | null => {
+        // Спроба парсингу різних форматів
+        const formats = [
+          // dd.MM.yyyy
+          /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/,
+          // dd.MM.yy
+          /^(\d{1,2})\.(\d{1,2})\.(\d{2})$/,
+          // dd/MM/yyyy
+          /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/,
+          // dd/MM/yy
+          /^(\d{1,2})\/(\d{1,2})\/(\d{2})$/,
+          // dd-MM-yyyy
+          /^(\d{1,2})-(\d{1,2})-(\d{4})$/,
+          // dd-MM-yy
+          /^(\d{1,2})-(\d{1,2})-(\d{2})$/,
+        ];
+
+        for (const format of formats) {
+          const match = dateString.match(format);
+          if (match) {
+            let day = parseInt(match[1], 10);
+            let month = parseInt(match[2], 10);
+            let year = parseInt(match[3], 10);
+
+            // Якщо рік у форматі yy, конвертуємо в yyyy
+            if (year < 100) {
+              // Якщо yy < 50, вважаємо 20yy, інакше 19yy
+              year = year < 50 ? 2000 + year : 1900 + year;
+            }
+
+            // Валідація днів та місяців
+            if (day < 1 || day > 31 || month < 1 || month > 12) {
+              continue;
+            }
+
+            // Створюємо дату та перевіряємо валідність
+            const date = new Date(year, month - 1, day);
+            if (
+              date.getFullYear() === year &&
+              date.getMonth() === month - 1 &&
+              date.getDate() === day
+            ) {
+              return date;
+            }
+          }
+        }
+
+        // Якщо не знайдено жодного формату, спробуємо стандартний парсинг Date
+        const date = new Date(trimmed);
+        if (!isNaN(date.getTime())) {
+          return date;
+        }
+
+        return null;
+      };
+
+      const parsedDate = parseDate(trimmed);
+      
+      if (!parsedDate) {
+        throw new Error('Невірний формат дати. Використовуйте формат dd.MM.yyyy, dd.MM.yy або ISO 8601');
+      }
+
+      // Перевірка, що дата не в майбутньому
+      if (parsedDate > new Date()) {
+        throw new Error('Дата народження не може бути в майбутньому');
+      }
+
+      return parsedDate;
     }),
   experience: z.string().max(200, 'Досвід не може бути довше 200 символів').optional(),
   city: z.string().max(100, 'Місто не може бути довше 100 символів').optional(),
@@ -131,17 +202,83 @@ export const updateProfileSchema = z.object({
     .or(z.literal('')),
   birthday: z
     .string()
-    .datetime('Невірний формат дати. Використовуйте ISO 8601 формат')
     .optional()
     .or(z.literal(''))
     .transform((val) => {
       if (!val || val === '') return undefined;
-      const date = new Date(val);
+      
+      const trimmed = val.trim();
+      if (!trimmed) return undefined;
+
+      // Функція для парсингу різних форматів дат
+      const parseDate = (dateString: string): Date | null => {
+        // Спроба парсингу різних форматів
+        const formats = [
+          // dd.MM.yyyy
+          /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/,
+          // dd.MM.yy
+          /^(\d{1,2})\.(\d{1,2})\.(\d{2})$/,
+          // dd/MM/yyyy
+          /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/,
+          // dd/MM/yy
+          /^(\d{1,2})\/(\d{1,2})\/(\d{2})$/,
+          // dd-MM-yyyy
+          /^(\d{1,2})-(\d{1,2})-(\d{4})$/,
+          // dd-MM-yy
+          /^(\d{1,2})-(\d{1,2})-(\d{2})$/,
+        ];
+
+        for (const format of formats) {
+          const match = dateString.match(format);
+          if (match) {
+            let day = parseInt(match[1], 10);
+            let month = parseInt(match[2], 10);
+            let year = parseInt(match[3], 10);
+
+            // Якщо рік у форматі yy, конвертуємо в yyyy
+            if (year < 100) {
+              // Якщо yy < 50, вважаємо 20yy, інакше 19yy
+              year = year < 50 ? 2000 + year : 1900 + year;
+            }
+
+            // Валідація днів та місяців
+            if (day < 1 || day > 31 || month < 1 || month > 12) {
+              continue;
+            }
+
+            // Створюємо дату та перевіряємо валідність
+            const date = new Date(year, month - 1, day);
+            if (
+              date.getFullYear() === year &&
+              date.getMonth() === month - 1 &&
+              date.getDate() === day
+            ) {
+              return date;
+            }
+          }
+        }
+
+        // Якщо не знайдено жодного формату, спробуємо стандартний парсинг Date
+        const date = new Date(trimmed);
+        if (!isNaN(date.getTime())) {
+          return date;
+        }
+
+        return null;
+      };
+
+      const parsedDate = parseDate(trimmed);
+      
+      if (!parsedDate) {
+        throw new Error('Невірний формат дати. Використовуйте формат dd.MM.yyyy, dd.MM.yy або ISO 8601');
+      }
+
       // Перевірка, що дата не в майбутньому
-      if (date > new Date()) {
+      if (parsedDate > new Date()) {
         throw new Error('Дата народження не може бути в майбутньому');
       }
-      return date;
+
+      return parsedDate;
     }),
   experience: z.string().max(200, 'Досвід не може бути довше 200 символів').trim().optional().or(z.literal('')),
   city: z.string().max(100, 'Місто не може бути довше 100 символів').trim().optional().or(z.literal('')),

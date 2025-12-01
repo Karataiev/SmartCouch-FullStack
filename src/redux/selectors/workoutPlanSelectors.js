@@ -39,6 +39,8 @@ export const selectAgendaByDate = createSelector(
             const trainingInstance = {
               ...training,
               trainingDate: occurrence.trainingDate,
+              occurrenceId: occurrence.id,
+              isCanceled: occurrence.isCanceled || false,
             };
 
             if (!selectedDate) {

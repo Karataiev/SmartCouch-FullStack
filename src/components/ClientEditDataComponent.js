@@ -24,6 +24,10 @@ export const ClientEditDataComponent = ({itemData, navigation}) => {
   const [connectionMethods, setConnectionMethods] = useState([]);
   const [prevConnectionMethods, setPrevConnectionMethods] = useState([]);
 
+  const [nameError, setNameError] = useState('');
+  const [surnameError, setSurnameError] = useState('');
+  const [numberError, setNumberError] = useState('');
+
   const [targetAndWishes, setTargetAndWishes] = useState(
     clientsCharacteristics.targetAndWishes,
   );
@@ -80,7 +84,7 @@ export const ClientEditDataComponent = ({itemData, navigation}) => {
     setIsModalVisible(!isModalVisible);
   };
 
-  const handleConnectionMethod = (title, icon) => {
+  const handleConnectionMethod = title => {
     const containElement = connectionMethods.find(el => el.type === title);
 
     if (connectionMethods.length === 0 || !containElement) {
@@ -88,7 +92,6 @@ export const ClientEditDataComponent = ({itemData, navigation}) => {
         ...connectionMethods,
         {
           type: title,
-          icon: icon,
           link: '',
         },
       ]);
@@ -96,18 +99,59 @@ export const ClientEditDataComponent = ({itemData, navigation}) => {
     setIsModalVisible(false);
   };
 
-  const getConnectionMethodLink = (type, icon, value) => {
+  const getConnectionMethodLink = (type, value) => {
     const index = connectionMethods.findIndex(el => el.type === type);
     connectionMethods.splice(index, 1, {
       type: type,
-      icon: icon,
       link: value,
     });
 
     setConnectionMethods(connectionMethods);
   };
 
+  const handleChangeName = text => {
+    setName(text);
+    if (nameError && text.trim()) {
+      setNameError('');
+    }
+  };
+
+  const handleChangeSurname = text => {
+    setSurname(text);
+    if (surnameError && text.trim()) {
+      setSurnameError('');
+    }
+  };
+
+  const handleChangeNumber = text => {
+    setNumber(text);
+    if (numberError && text) {
+      setNumberError('');
+    }
+  };
+
   const handleSubmit = () => {
+    let hasError = false;
+
+    if (!name.trim()) {
+      setNameError("Ім'я не може бути порожнім");
+      hasError = true;
+    }
+
+    if (!surname.trim()) {
+      setSurnameError('Прізвище не може бути порожнім');
+      hasError = true;
+    }
+
+    if (!number) {
+      setNumberError('Номер телефону не може бути порожнім');
+      hasError = true;
+    }
+
+    if (hasError) {
+      return;
+    }
+
     const clientDataObject = {
       id: itemData.id,
       client: {
@@ -136,20 +180,30 @@ export const ClientEditDataComponent = ({itemData, navigation}) => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView
+      scrollEnabled={true}
+      nestedScrollEnabled={true}
+      keyboardShouldPersistTaps="handled">
       <SafeAreaView style={styles.container}>
         <View style={styles.formsContainer}>
-          <CustomInput placeholder={"Ім'я"} value={name} setValue={setName} />
+          <CustomInput
+            placeholder={"Ім'я"}
+            value={name}
+            setValue={handleChangeName}
+            errorText={nameError}
+          />
           <CustomInput
             placeholder={'Прізвище'}
             value={surname}
-            setValue={setSurname}
+            setValue={handleChangeSurname}
+            errorText={surnameError}
           />
           <CustomPhoneInput
             inputHeader={true}
             placeholderTextColor={'white'}
             number={number}
-            setNumber={setNumber}
+            setNumber={handleChangeNumber}
+            errorText={numberError}
           />
 
           {connectionMethods.map(el =>

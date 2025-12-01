@@ -7,12 +7,14 @@ import {SafeInfoButton} from './SafeInfoButton';
 import {setPinningClientId, updateClientProgram} from '../redux/action';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {selectClientsList} from '../redux/selectors/clientSelectors';
+import {useToast} from '../castomHooks/useToast';
 
 export const ClientList = ({items, pinningClient}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
   const clients = useSelector(selectClientsList);
+  const {showToast} = useToast();
 
   const [pinnedClientIds, setPinnedClientIds] = useState([]);
 
@@ -62,6 +64,7 @@ export const ClientList = ({items, pinningClient}) => {
         }
         return client;
       });
+      showToast('Програму закріплено успішно');
     }
     navigation.goBack();
   };

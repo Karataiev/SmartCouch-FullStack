@@ -28,7 +28,7 @@ export const CreateClientScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isActiveSubmitBtn, setIsActiveSubmitBtn] = useState(false);
 
-  const defaultLinkState = {type: '', link: '', icon: ''};
+  const defaultLinkState = {type: '', link: ''};
   const [instagramLink, setInstagramLink] = useState(defaultLinkState);
   const [telegramLink, setTelegramLink] = useState(defaultLinkState);
   const [viberLink, setViberLink] = useState(defaultLinkState);
@@ -78,7 +78,7 @@ export const CreateClientScreen = () => {
     setIsModalVisible(!isModalVisible);
   };
 
-  const handleConnectionMethod = (title, icon) => {
+  const handleConnectionMethod = title => {
     const containElement = connectionMethods.find(el => el.type === title);
 
     if (connectionMethods.length === 0 || !containElement) {
@@ -86,7 +86,6 @@ export const CreateClientScreen = () => {
         ...connectionMethods,
         {
           type: title,
-          icon: icon,
         },
       ]);
     }

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Modal, StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {setPlusMenuBtn} from '../redux/action';
+import {setPlusMenuBtn, setPinningClientId} from '../redux/action';
 import {SvgClose} from '../assets/svgIcons/SvgClose';
 import {SvgCreateProgram} from '../assets/svgIcons/SvgCreateProgram';
 import {SvgCreateService} from '../assets/svgIcons/SvgCreateService';
@@ -14,6 +14,10 @@ export const PlusMenuModal = ({navigation}) => {
 
   const handleCreate = way => {
     dispatch(setPlusMenuBtn(!isBtnClick));
+    // Очищаємо pinnedClientId при відкритті через PlusMenuModal
+    if (way === 'TrainingPlanning') {
+      dispatch(setPinningClientId(null));
+    }
     navigation.navigate(way, {
       data: {},
     });

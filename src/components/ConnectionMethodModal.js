@@ -1,8 +1,4 @@
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {SvgInstagram} from '../assets/svgIcons/SvgInstagram';
-import {SvgTelegram} from '../assets/svgIcons/SvgTelegram';
-import {SvgViber} from '../assets/svgIcons/SvgViber';
-import {SvgWhatsapp} from '../assets/svgIcons/SvgWhatsapp';
 import {ConnectionMethod} from './ConnectionMethod';
 
 export const ConnectionMethodModal = ({
@@ -27,22 +23,18 @@ export const ConnectionMethodModal = ({
         <Text style={styles.connectionModalTitle}>Оберіть спосіб звʼязку</Text>
         <View style={styles.connectionMethodContainer}>
           <ConnectionMethod
-            icon={<SvgInstagram />}
             title="Instagram"
             handleConnectionMethod={handleConnectionMethod}
           />
           <ConnectionMethod
-            icon={<SvgTelegram />}
             title="Telegram"
             handleConnectionMethod={handleConnectionMethod}
           />
           <ConnectionMethod
-            icon={<SvgViber />}
             title="Viber"
             handleConnectionMethod={handleConnectionMethod}
           />
           <ConnectionMethod
-            icon={<SvgWhatsapp />}
             title="WhatsApp"
             handleConnectionMethod={handleConnectionMethod}
           />

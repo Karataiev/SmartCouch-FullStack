@@ -8,12 +8,14 @@ import {SwipeableRightButtons} from './SwipeableRightButtons';
 import {SvgCancelIcon} from '../assets/calendarIcons/SvgCancelIcon';
 import {RemoveModal} from './RemoveModal';
 import {useDispatch} from 'react-redux';
-import {removeWorkoutPlanItem} from '../redux/action';
+import {removeWorkoutPlanItem, toggleTrainingOccurrenceCancel} from '../redux/action';
+import {useToast} from '../castomHooks/useToast';
 
 const AgendaItemComponent = ({item, currentTime, training}) => {
   const swipeableRef = useRef(null);
   const dispatch = useDispatch();
-  const [isCancelActive, setIsCancelActive] = useState(false);
+  const {showToast} = useToast();
+  const isCancelActive = training?.isCanceled || false;
   const [removeModalVisible, setRemoveModalVisible] = useState(false);
 
   useEffect(() => {
@@ -79,8 +81,15 @@ const AgendaItemComponent = ({item, currentTime, training}) => {
   );
 
   const handleCancelBtn = useCallback(() => {
-    setIsCancelActive(prev => !prev);
-  }, []);
+    if (training?.occurrenceId && training?.id) {
+      dispatch(
+        toggleTrainingOccurrenceCancel({
+          trainingId: training.id,
+          occurrenceId: training.occurrenceId,
+        }),
+      );
+    }
+  }, [dispatch, training?.id, training?.occurrenceId]);
 
   const handleDeleteBtn = useCallback(() => {
     setRemoveModalVisible(true);
@@ -95,8 +104,9 @@ const AgendaItemComponent = ({item, currentTime, training}) => {
       return;
     }
     dispatch(removeWorkoutPlanItem([training.id, firstTrainingDate]));
+    showToast('Заплановане тренування видалено');
     setRemoveModalVisible(false);
-  }, [dispatch, training.id, firstTrainingDate]);
+  }, [dispatch, training.id, firstTrainingDate, showToast]);
 
   const renderRightActions = useCallback(
     () =>

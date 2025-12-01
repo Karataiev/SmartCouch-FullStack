@@ -8,6 +8,7 @@ export const CustomPhoneInput = ({
   number,
   setNumber,
   style,
+  errorText,
 }) => {
   const mask = '+38 0** *** ** **';
 
@@ -49,6 +50,7 @@ export const CustomPhoneInput = ({
         keyboardType="phone-pad"
         maxLength={17}
       />
+      {errorText ? <Text style={styles.errorText}>{errorText}</Text> : null}
     </View>
   );
 };
@@ -71,5 +73,11 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: 'white',
     marginBottom: 4,
+  },
+  errorText: {
+    marginTop: 4,
+    fontSize: 12,
+    lineHeight: 16,
+    color: '#FF5A5F',
   },
 });

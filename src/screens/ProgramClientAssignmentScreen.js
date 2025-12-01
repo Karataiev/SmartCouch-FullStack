@@ -15,6 +15,7 @@ import {updateClientProgram} from '../redux/action';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {LayoutComponent} from '../components/LayoutComponent';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useToast} from '../castomHooks/useToast';
 
 export const ProgramClientAssignmentScreen = () => {
   const navigation = useNavigation();
@@ -22,6 +23,7 @@ export const ProgramClientAssignmentScreen = () => {
   const originWay = route.params?.origin || 'MyPrograms';
 
   const dispatch = useDispatch();
+  const {showToast} = useToast();
   const myProgramList = useSelector(state => state.app.programs);
   const readyMadeProgramsList = useSelector(state => state.app.programs);
 
@@ -55,6 +57,7 @@ export const ProgramClientAssignmentScreen = () => {
       }),
     );
 
+    showToast('Програму закріплено успішно');
     navigation.pop(2);
   };
 

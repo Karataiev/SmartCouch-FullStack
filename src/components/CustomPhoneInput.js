@@ -8,6 +8,7 @@ export const CustomPhoneInput = ({
   number,
   setNumber,
   style,
+  errorText,
 }) => {
   const mask = '+38 0** *** ** **';
 
@@ -23,6 +24,16 @@ export const CustomPhoneInput = ({
     }
   }, [number, setNumber]);
 
+  const handleChangeText = useCallback(
+    text => {
+      // Фільтруємо невалідні символи, залишаючи тільки цифри, + та пробіли (які додає маска)
+      // Видаляємо всі символи, крім цифр, + та пробілів
+      const filtered = text.replace(/[^0-9+ ]/g, '');
+      setNumber(filtered);
+    },
+    [setNumber],
+  );
+
   return (
     <View style={style}>
       {inputHeader && <Text style={styles.inputHeader}>Телефон</Text>}
@@ -30,15 +41,16 @@ export const CustomPhoneInput = ({
         type="custom"
         options={{mask}}
         value={number}
-        onChangeText={setNumber}
+        onChangeText={handleChangeText}
         onFocus={handleFocusNumber}
         onBlur={handleOutNumber}
         style={[styles.input]}
         placeholder="Телефон"
         placeholderTextColor={placeholderTextColor}
-        keyboardType="numeric"
+        keyboardType="phone-pad"
         maxLength={17}
       />
+      {errorText ? <Text style={styles.errorText}>{errorText}</Text> : null}
     </View>
   );
 };
@@ -61,5 +73,11 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: 'white',
     marginBottom: 4,
+  },
+  errorText: {
+    marginTop: 4,
+    fontSize: 12,
+    lineHeight: 16,
+    color: '#FF5A5F',
   },
 });

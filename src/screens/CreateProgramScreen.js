@@ -7,11 +7,13 @@ import {ProgramInputsComponent} from '../components/ProgramInputsComponent';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {LayoutComponent} from '../components/LayoutComponent';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useToast} from '../castomHooks/useToast';
 
 export const CreateProgramScreen = () => {
   const dispatch = useDispatch();
   const route = useRoute();
   const navigation = useNavigation();
+  const {showToast} = useToast();
 
   const [title, setTitle] = useState('');
   const [program, setProgram] = useState('');
@@ -48,9 +50,10 @@ export const CreateProgramScreen = () => {
     }
 
     dispatch(createNewProgram(programObject));
+    showToast('Програму створено успішно');
     setTitle('');
     setProgram('');
-  }, [dispatch, navigation, route.params, programObject]);
+  }, [dispatch, navigation, route.params, programObject, showToast]);
 
   return (
     <LayoutComponent>

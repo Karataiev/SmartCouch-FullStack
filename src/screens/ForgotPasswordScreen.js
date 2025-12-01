@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {LayoutComponent} from '../components/LayoutComponent';
 import {CustomPhoneInput} from '../components/CustomPhoneInput';
 import {SafeInfoButton} from '../components/SafeInfoButton';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {authService} from '../services/api';
 
 export const ForgotPasswordScreen = () => {
@@ -12,6 +12,14 @@ export const ForgotPasswordScreen = () => {
   const [isActiveSubmitBtn, setIsActiveSubmitBtn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Очищаємо поля при поверненні на екран
+  useFocusEffect(
+    React.useCallback(() => {
+      setNumber('');
+      setError('');
+    }, []),
+  );
 
   useEffect(() => {
     if (number.length !== 17) {

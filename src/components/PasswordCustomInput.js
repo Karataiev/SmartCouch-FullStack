@@ -32,7 +32,7 @@ export const PasswordCustomInput = ({
       } else if (!/[A-Z]/.test(trimmedPassword)) {
         return 'Пароль повинен містити мінімум 1 велику літеру';
       } else if (!/\d/.test(trimmedPassword)) {
-        return 'Пароль повинен містити мінімум 1 велику цифру';
+        return 'Пароль повинен містити мінімум 1 цифру';
       }
     }
     return '';

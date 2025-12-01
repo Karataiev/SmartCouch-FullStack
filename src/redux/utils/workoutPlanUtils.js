@@ -66,6 +66,7 @@ export const createTrainingEntity = payload => {
         id: nanoid(),
         slotId,
         trainingDate: dateEntry,
+        isCanceled: false,
       };
     })
     .filter(Boolean);

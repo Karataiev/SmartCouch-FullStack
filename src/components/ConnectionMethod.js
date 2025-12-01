@@ -1,11 +1,30 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {SvgInstagram} from '../assets/svgIcons/SvgInstagram';
+import {SvgTelegram} from '../assets/svgIcons/SvgTelegram';
+import {SvgViber} from '../assets/svgIcons/SvgViber';
+import {SvgWhatsapp} from '../assets/svgIcons/SvgWhatsapp';
 
-export const ConnectionMethod = ({icon, title, handleConnectionMethod}) => {
+const renderIcon = title => {
+  switch (title) {
+    case 'Instagram':
+      return <SvgInstagram />;
+    case 'Telegram':
+      return <SvgTelegram />;
+    case 'Viber':
+      return <SvgViber />;
+    case 'WhatsApp':
+      return <SvgWhatsapp />;
+    default:
+      return null;
+  }
+};
+
+export const ConnectionMethod = ({title, handleConnectionMethod}) => {
   return (
     <TouchableOpacity
       style={styles.typeOfConnection}
-      onPress={() => handleConnectionMethod(title, icon)}>
-      {icon}
+      onPress={() => handleConnectionMethod(title)}>
+      {renderIcon(title)}
       <Text style={styles.title}>{title}</Text>
     </TouchableOpacity>
   );

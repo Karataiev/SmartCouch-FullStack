@@ -1,13 +1,32 @@
 import React from 'react';
 import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ProfileHeaderComponent} from '../components/ProfileHeaderComponent';
 import {ProfileMenuComponent} from '../components/ProfileMenuComponent';
 import {LayoutComponent} from '../components/LayoutComponent';
 import {useDispatch} from 'react-redux';
-import {logout} from '../redux/thunks/authThunk';
+import {logout, fetchUserProfile} from '../redux/thunks/authThunk';
 
 export const ProfileTabScreen = ({navigation}) => {
   const dispatch = useDispatch();
+
+  // Завантаження профілю користувача при фокусі на екрані
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadProfile = async () => {
+        try {
+          const accessToken = await AsyncStorage.getItem('accessToken');
+          if (accessToken) {
+            await dispatch(fetchUserProfile()).unwrap();
+          }
+        } catch (error) {
+          console.error('Помилка завантаження профілю:', error);
+        }
+      };
+      loadProfile();
+    }, [dispatch]),
+  );
 
   const handleLogout = async () => {
     try {

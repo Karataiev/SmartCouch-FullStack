@@ -53,7 +53,10 @@ export const TrainingPlanningContent = ({setPlanningTrainingData}) => {
 
   const handlePressClientItem = useCallback(() => {
     if (pinnedClient) {
-      navigation.navigate('ClientsProfile', {itemData: pinnedClient});
+      navigation.navigate('ClientsProfile', {
+        itemData: pinnedClient,
+        from: 'TrainingPlanning',
+      });
     }
   }, [navigation, pinnedClient]);
 

@@ -14,6 +14,8 @@ import {SafeInfoButton} from '../components/SafeInfoButton';
 import {updateClientParameters} from '../redux/action';
 import {LayoutComponent} from '../components/LayoutComponent';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {selectClientById} from '../redux/selectors/clientSelectors';
+import {useToast} from '../castomHooks/useToast';
 
 const bodyMeasurements = [
   {key: 'bodyWeight', label: 'Вага тіла', unit: 'кг'},
@@ -35,9 +37,8 @@ export const ClientParametersScreen = ({route}) => {
   const dispatch = useDispatch();
   const clientId = route.params?.clientId;
 
-  const client = useSelector(state =>
-    state.clients?.find(c => c.id === clientId),
-  );
+  const client = useSelector(state => selectClientById(state, clientId));
+  const {showToast} = useToast();
 
   const [firstDate, setFirstDate] = useState('');
   const [secondDate, setSecondDate] = useState('');
@@ -96,6 +97,7 @@ export const ClientParametersScreen = ({route}) => {
     setInitialFirst(completeFirst);
     setInitialSecond(completeSecond);
     setIsActiveSubmitBtn(false);
+    showToast('Дані збережено успішно');
   };
 
   return (

@@ -5,6 +5,10 @@ import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {SvgCreateService} from '../assets/svgIcons/SvgCreateService';
 import {SvgClientsParameters} from '../assets/svgIcons/SvgClientsParameters';
 import {SvgProfile} from '../assets/tabIcons/SvgProfile';
+import {SvgInstagram} from '../assets/svgIcons/SvgInstagram';
+import {SvgTelegram} from '../assets/svgIcons/SvgTelegram';
+import {SvgViber} from '../assets/svgIcons/SvgViber';
+import {SvgWhatsapp} from '../assets/svgIcons/SvgWhatsapp';
 import {ConfigModal} from '../components/ConfigModal';
 import {CreateProgramModal} from '../components/CreateProgramModal';
 import {setPinningClientId, updateClientsArray} from '../redux/action';
@@ -12,16 +16,35 @@ import {ActionButton} from '../components/ActionButton';
 import {LayoutComponent} from '../components/LayoutComponent';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ClientTrainingList} from '../components/ClientTrainingList';
+import {useToast} from '../castomHooks/useToast';
 import {
   selectClientById,
   selectClientsList,
 } from '../redux/selectors/clientSelectors';
 
+const renderConnectionIcon = type => {
+  switch (type) {
+    case 'Instagram':
+      return <SvgInstagram />;
+    case 'Telegram':
+      return <SvgTelegram />;
+    case 'Viber':
+      return <SvgViber />;
+    case 'WhatsApp':
+      return <SvgWhatsapp />;
+    default:
+      return null;
+  }
+};
+
 export const ClientsProfileScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const {itemData} = route?.params;
+  const {itemData, from} = route?.params || {};
   const clients = useSelector(selectClientsList);
-  const currentClient = useSelector(state => selectClientById(state, itemData.id));
+  const currentClient = useSelector(state =>
+    selectClientById(state, itemData?.id),
+  );
+  const {showToast} = useToast();
 
   const [isConfigModalVisible, setConfigModalVisible] = useState(false);
   const [isProgramModalVisible, setProgramModalVisible] = useState(false);
@@ -47,6 +70,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
   const handleRemoveClient = () => {
     const updatedClients = clients.filter(client => client.id !== itemData.id);
     dispatch(updateClientsArray(updatedClients));
+    showToast('Клієнта видаленно');
   };
 
   const navigateToScreen = (screen, origin = '') => {
@@ -83,8 +107,11 @@ export const ClientsProfileScreen = ({route, navigation}) => {
 
           <View style={styles.mainInfoContainer}>
             <HeaderWithBackButton
-              configBtn
-              goHome
+              configBtn={from !== 'TrainingPlanning'}
+              goHome={from !== 'TrainingPlanning'}
+              goTo={
+                from === 'TrainingPlanning' ? 'TrainingPlanning' : undefined
+              }
               onPressConfig={toggleModal(setConfigModalVisible)}
             />
 
@@ -101,7 +128,7 @@ export const ClientsProfileScreen = ({route, navigation}) => {
                       <TouchableOpacity
                         key={idx + 1}
                         style={styles.connectionType}>
-                        {el.icon}
+                        {renderConnectionIcon(el.type)}
                       </TouchableOpacity>
                     ) : null,
                   )}

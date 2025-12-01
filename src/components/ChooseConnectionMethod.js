@@ -6,6 +6,21 @@ import {SvgTelegram} from '../assets/svgIcons/SvgTelegram';
 import {SvgViber} from '../assets/svgIcons/SvgViber';
 import {SvgWhatsapp} from '../assets/svgIcons/SvgWhatsapp';
 
+const renderIcon = type => {
+  switch (type) {
+    case 'Instagram':
+      return <SvgInstagram />;
+    case 'Telegram':
+      return <SvgTelegram />;
+    case 'Viber':
+      return <SvgViber />;
+    case 'WhatsApp':
+      return <SvgWhatsapp />;
+    default:
+      return null;
+  }
+};
+
 export const ChooseConnectionMethod = ({el, setLinks, handleRemoveBtn}) => {
   const [connectionMethodsLink, setConnectionMethodsLink] = useState('');
   const [setInstagramLink, setViberLink, setTelegramLink, setWhatsAppLink] =
@@ -17,28 +32,24 @@ export const ChooseConnectionMethod = ({el, setLinks, handleRemoveBtn}) => {
         setInstagramLink({
           type: el.type,
           link: connectionMethodsLink,
-          icon: <SvgInstagram />,
         });
         break;
       case 'Telegram':
         setTelegramLink({
           type: el.type,
           link: connectionMethodsLink,
-          icon: <SvgTelegram />,
         });
         break;
       case 'Viber':
         setViberLink({
           type: el.type,
           link: connectionMethodsLink,
-          icon: <SvgViber />,
         });
         break;
       case 'WhatsApp':
         setWhatsAppLink({
           type: el.type,
           link: connectionMethodsLink,
-          icon: <SvgWhatsapp />,
         });
         break;
 
@@ -49,7 +60,7 @@ export const ChooseConnectionMethod = ({el, setLinks, handleRemoveBtn}) => {
 
   return (
     <View style={styles.connectionInputBlock}>
-      <View style={styles.connectionIcon}>{el.icon}</View>
+      <View style={styles.connectionIcon}>{renderIcon(el.type)}</View>
       <TextInput
         value={connectionMethodsLink}
         onChangeText={setConnectionMethodsLink}

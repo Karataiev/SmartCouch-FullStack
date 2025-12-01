@@ -1,6 +1,25 @@
 import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
 import {SvgRemoveItem} from '../assets/svgIcons/SvgRemoveItem';
+import {SvgInstagram} from '../assets/svgIcons/SvgInstagram';
+import {SvgTelegram} from '../assets/svgIcons/SvgTelegram';
+import {SvgViber} from '../assets/svgIcons/SvgViber';
+import {SvgWhatsapp} from '../assets/svgIcons/SvgWhatsapp';
 import {useEffect, useState} from 'react';
+
+const renderIcon = type => {
+  switch (type) {
+    case 'Instagram':
+      return <SvgInstagram />;
+    case 'Telegram':
+      return <SvgTelegram />;
+    case 'Viber':
+      return <SvgViber />;
+    case 'WhatsApp':
+      return <SvgWhatsapp />;
+    default:
+      return null;
+  }
+};
 
 export const ClientEditConnectionMethod = ({
   el,
@@ -13,7 +32,7 @@ export const ClientEditConnectionMethod = ({
   useEffect(() => {
     if (el.link !== value) {
       setIsActiveSubmitBtn(true);
-      getConnectionMethodLink(el.type, el.icon, value);
+      getConnectionMethodLink(el.type, value);
     } else {
       setIsActiveSubmitBtn(false);
     }
@@ -21,7 +40,7 @@ export const ClientEditConnectionMethod = ({
 
   return (
     <View style={styles.connectionInputBlock} key={el.type}>
-      <View style={styles.connectionIcon}>{el.icon}</View>
+      <View style={styles.connectionIcon}>{renderIcon(el.type)}</View>
       <TextInput
         value={value}
         onChangeText={setValue}

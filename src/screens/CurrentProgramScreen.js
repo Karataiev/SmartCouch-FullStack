@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState, useMemo} from 'react';
-import {Keyboard, StyleSheet, Text, Animated, Easing} from 'react-native';
+import React, {useEffect, useState, useMemo} from 'react';
+import {Keyboard, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {ProgramInputsComponent} from '../components/ProgramInputsComponent';
@@ -8,9 +8,11 @@ import {updateClientProgram, updateProgramsArray} from '../redux/action';
 import {RemoveModal} from '../components/RemoveModal';
 import {LayoutComponent} from '../components/LayoutComponent';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useToast} from '../castomHooks/useToast';
 
 export const CurrentProgramScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
+  const {showToast} = useToast();
   const programs = useSelector(state => state.app.programs);
   const {itemData, origin, clientId} = route.params;
 
@@ -18,10 +20,7 @@ export const CurrentProgramScreen = ({navigation, route}) => {
   const [program, setProgram] = useState(itemData.program);
   const [isSubmitActive, setSubmitActive] = useState(false);
   const [isConfigModalVisible, setConfigModalVisible] = useState(false);
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [removeModalVisible, setRemoveModalVisible] = useState(false);
-
-  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     setSubmitActive(title !== itemData.title || program !== itemData.program);
@@ -35,27 +34,6 @@ export const CurrentProgramScreen = ({navigation, route}) => {
     }),
     [title, program, itemData.id],
   );
-
-  const showAnimatedSuccessMessage = () => {
-    setShowSuccessMessage(true);
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true,
-      easing: Easing.out(Easing.ease),
-    }).start(() => {
-      setTimeout(() => {
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-          easing: Easing.in(Easing.ease),
-        }).start(() => {
-          setShowSuccessMessage(false);
-        });
-      }, 2000);
-    });
-  };
 
   const handleSubmit = () => {
     const updatedPrograms = programs.map(p =>
@@ -76,12 +54,13 @@ export const CurrentProgramScreen = ({navigation, route}) => {
 
     setSubmitActive(false);
     Keyboard.dismiss();
-    showAnimatedSuccessMessage();
+    showToast('Зміни збережено');
   };
 
   const handleRemoveFromAllPrograms = () => {
     const updatedPrograms = programs.filter(p => p.id !== itemData.id);
     dispatch(updateProgramsArray(updatedPrograms));
+    showToast('Програму видаленно');
     navigation.goBack();
   };
 
@@ -92,6 +71,7 @@ export const CurrentProgramScreen = ({navigation, route}) => {
         programInfo: {id: '', title: '', program: ''},
       }),
     );
+    showToast('Програму видаленно');
     navigation.goBack();
   };
 
@@ -124,12 +104,6 @@ export const CurrentProgramScreen = ({navigation, route}) => {
           onPressRemove={() => setRemoveModalVisible(true)}
         />
 
-        {showSuccessMessage && (
-          <Animated.View style={[styles.toastContainer, {opacity: fadeAnim}]}>
-            <Text style={styles.toastText}>Зміни збережено</Text>
-          </Animated.View>
-        )}
-
         <SafeInfoButton handleSubmit={handleSubmit} disabled={!isSubmitActive}>
           Зберегти
         </SafeInfoButton>
@@ -157,27 +131,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-  },
-  toastContainer: {
-    position: 'absolute',
-    bottom: 120,
-    left: 20,
-    right: 20,
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 20,
-    alignItems: 'center',
-    zIndex: 10,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.15,
-    shadowRadius: 25,
-    elevation: 6,
-  },
-  toastText: {
-    color: '#FFFFFF',
-    fontSize: 15,
-    fontWeight: '600',
   },
 });

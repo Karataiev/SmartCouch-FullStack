@@ -15,6 +15,7 @@ export const {
   createWorkoutPlan,
   removeWorkoutPlanItem,
   removeClientWorkoutPlanItem,
+  toggleTrainingOccurrenceCancel,
 } = appActions;
 
 export {appActions};

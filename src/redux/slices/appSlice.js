@@ -188,6 +188,20 @@ const appSlice = createSlice({
       detachTrainingFromAgenda(state.agenda, training);
       trainingsAdapter.removeOne(state.trainings, trainingId);
     },
+    toggleTrainingOccurrenceCancel: (state, action) => {
+      const {trainingId, occurrenceId} = action.payload;
+      if (!trainingId || !occurrenceId) {
+        return;
+      }
+      const training = state.trainings.entities[trainingId];
+      if (!training || !training.occurrences) {
+        return;
+      }
+      const occurrence = training.occurrences.find(occ => occ.id === occurrenceId);
+      if (occurrence) {
+        occurrence.isCanceled = !occurrence.isCanceled;
+      }
+    },
     /**
      * Очищає всі дані користувача при логауті
      */

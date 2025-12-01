@@ -7,6 +7,7 @@ import {SafeInfoButton} from '../components/SafeInfoButton';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {authService} from '../services/api';
+import {apiClient} from '../services/api/apiClient';
 
 export const ResetPasswordScreen = () => {
   const navigation = useNavigation();
@@ -55,7 +56,9 @@ export const ResetPasswordScreen = () => {
       );
 
       if (response.success) {
-        // Пароль успішно оновлено - перехід на екран входу
+        // Пароль успішно оновлено - очищаємо токени та перехід на екран входу
+        // Це важливо для безпеки: старий пароль не повинен працювати після зміни
+        await apiClient.clearTokens();
         navigation.navigate('Login');
       } else {
         throw new Error(response.message || 'Помилка створення паролю');

@@ -57,16 +57,9 @@ export const getWorkoutPlans = async (
     // Фільтр за датою (перевіряємо в occurrences)
     if (date) {
       try {
-        const filterDate = new Date(date);
-        filterDate.setHours(0, 0, 0, 0);
-        const nextDay = new Date(filterDate);
-        nextDay.setDate(nextDay.getDate() + 1);
-
-        // Шукаємо плани, де є occurrences з цією датою
-        query['occurrences.trainingDate'] = {
-          $gte: filterDate,
-          $lt: nextDay,
-        };
+        // trainingDate може бути об'єктом {date: "YYYY-MM-DD", time: "HH:mm"} або Date
+        // Фільтруємо за полем date в об'єкті trainingDate
+        query['occurrences.trainingDate.date'] = date;
       } catch (error) {
         res.status(400).json({
           success: false,
@@ -175,26 +168,30 @@ export const createWorkoutPlan = async (
 
     const { clientId, trainingName, trainingType, location, trainingDate, occurrences = [] } = req.body;
 
-    // Перевірка, що клієнт належить тренеру
-    const client = await Client.findOne({
-      _id: new mongoose.Types.ObjectId(clientId),
-      trainerId: new mongoose.Types.ObjectId(trainerId),
-    });
-
-    if (!client) {
-      res.status(404).json({
-        success: false,
-        message: 'Клієнт не знайдений або не належить вам',
+    // Перевірка, що клієнт належить тренеру (якщо клієнт вказаний)
+    let clientObjectId = null;
+    if (clientId && clientId.trim() !== '') {
+      const client = await Client.findOne({
+        _id: new mongoose.Types.ObjectId(clientId),
+        trainerId: new mongoose.Types.ObjectId(trainerId),
       });
-      return;
+
+      if (!client) {
+        res.status(404).json({
+          success: false,
+          message: 'Клієнт не знайдений або не належить вам',
+        });
+        return;
+      }
+      clientObjectId = new mongoose.Types.ObjectId(clientId);
     }
 
     // Створення плану тренування
     const workoutPlan = await WorkoutPlan.create({
       trainerId: new mongoose.Types.ObjectId(trainerId),
-      clientId: new mongoose.Types.ObjectId(clientId),
-      trainingName,
-      trainingType: trainingType || undefined,
+      clientId: clientObjectId,
+      trainingName: trainingName || 'Gym',
+      trainingType: trainingType || 'personal',
       location: location || undefined,
       trainingDate,
       occurrences,
@@ -202,8 +199,10 @@ export const createWorkoutPlan = async (
 
     logger.info({ trainerId, workoutPlanId: workoutPlan._id, clientId }, 'План тренування створено');
 
-    // Популюємо інформацію про клієнта
-    await workoutPlan.populate('clientId', 'name surname phone');
+    // Популюємо інформацію про клієнта (якщо він вказаний)
+    if (clientObjectId) {
+      await workoutPlan.populate('clientId', 'name surname phone');
+    }
 
     res.status(201).json({
       success: true,

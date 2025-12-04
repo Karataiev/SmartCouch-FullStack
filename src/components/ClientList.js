@@ -19,9 +19,9 @@ export const ClientList = ({items, pinningClient}) => {
   const [pinnedClientIds, setPinnedClientIds] = useState([]);
 
   const letters = useMemo(() => {
-    const firstLetters = items.map(item =>
-      item.client.surname?.charAt(0).toUpperCase(),
-    );
+    const firstLetters = items
+      .filter(item => item?.client?.surname)
+      .map(item => item.client.surname.charAt(0).toUpperCase());
     return [...new Set(firstLetters)].sort();
   }, [items]);
 
@@ -70,7 +70,8 @@ export const ClientList = ({items, pinningClient}) => {
   };
 
   const renderClientListItem = (item, letter) => {
-    const surnameInitial = item.client.surname?.charAt(0).toUpperCase();
+    if (!item?.client?.surname) return null;
+    const surnameInitial = item.client.surname.charAt(0).toUpperCase();
     if (surnameInitial !== letter) return null;
 
     const Component = pinningClient ? ClientListPinningItem : ClientListItem;

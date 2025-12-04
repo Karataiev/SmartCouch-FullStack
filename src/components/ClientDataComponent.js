@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     paddingTop: 24,
+    paddingBottom: 24,
     gap: 20,
   },
   content: {

@@ -377,21 +377,26 @@ const occurrenceSchema = z.object({
  */
 export const createWorkoutPlanSchema = z.object({
   clientId: z
-    .string()
-    .min(1, 'ID клієнта обов\'язковий')
-    .refine((val) => {
-      // Перевірка, що це валідний ObjectId
-      return /^[0-9a-fA-F]{24}$/.test(val);
-    }, 'Невірний формат ID клієнта'),
+    .union([
+      z.string().min(1).refine((val) => {
+        // Перевірка, що це валідний ObjectId
+        return /^[0-9a-fA-F]{24}$/.test(val);
+      }, 'Невірний формат ID клієнта'),
+      z.literal(''),
+      z.undefined(),
+    ])
+    .optional(),
   trainingName: z
     .string()
     .min(1, 'Назва тренування обов\'язкова')
     .max(200, 'Назва тренування не може бути довше 200 символів')
-    .trim(),
+    .trim()
+    .default('Gym'),
   trainingType: z
     .string()
     .max(100, 'Тип тренування не може бути довше 100 символів')
     .trim()
+    .default('personal')
     .optional()
     .or(z.literal('')),
   location: z

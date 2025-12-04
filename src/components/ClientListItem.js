@@ -5,8 +5,8 @@ import {SvgArrowRight} from '../assets/svgIcons/SvgArrowRight';
 
 const ClientListItemComponent = ({item, handlePress}) => {
   const clientFullName = useMemo(
-    () => `${item.client.name} ${item.client.surname}`,
-    [item.client.name, item.client.surname],
+    () => `${item?.client?.name || ''} ${item?.client?.surname || ''}`.trim(),
+    [item?.client?.name, item?.client?.surname],
   );
 
   const handlePressItem = useCallback(() => {
@@ -20,7 +20,7 @@ const ClientListItemComponent = ({item, handlePress}) => {
 
         <View style={styles.phoneContainer}>
           <SvgPhone />
-          <Text style={styles.phone}>{item.client.number}</Text>
+          <Text style={styles.phone}>{item?.client?.number || ''}</Text>
         </View>
       </View>
       <SvgArrowRight />

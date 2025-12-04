@@ -31,7 +31,8 @@ export const TrainingPlanningContent = ({setPlanningTrainingData}) => {
   const placeholderName = 'Split/Trx/Functional etc.';
   const placeholderLocation = 'Вкажіть локацію';
   const uniqueID = useMemo(
-    () => `id-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`,
+    () =>
+      `id-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`,
     [],
   );
 
@@ -42,7 +43,13 @@ export const TrainingPlanningContent = ({setPlanningTrainingData}) => {
       client: pinnedClient,
       location,
     });
-  }, [selectedType, trainingName, location, pinnedClient, setPlanningTrainingData]);
+  }, [
+    selectedType,
+    trainingName,
+    location,
+    pinnedClient,
+    setPlanningTrainingData,
+  ]);
 
   const handleGetClient = useCallback(() => {
     navigation.navigate('ClientProgramAssignment', {
@@ -103,7 +110,7 @@ export const TrainingPlanningContent = ({setPlanningTrainingData}) => {
           <TouchableOpacity
             style={styles.getClientBtn}
             onPress={handleGetClient}>
-            <Text style={styles.getClientTitle}>Обрати клієнта</Text>
+            <Text style={styles.getClientTitle}>Уточніть дані клієнта</Text>
             <SvgArrowRight />
           </TouchableOpacity>
         )}

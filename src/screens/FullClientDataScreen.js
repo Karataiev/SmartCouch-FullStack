@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {HeaderWithBackButton} from '../components/HeaderWithBackButton';
 import {ClientDataComponent} from '../components/ClientDataComponent';
@@ -24,23 +24,25 @@ export const FullClientDataScreen = ({navigation, route}) => {
 
   return (
     <LayoutComponent>
-      <SafeAreaView style={styles.container}>
-        <HeaderWithBackButton
-          navigation={navigation}
-          editBtn={!isToggleEdit}
-          onPressEdit={handleEdit}>
-          {isToggleEdit ? 'Редагування' : 'Дані клієнта'}
-        </HeaderWithBackButton>
-
-        {isToggleEdit ? (
-          <ClientEditDataComponent
-            itemData={itemData}
+      <ScrollView>
+        <SafeAreaView style={styles.container}>
+          <HeaderWithBackButton
             navigation={navigation}
-          />
-        ) : (
-          <ClientDataComponent itemData={itemData} />
-        )}
-      </SafeAreaView>
+            editBtn={!isToggleEdit}
+            onPressEdit={handleEdit}>
+            {isToggleEdit ? 'Редагування' : 'Дані клієнта'}
+          </HeaderWithBackButton>
+
+          {isToggleEdit ? (
+            <ClientEditDataComponent
+              itemData={itemData}
+              navigation={navigation}
+            />
+          ) : (
+            <ClientDataComponent itemData={itemData} />
+          )}
+        </SafeAreaView>
+      </ScrollView>
     </LayoutComponent>
   );
 };
@@ -49,5 +51,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 20,
   },
 });

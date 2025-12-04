@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, ActivityIndicator, View} from 'react-native';
 import {ClientsEmptyComponent} from '../components/ClientsEmptyComponent';
 import {ClientsListComponent} from '../components/ClientsListComponent';
 import {useSelector} from 'react-redux';
@@ -9,11 +9,24 @@ import {selectClientsList} from '../redux/selectors/clientSelectors';
 
 export const ClientsTabScreen = ({navigation}) => {
   const clientsState = useSelector(selectClientsList);
+  const isLoading = useSelector(state => state.app.loading.clients);
   const createNewClientBtn = () => {
     navigation.navigate('CreateClient', {
       data: {},
     });
   };
+
+  if (isLoading && clientsState.length === 0) {
+    return (
+      <LayoutComponent>
+        <SafeAreaView style={styles.container}>
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#3EB1CC" />
+          </View>
+        </SafeAreaView>
+      </LayoutComponent>
+    );
+  }
 
   return (
     <LayoutComponent>
@@ -35,5 +48,10 @@ export const ClientsTabScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

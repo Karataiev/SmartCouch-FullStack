@@ -5,9 +5,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackNavigator} from './src/components/StackNavigator';
 import {StatusBar} from 'react-native';
 import {userService} from './src/services/api';
+import {useDispatch} from 'react-redux';
+import {fetchUserProfile} from './src/redux/thunks/authThunk';
+import {fetchClients} from './src/redux/thunks/clientsThunk';
+import {fetchWorkoutPlans} from './src/redux/thunks/workoutPlansThunk';
 
 function App() {
   const [initialRoute, setInitialRoute] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -21,8 +26,16 @@ function App() {
         // Перевіряємо валідність токену, спробувавши завантажити профіль
         try {
           await userService.getProfile();
-          // Токен валідний
+          // Токен валідний - встановлюємо маршрут та завантажуємо дані паралельно
           setInitialRoute('TabBar');
+          // Завантажуємо дані паралельно для швидшої роботи
+          Promise.all([
+            dispatch(fetchUserProfile()),
+            dispatch(fetchClients()),
+            dispatch(fetchWorkoutPlans()),
+          ]).catch(syncError => {
+            console.error('Помилка синхронізації даних при старті:', syncError);
+          });
         } catch (error) {
           // Токен невалідний або застарів - очищаємо та перенаправляємо на логін
           console.log('Token validation failed, redirecting to login');
@@ -35,7 +48,7 @@ function App() {
       }
     };
     checkAuth();
-  }, []);
+  }, [dispatch]);
 
   if (!initialRoute) return null;
 

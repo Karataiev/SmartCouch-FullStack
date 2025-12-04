@@ -21,6 +21,7 @@ export const MyDataComponent = ({navigation}) => {
   const [isLoadingUserData, setIsLoadingUserData] = useState(true);
   const [emailError, setEmailError] = useState('');
   const [birthdayError, setBirthdayError] = useState('');
+  const [initialData, setInitialData] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -49,25 +50,39 @@ export const MyDataComponent = ({navigation}) => {
         const userProfile = await dispatch(fetchUserProfile()).unwrap();
 
         if (userProfile) {
-          // Оновлюємо локальний стан з даними з сервера
-          setName(userProfile.name || '');
-          setSurname(userProfile.surname || '');
-          setNumber(userProfile.phone || ''); // Номер телефону з сервера
-          setEmail(userProfile.email || '');
           // Конвертуємо ISO дату в зручний формат для відображення
           const displayBirthday = userProfile.birthday
             ? formatISOToDisplay(userProfile.birthday)
             : '';
-          setBirthday(displayBirthday);
-          setExperience(userProfile.experience || '');
-          setCity(userProfile.city || '');
+
+          // Оновлюємо локальний стан з даними з сервера
+          const loadedData = {
+            name: userProfile.name || '',
+            surname: userProfile.surname || '',
+            number: userProfile.phone || '',
+            email: userProfile.email || '',
+            birthday: displayBirthday,
+            experience: userProfile.experience || '',
+            city: userProfile.city || '',
+          };
+
+          setName(loadedData.name);
+          setSurname(loadedData.surname);
+          setNumber(loadedData.number);
+          setEmail(loadedData.email);
+          setBirthday(loadedData.birthday);
+          setExperience(loadedData.experience);
+          setCity(loadedData.city);
+
+          // Зберігаємо початкові дані для порівняння
+          setInitialData(loadedData);
 
           // Зберігаємо дані в Redux store
           dispatch(
             saveUserData({
               name: userProfile.name || '',
               surname: userProfile.surname || '',
-              number: userProfile.phone || '', // Номер телефону з сервера
+              number: userProfile.phone || '',
               email: userProfile.email || '',
               birthday: userProfile.birthday || '',
               experience: userProfile.experience || '',
@@ -102,25 +117,28 @@ export const MyDataComponent = ({navigation}) => {
   }, []);
 
   const checkChanges = () => {
-    if (
-      userData.name !== name ||
-      userData.surname !== surname ||
-      userData.number !== number ||
-      userData.email !== email ||
-      userData.birthday !== birthday ||
-      userData.experience !== experience ||
-      userData.city !== city
-    ) {
-      setIsActiveSubmitBtn(true);
-    } else {
+    // Не перевіряємо зміни, поки дані не завантажені
+    if (isLoadingUserData || !initialData) {
       setIsActiveSubmitBtn(false);
+      return;
     }
+
+    const hasChanges =
+      initialData.name !== name ||
+      initialData.surname !== surname ||
+      initialData.number !== number ||
+      initialData.email !== email ||
+      initialData.birthday !== birthday ||
+      initialData.experience !== experience ||
+      initialData.city !== city;
+
+    setIsActiveSubmitBtn(hasChanges);
   };
 
   useEffect(() => {
     checkChanges();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [name, surname, number, email, birthday, experience, city]);
+  }, [name, surname, number, email, birthday, experience, city, isLoadingUserData, initialData]);
 
   // Валідація email
   const validateEmail = emailValue => {
@@ -276,6 +294,22 @@ export const MyDataComponent = ({navigation}) => {
         ).unwrap();
 
         if (updatedProfile) {
+          // Конвертуємо ISO дату в зручний формат для відображення
+          const displayBirthday = updatedProfile.birthday
+            ? formatISOToDisplay(updatedProfile.birthday)
+            : '';
+
+          // Оновлюємо початкові дані для порівняння
+          setInitialData({
+            name: name,
+            surname: surname,
+            number: number,
+            email: email,
+            birthday: displayBirthday,
+            experience: experience,
+            city: city,
+          });
+
           // Зберігаємо дані в Redux store (номер телефону не змінюється через API)
           dispatch(
             saveUserData({
@@ -283,7 +317,7 @@ export const MyDataComponent = ({navigation}) => {
               surname: surname,
               number: number, // Номер телефону залишається незмінним
               email: email,
-              birthday: birthday,
+              birthday: updatedProfile.birthday || '',
               experience: experience,
               city: city,
             }),

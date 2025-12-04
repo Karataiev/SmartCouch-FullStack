@@ -6,14 +6,13 @@ import {TrainingPlanningContent} from '../components/TrainingPlanningContent';
 import {DayAndTimeBlock} from '../components/DayAndTimeBlock';
 import {SafeInfoButton} from '../components/SafeInfoButton';
 import {useDispatch} from 'react-redux';
-import {createWorkoutPlan} from '../redux/action';
 import {useNavigation} from '@react-navigation/native';
 import {useToast} from '../castomHooks/useToast';
 import {LayoutComponent} from '../components/LayoutComponent';
 import {useCurrentDate} from '../castomHooks/useCurrentDate';
-import {generateId} from '../helper/generateId';
 import {useConvertDaysToDates} from '../castomHooks/useConvertDaysToDates';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {saveWorkoutPlan} from '../redux/thunks/workoutPlansThunk';
 
 export const TrainingPlanningScreen = () => {
   const dispatch = useDispatch();
@@ -70,34 +69,41 @@ export const TrainingPlanningScreen = () => {
     return training >= current;
   }
 
-  const createTrainingPlan = () => {
+  const createTrainingPlan = async () => {
     if (!isActiveConstantBlock && !isFutureOrToday(date, today)) {
       showToast('Неможливо запланувати тренування на дату у минулому!');
-    } else {
-      const changeDaysToDates = () => {
-        if (oneTimeTrainingDate.length !== 0) {
-          return oneTimeTrainingDate;
-        } else {
-          return convertConstantDates(constantDate);
-        }
-      };
+      return;
+    }
 
-      const id = generateId();
+    const changeDaysToDates = () => {
+      if (oneTimeTrainingDate.length !== 0) {
+        return oneTimeTrainingDate;
+      } else {
+        return convertConstantDates(constantDate);
+      }
+    };
 
-      const trainingPlanObject = {
-        id: id,
-        trainingDate: changeDaysToDates(),
-        trainingName: planningTrainingData.trainingName,
-        trainingType: planningTrainingData.trainingType,
-        client: planningTrainingData.client,
-        location: planningTrainingData.location,
-      };
+    const trainingDates = changeDaysToDates();
 
-      dispatch(createWorkoutPlan(trainingPlanObject));
+    const trainingPlanObject = {
+      trainingName: planningTrainingData.trainingName || 'Gym',
+      trainingType: planningTrainingData.trainingType || 'personal',
+      location: planningTrainingData.location,
+      trainingDate: trainingDates,
+    };
+
+    if (planningTrainingData.client?.id) {
+      trainingPlanObject.clientId = planningTrainingData.client.id;
+    }
+
+    try {
+      await dispatch(saveWorkoutPlan(trainingPlanObject)).unwrap();
       showToast('Тренування заплановано успішно');
       navigation.navigate('Plan', {
         itemData: today,
       });
+    } catch (error) {
+      showToast(error || 'Помилка збереження тренування');
     }
   };
 

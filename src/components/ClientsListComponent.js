@@ -21,11 +21,13 @@ export const ClientsListComponent = ({
       return [];
     }
 
-    return [...clients].sort((a, b) =>
-      a.client.surname.localeCompare(b.client.surname, 'uk', {
-        sensitivity: 'base',
-      }),
-    );
+    return [...clients]
+      .filter(item => item?.client?.surname) // Фільтруємо елементи без surname
+      .sort((a, b) =>
+        (a.client?.surname || '').localeCompare(b.client?.surname || '', 'uk', {
+          sensitivity: 'base',
+        }),
+      );
   }, [clients]);
 
   const filteredClients = useMemo(() => {
@@ -33,13 +35,27 @@ export const ClientsListComponent = ({
       return sortedClients;
     }
 
-    const lowerSearch = deferredSearch.toLowerCase();
+    const lowerSearch = deferredSearch.toLowerCase().trim();
+    const searchWords = lowerSearch
+      .split(/\s+/)
+      .filter(word => word.length > 0);
 
-    return sortedClients.filter(
-      el =>
-        el.client.surname.toLowerCase().includes(lowerSearch) ||
-        el.client.name.toLowerCase().includes(lowerSearch),
-    );
+    if (searchWords.length === 0) {
+      return sortedClients;
+    }
+
+    return sortedClients.filter(el => {
+      const lowerName = el.client?.name?.toLowerCase() || '';
+      const lowerSurname = el.client?.surname?.toLowerCase() || '';
+      const fullName = `${lowerName} ${lowerSurname}`.trim();
+
+      return searchWords.every(
+        word =>
+          lowerName.includes(word) ||
+          lowerSurname.includes(word) ||
+          fullName.includes(word),
+      );
+    });
   }, [sortedClients, deferredSearch]);
 
   const handleSearchChange = useCallback(text => {

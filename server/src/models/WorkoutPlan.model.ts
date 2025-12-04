@@ -71,7 +71,7 @@ const workoutPlanSchema = new Schema<IWorkoutPlan>(
     clientId: {
       type: Schema.Types.ObjectId,
       ref: 'Client',
-      required: [true, 'ID клієнта обов\'язковий'],
+      required: false, // Клієнт не обов'язковий - можна створити тренування без клієнта
       index: true, // Індекс для швидкого пошуку планів клієнта
     },
     trainingName: {

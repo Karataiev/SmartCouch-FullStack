@@ -47,9 +47,18 @@ export const selectAgendaByDate = createSelector(
               return trainingInstance;
             }
 
-            const isoDate = convertUkrDateToISO(
-              trainingInstance.trainingDate?.date,
-            );
+            // Дата може бути в ISO форматі (з бекенду) або в українському форматі (локальна)
+            const dateValue = trainingInstance.trainingDate?.date;
+            if (!dateValue) {
+              return null;
+            }
+
+            // Перевіряємо, чи дата вже в ISO форматі (YYYY-MM-DD)
+            const isISODate = /^\d{4}-\d{2}-\d{2}$/.test(dateValue);
+            const isoDate = isISODate
+              ? dateValue
+              : convertUkrDateToISO(dateValue);
+
             return isoDate === selectedDate ? trainingInstance : null;
           })
           .filter(Boolean);

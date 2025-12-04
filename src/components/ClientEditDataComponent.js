@@ -223,21 +223,25 @@ export const ClientEditDataComponent = ({itemData, navigation}) => {
               placeholder={'Цілі та основні побажання'}
               value={targetAndWishes}
               setValue={setTargetAndWishes}
+              multiline={true}
             />
             <CustomInput
               placeholder={'Стан здоровʼя (травми / протипоказання)'}
               value={stateOfHealth}
               setValue={setStateOfHealth}
+              multiline={true}
             />
             <CustomInput
               placeholder={'Рівень фізичної підготовки'}
               value={levelOfPhysical}
               setValue={setLevelOfPhysical}
+              multiline={true}
             />
             <CustomInput
               placeholder={'Замітки'}
               value={notes}
               setValue={setNotes}
+              multiline={true}
             />
           </View>
         </View>

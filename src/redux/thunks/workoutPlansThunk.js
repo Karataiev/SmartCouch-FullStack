@@ -35,7 +35,9 @@ export const fetchWorkoutPlansByDate = createAsyncThunk(
 
       const response = await workoutPlansService.getWorkoutPlans({date});
       // Бекенд повертає { success: true, data: { workoutPlans: [...], pagination: {...} } }
-      return response.data?.workoutPlans || [];
+      const workoutPlans = response.data?.workoutPlans || [];
+      // Трансформуємо _id в id
+      return transformIdsDeep(workoutPlans);
     } catch (error) {
       return rejectWithValue(
         error.message || 'Помилка завантаження планів тренувань',
